@@ -1,3 +1,4 @@
+import { Button } from "@mui/material";
 import CartItem from "./CartItem";
 import PricingCard from "./PricingCard";
 
@@ -13,8 +14,13 @@ const Cart = () => {
         </div>
 
         {/* PRICING CARD */}
-        <div className="col-span-1 text-sm space-y-3 border rounded-md p-5 border-gray-300">
+        <div className="col-span-1 text-sm space-y-3 border rounded-md p-5 border-gray-300 self-start">
           <PricingCard />
+          <div className="items-center">
+            <Button variant="contained" fullWidth>
+              Buy
+            </Button>
+          </div>
         </div>
       </div>
     </div>
