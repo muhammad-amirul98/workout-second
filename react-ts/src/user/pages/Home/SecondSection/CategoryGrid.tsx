@@ -1,9 +1,10 @@
-import image from "../../../assets/band.avif";
-import image2 from "../../../assets/exercise.avif";
-import image3 from "../../../assets/gym1.avif";
-import image4 from "../../../assets/gym2.avif";
-import image5 from "../../../assets/gym3.avif";
-import image6 from "../../../assets/gym4.avif";
+import image from "../../../../assets/band.avif";
+
+import image2 from "../../../../assets/exercise.avif";
+import image3 from "../../../../assets/gym1.avif";
+import image4 from "../../../../assets/gym2.avif";
+import image5 from "../../../../assets/gym3.avif";
+import image6 from "../../../../assets/gym4.avif";
 
 const CategoryGrid = () => {
   return (

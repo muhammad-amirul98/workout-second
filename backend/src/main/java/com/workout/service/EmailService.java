@@ -18,10 +18,15 @@ public class EmailService {
     public void sendVerificationOtpEmail(String email, String subject, String text) throws MessagingException {
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, "utf-8");
+
             mimeMessageHelper.setSubject(subject);
+
             mimeMessageHelper.setText(text);
+
             mimeMessageHelper.setTo(email);
+
             javaMailSender.send(mimeMessage);
         } catch (MailException e) {
             throw new MailSendException("Email not sent successfully.");

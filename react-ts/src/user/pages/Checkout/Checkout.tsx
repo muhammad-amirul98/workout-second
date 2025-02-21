@@ -40,11 +40,17 @@ const paymentGateways = [
 
 const Checkout = () => {
   const [open, setOpen] = useState(false);
+
   const handleOpen = () => {
     setOpen(true);
   };
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const [paymentGateway, setPaymentGateway] = useState("RAZORPAY");
+  const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPaymentGateway(e.target.value);
   };
 
   return (
@@ -76,6 +82,8 @@ const Checkout = () => {
               defaultValue="stripe"
               name="payment-method-group"
               className="flex items-center pr-0"
+              onChange={handlePaymentChange}
+              value={paymentGateway}
             >
               {paymentGateways.map((item, index) => (
                 <FormControlLabel

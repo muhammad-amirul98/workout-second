@@ -1,4 +1,4 @@
-import image from "../../../assets/gym5.avif";
+import image from "../../../../assets/gym5.avif";
 // import image1 from "../../assets/gym6.avif";
 // import image2 from "../../assets/gym7.avif";
 
