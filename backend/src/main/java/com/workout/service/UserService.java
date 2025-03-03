@@ -1,6 +1,7 @@
 package com.workout.service;
 
 import com.workout.exception.UserException;
+import com.workout.model.userdetails.Address;
 import com.workout.model.userdetails.User;
 import com.workout.model.workouts.Workout;
 import com.workout.request.SignInRequest;
@@ -23,8 +24,8 @@ public interface UserService {
     List<User> getFollowers(Long userId);
     List<User> getFollowing(Long userId);
     List<Workout> getUserWorkoutHistory(Long userId);
-
-
-
+    void addAddress(User user, Address newAddress);
+    void deleteAddress(User user, Long addressId) throws Exception;
+    Address editAddress(User user, Address newAddress, Long addressId) throws Exception;
 
 }

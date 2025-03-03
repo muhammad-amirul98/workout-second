@@ -8,9 +8,11 @@ import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
 import com.stripe.model.checkout.Session;
 import com.stripe.param.checkout.SessionCreateParams;
+import com.workout.enums.PaymentMethod;
 import com.workout.enums.PaymentStatus;
 import com.workout.model.ecommerce.*;
 import com.workout.repository.*;
+import com.workout.response.PaymentLinkResponse;
 import com.workout.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
@@ -46,10 +48,17 @@ public class PaymentServiceImpl implements PaymentService {
 
 
     @Override
-    public PaymentOrder createPaymentOrder(Order order) {
+    public void createPaymentOrder(Order order, String paymentLinkId, PaymentMethod paymentMethod) {
+
         PaymentOrder paymentOrder = new PaymentOrder();
+
         paymentOrder.setOrder(order);
-        return paymentOrderRepository.save(paymentOrder);
+
+        paymentOrder.setPaymentMethod(paymentMethod);
+
+        paymentOrder.setPaymentLinkId(paymentLinkId);
+
+        paymentOrderRepository.save(paymentOrder);
     }
 
     @Override
@@ -110,6 +119,8 @@ public class PaymentServiceImpl implements PaymentService {
             String paymentLinkUrl = paymentLink.get("short_url");
             String paymentLinkId = paymentLink.get("id");
 
+
+
             return paymentLink;
 
         } catch (Exception e) {
@@ -118,7 +129,7 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public String createStripePaymentLink(Order order) throws StripeException {
+    public PaymentLinkResponse createStripePaymentLink(Order order) throws StripeException {
         Stripe.apiKey = stripeSecretKey;
         List<SessionCreateParams.LineItem> lineItems = new ArrayList<>();
         for (OrderItem item : order.getOrderItems()) {
@@ -145,6 +156,9 @@ public class PaymentServiceImpl implements PaymentService {
                 .build();
 
         Session session = Session.create(params);
-        return session.getUrl();
+        PaymentLinkResponse res = new PaymentLinkResponse();
+        res.setPaymentLinkUrl(session.getUrl());
+        res.setPaymentLinkId(session.getId());
+        return res;
     }
 }

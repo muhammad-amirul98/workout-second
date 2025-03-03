@@ -8,6 +8,10 @@ import Paper from "@mui/material/Paper";
 import { IconButton } from "@mui/material";
 import { Delete, Edit } from "@mui/icons-material";
 import TableContainer from "@mui/material/TableContainer";
+import { useAppDispatch, useAppSelector } from "../../state/store";
+import { useEffect } from "react";
+import { fetchProducts } from "../../state/admin/productSlice";
+import { Product } from "../../types/ProductTypes";
 
 // Styled components for table
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
@@ -29,57 +33,53 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-// Function to create product data
-function createProductData(
-  name: string,
-  category: string,
-  price: number,
-  stock: number,
-  addedOn: string
-) {
-  return { name, category, price, stock, addedOn };
-}
+export default function ProductsTable() {
+  const dispatch = useAppDispatch();
+  const { product } = useAppSelector((store) => store);
 
-// Sample product data
-const products = [
-  createProductData("Dumbbell Set", "Fitness", 79.99, 20, "2024-02-19"),
-  createProductData("Resistance Bands", "Accessories", 19.99, 50, "2024-02-18"),
-  createProductData("Protein Powder", "Supplements", 49.99, 30, "2024-02-17"),
-  createProductData("Treadmill", "Cardio", 599.99, 5, "2024-02-16"),
-  createProductData("Yoga Mat", "Accessories", 25.99, 40, "2024-02-15"),
-];
+  useEffect(() => {
+    const jwt = localStorage.getItem("jwt"); // Get JWT inside the useEffect
+    if (jwt) {
+      dispatch(fetchProducts(jwt));
+    }
+  }, []); // Empty dependency array makes it run only once when the component mounts
 
-export default function ProductTable() {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="product table">
         <TableHead>
           <TableRow>
-            <StyledTableCell>Product Name</StyledTableCell>
-            <StyledTableCell align="center">Category</StyledTableCell>
-            <StyledTableCell align="center">Price ($)</StyledTableCell>
+            <StyledTableCell>Images</StyledTableCell>
+            <StyledTableCell align="center">Name</StyledTableCell>
+            <StyledTableCell align="center">Description</StyledTableCell>
+            <StyledTableCell align="center">Brand</StyledTableCell>
+            <StyledTableCell align="center">Price</StyledTableCell>
             <StyledTableCell align="center">Stock</StyledTableCell>
-            <StyledTableCell align="center">Added On</StyledTableCell>
             <StyledTableCell align="center">Edit</StyledTableCell>
             <StyledTableCell align="center">Delete</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {products.map((product) => (
-            <StyledTableRow key={product.name}>
+          {product.products.map((row: Product) => (
+            <StyledTableRow key={row.id}>
               <StyledTableCell component="th" scope="row">
-                {product.name}
+                <div className="flex gap-1">
+                  {row.images.map((image) => (
+                    <img src={image} className="w-20 rounded-md" />
+                  ))}
+                </div>
               </StyledTableCell>
+              <StyledTableCell align="center">{row.name}</StyledTableCell>
               <StyledTableCell align="center">
-                {product.category}
+                {row.description}
               </StyledTableCell>
+              <StyledTableCell align="center">{row.brand}</StyledTableCell>
+
               <StyledTableCell align="center">
-                ${product.price.toFixed(2)}
+                ${row.price.toFixed(2)}
               </StyledTableCell>
-              <StyledTableCell align="center">{product.stock}</StyledTableCell>
-              <StyledTableCell align="center">
-                {product.addedOn}
-              </StyledTableCell>
+              <StyledTableCell align="center">{row.stock}</StyledTableCell>
+
               <StyledTableCell align="center">
                 <IconButton>
                   <Edit />

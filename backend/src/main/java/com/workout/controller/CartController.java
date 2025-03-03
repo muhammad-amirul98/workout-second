@@ -38,27 +38,39 @@ public class CartController {
     }
 
     @PutMapping("/add")
-    public ResponseEntity<CartItem> addItemToCart(@RequestBody CartItemRequest req,
+    public ResponseEntity<CartItem> addItemToCart(@RequestParam Long productId,
                                               @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt)
             throws UserException, ProductException {
 
         User user = userService.findUserByJwtToken(jwt);
-        Product product = productService.findProductById(req.getProductId());
-        CartItem cartItem = cartService.addCartItem(user, product, req.getQuantity());
+        Product product = productService.findProductById(productId);
+        CartItem cartItem = cartService.addCartItem(user, product);
 
         return new ResponseEntity<>(cartItem, HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/remove")
-    public ResponseEntity<ApiResponse> removeItemFromCart(@RequestBody CartItemRequest req,
+    public ResponseEntity<ApiResponse> removeItemFromCart(@RequestParam Long productId,
+                                                          @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt)
+            throws UserException, ProductException {
+
+        User user = userService.findUserByJwtToken(jwt);
+        Product product = productService.findProductById(productId);
+        cartService.removeCartItem(user, product);
+
+        return ResponseEntity.noContent().build(); // HTTP 204 No Content when item is removed
+    }
+
+    @PutMapping("/update")
+    public ResponseEntity<CartItem> updateCartItemQuantity(@RequestBody CartItemRequest req,
                                                           @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt)
             throws UserException, ProductException {
 
         User user = userService.findUserByJwtToken(jwt);
         Product product = productService.findProductById(req.getProductId());
-        cartService.removeCartItem(user, product, req.getQuantity());
+        CartItem cartItem = cartService.updateCartItemQuantity(user, product, req.getQuantity());
+        return new ResponseEntity<>(cartItem, HttpStatus.ACCEPTED);
 
-        return ResponseEntity.noContent().build(); // HTTP 204 No Content when item is removed
     }
 
 

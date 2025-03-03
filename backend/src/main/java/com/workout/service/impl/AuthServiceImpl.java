@@ -26,6 +26,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -68,6 +69,8 @@ public class AuthServiceImpl implements AuthService {
     public AuthResponse signIn(SignInRequest signInRequest) {
         String email = signInRequest.getEmail();
         String otp = signInRequest.getOtp();
+        User user = userRepository.findByEmail(email).orElseThrow(() ->
+                new UsernameNotFoundException("User Not Found"));
 
         Authentication authentication = authenticate(email, otp);
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -115,6 +118,20 @@ public class AuthServiceImpl implements AuthService {
         return jwtProvider.generateToken(SecurityContextHolder.getContext().getAuthentication());
     }
 
+    private User createNewUser(SignUpRequest signUpRequest) {
+        User newUser = new User();
+        newUser.setFullName(signUpRequest.getFullName());
+        newUser.setEmail(signUpRequest.getEmail());
+        newUser.setMobile("90123121");
+        newUser.setPassword(passwordEncoder.encode(signUpRequest.getOtp()));
+
+        newUser = userRepository.save(newUser);
+
+        initializeUserEntities(newUser);
+
+        return newUser;
+    }
+
     @Override
     public String adminSignUp(SignUpRequest signUpRequest) throws Exception {
         VerificationCode verificationCode = verificationCodeRepository.findByEmail(signUpRequest.getEmail());
@@ -143,19 +160,7 @@ public class AuthServiceImpl implements AuthService {
         return newUser;
     }
 
-    private User createNewUser(SignUpRequest signUpRequest) {
-        User newUser = new User();
-        newUser.setFullName(signUpRequest.getFullName());
-        newUser.setEmail(signUpRequest.getEmail());
-        newUser.setMobile("90123121");
-        newUser.setPassword(passwordEncoder.encode(signUpRequest.getOtp()));
 
-        newUser = userRepository.save(newUser);
-
-        initializeUserEntities(newUser);
-
-        return newUser;
-    }
 
     private void initializeUserEntities(User user) {
         if (user.getCart() == null) {

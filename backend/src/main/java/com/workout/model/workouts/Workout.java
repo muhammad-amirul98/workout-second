@@ -1,5 +1,7 @@
 package com.workout.model.workouts;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.workout.enums.WorkoutStatus;
 import com.workout.model.userdetails.User;
 import jakarta.persistence.*;

@@ -19,18 +19,16 @@ public class CartServiceImpl implements CartService {
     private final CartItemRepository cartItemRepository;
 
     @Override
-    public CartItem addCartItem(User user, Product product, int quantity) {
+    public CartItem addCartItem(User user, Product product) {
         Cart cart = findUserCart(user);
         CartItem cartItem = cartItemRepository.findByCartAndProduct(cart, product);
 
         if (cartItem == null) {
             cartItem = new CartItem();
             cartItem.setProduct(product);
-            cartItem.setQuantity(quantity);
+            cartItem.setQuantity(1);
             cartItem.setCart(cart);
             cart.getCartItems().add(cartItem);
-        } else {
-            cartItem.setQuantity(cartItem.getQuantity() + quantity);
         }
 
         cartItemRepository.save(cartItem);
@@ -39,26 +37,38 @@ public class CartServiceImpl implements CartService {
     }
 
     @Override
-    public void removeCartItem(User user, Product product, int quantity) {
+    public void removeCartItem(User user, Product product) {
         Cart cart = findUserCart(user);
         CartItem cartItem = cartItemRepository.findByCartAndProduct(cart, product);
 
         if (cartItem != null) {
-            int updatedQuantity = cartItem.getQuantity() - quantity;
-            if (updatedQuantity <= 0) {
-                cart.getCartItems().remove(cartItem);
-                cartItemRepository.delete(cartItem);
-            } else {
-                cartItem.setQuantity(updatedQuantity);
-                cartItemRepository.save(cartItem);
-            }
+            cart.getCartItems().remove(cartItem);
+            cartItemRepository.delete(cartItem);
             updateCartTotals(cart);
         }
     }
 
+
     @Override
     public Cart findUserCart(User user) {
         return cartRepository.findByUserId(user.getId());
+    }
+
+    @Override
+    public CartItem updateCartItemQuantity(User user, Product product, int quantity) {
+        Cart cart = findUserCart(user);
+        CartItem cartItem = cartItemRepository.findByCartAndProduct(cart, product);
+        if (cartItem != null) {
+            int newQuantity = cartItem.getQuantity() + quantity;
+            if (newQuantity < 0) {
+                newQuantity = 0;
+            }
+            cartItem.setQuantity(newQuantity);
+            updateCartTotals(cart);
+            return cartItemRepository.save(cartItem);
+        }
+
+        return null;
     }
 
     private void updateCartTotals(Cart cart) {

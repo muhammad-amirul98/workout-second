@@ -12,7 +12,7 @@ import {
 import { teal } from "@mui/material/colors";
 import { brands } from "../../data/brand.ts";
 import { prices } from "../../data/price.ts";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 // import { CheckBox } from "@mui/icons-material";
 
@@ -35,6 +35,9 @@ const FilterSection = () => {
     setSearchParams(searchParams); // Update the searchParams with the new price value
   };
 
+  //Selected Brands for checkbox check
+  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
+
   const clearAllFilters = () => {
     setSelectedPrice(null);
     setSelectedBrands([]);
@@ -44,9 +47,6 @@ const FilterSection = () => {
     // setSearchParams(searchParams);
     setSearchParams(new URLSearchParams());
   };
-
-  //Selected Brands for checkbox check
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
 
   // Handle checkbox change
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -70,6 +70,13 @@ const FilterSection = () => {
 
     setSearchParams(searchParams);
   };
+
+  useEffect(() => {
+    const brands = searchParams.getAll("brand");
+    setSelectedBrands(brands);
+    const price = searchParams.get("price");
+    setSelectedPrice(price);
+  }, []);
 
   return (
     <div className="-z-50">

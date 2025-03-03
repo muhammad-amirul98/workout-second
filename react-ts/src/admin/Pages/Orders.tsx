@@ -16,7 +16,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { useState } from "react";
-import { orderStatuses } from "../Data/orderStatuses";
+import { orderStatuses } from "../data/orderStatuses";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {

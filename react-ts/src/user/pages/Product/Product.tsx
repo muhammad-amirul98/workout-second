@@ -13,13 +13,19 @@ import {
 import FilterSection from "./FilterSection";
 import ProductCard from "./ProductCard";
 import { FilterAlt } from "@mui/icons-material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useAppDispatch, useAppSelector } from "../../../state/store";
+import { fetchAllProducts } from "../../../state/user/userProductSlice";
+import { useSearchParams } from "react-router-dom";
 
 const Product = () => {
   const theme = useTheme();
   const isLarge = useMediaQuery(theme.breakpoints.up("lg"));
   const [sort, setSort] = useState();
-  const [, setPage] = useState(1);
+  const [page, setPage] = useState(1);
+  const dispatch = useAppDispatch();
+  const [searchParams] = useSearchParams();
+  const { userproduct } = useAppSelector((store) => store);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSort = (event: any) => {
@@ -30,6 +36,20 @@ const Product = () => {
   const handlePageChange = (value: number) => {
     setPage(value);
   };
+
+  useEffect(() => {
+    const [minPrice, maxPrice] = searchParams.get("price")?.split("-") || [];
+    const brandFilter = searchParams.getAll("brand");
+    const brands = brandFilter.length > 0 ? brandFilter.join(",") : undefined;
+
+    const newFilter = {
+      brand: brands,
+      minPrice: minPrice ? Number(minPrice) : undefined,
+      maxPrice: maxPrice ? Number(maxPrice) : undefined,
+      pageNumber: page - 1,
+    };
+    dispatch(fetchAllProducts(newFilter));
+  }, [searchParams, page, dispatch]);
 
   return (
     <div className="-z-10 mt-10">
@@ -81,9 +101,9 @@ const Product = () => {
 
           {/* PRODUCTS  */}
           <section className="product_section mt-5 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-5 px-5 justify-center">
-            {[1, 1, 1, 1, 1, 1].map((_, index) => (
-              <ProductCard key={index} />
-            ))}
+            {userproduct.products.map((item, index) => {
+              return <ProductCard key={index} item={item} />;
+            })}
           </section>
 
           {/* PAGINATION */}

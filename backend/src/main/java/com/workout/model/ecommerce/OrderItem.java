@@ -1,5 +1,6 @@
 package com.workout.model.ecommerce;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,7 +10,6 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
 public class OrderItem {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

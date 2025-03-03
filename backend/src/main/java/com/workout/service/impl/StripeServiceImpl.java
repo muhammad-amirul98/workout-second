@@ -38,7 +38,7 @@ public class StripeServiceImpl implements StripeService {
         // Iterate over the orderItems in the order
         for (OrderItem orderItem : order.getOrderItems()) {
             // Get product details (e.g., name, price, etc.) from orderItem
-            String productName = orderItem.getProduct().getName(); // Assuming your orderItem has a reference to a product
+            String productName = orderItem.getProduct().getName();
             long unitPrice = (long) (orderItem.getProduct().getPrice() * 100); // Convert price to cents
             long quantity = orderItem.getQuantity();
 
@@ -82,6 +82,7 @@ public class StripeServiceImpl implements StripeService {
 
         return StripeResponse.builder()
                 .status("SUCCESS")
+                .message("Payment Session Created")
                 .sessionId(session.getId())
                 .sessionUrl(session.getUrl())
                 .build();

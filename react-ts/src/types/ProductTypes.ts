@@ -1,7 +1,7 @@
 import { User } from "./UserTypes";
 
 export interface Product {
-  id: number;
+  id?: number;
   name: string;
   description: string;
   brand: string;
@@ -13,7 +13,7 @@ export interface Product {
 }
 
 export interface Review {
-  id: number;
+  id?: number;
   reviewText: string;
   rating: number;
   reviewImages: string[];
@@ -23,8 +23,15 @@ export interface Review {
 }
 
 export interface Category {
-  id: number;
+  id?: number;
   name: string;
   parentCategory: Category;
   products: Product[];
+}
+
+export interface FetchProductsParams {
+  brand: string | undefined;
+  minPrice?: number | undefined;
+  maxPrice?: number | undefined;
+  pageNumber?: number;
 }

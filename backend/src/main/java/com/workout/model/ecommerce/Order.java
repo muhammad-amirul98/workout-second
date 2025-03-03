@@ -1,5 +1,8 @@
 package com.workout.model.ecommerce;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.workout.enums.OrderStatus;
 import com.workout.enums.PaymentStatus;
 import com.workout.model.userdetails.Address;
@@ -26,6 +29,7 @@ public class Order {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private User user;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -2,35 +2,49 @@ import { Box, Button, TextField } from "@mui/material";
 import Grid from "@mui/material/Grid2";
 import { useFormik } from "formik";
 import * as Yup from "yup";
+import { useAppDispatch } from "../../../state/store";
+// import { createOrder } from "../../../state/user/orderSlice";
+import { createAddress } from "../../../state/user/userSlice";
 
 const AddressFormSchema = Yup.object().shape({
-  name: Yup.string().required("Name is required"),
-  mobile: Yup.string()
-    .matches(/^[0-9]+$/, "Mobile must be only digits")
-    .min(10, "Mobile number must be at least 10 digits")
-    .max(15, "Mobile number can't exceed 15 digits")
-    .required("Mobile number is required"),
   zip: Yup.string()
     .matches(/^[0-9]{5,6}$/, "Invalid ZIP code")
     .required("ZIP code is required"),
-  address: Yup.string()
-    .min(10, "Address must be at least 10 characters")
-    .required("Address is required"),
   country: Yup.string().required("Country is required"),
+  street: Yup.string()
+    .min(10, "Street address must be at least 10 characters")
+    .required("Street address is required"),
 });
 
-const AddressForm = () => {
+interface AddressFormProps {
+  paymentGateway: string;
+  onSubmit: () => void; // Callback prop for parent to close modal
+}
+
+const AddressForm = ({ paymentGateway, onSubmit }: AddressFormProps) => {
+  const jwt = localStorage.getItem("jwt");
+  const dispatch = useAppDispatch();
   const formik = useFormik({
     initialValues: {
-      name: "",
-      mobile: "",
       zip: "",
-      address: "",
+      street: "",
       country: "",
     },
     validationSchema: AddressFormSchema,
     onSubmit: (values) => {
       console.log(values);
+      console.log(jwt);
+      console.log(paymentGateway);
+      if (jwt) {
+        dispatch(createAddress({ address: values, jwt }))
+          .then(() => {
+            // After dispatching successfully, close the modal
+            onSubmit(); // Call the parent callback to close the modal
+          })
+          .catch((error) => {
+            console.error("Error adding address:", error);
+          });
+      }
     },
   });
 
@@ -42,28 +56,28 @@ const AddressForm = () => {
           <Grid size={{ xs: 12 }}>
             <TextField
               fullWidth
-              name="name"
-              label="Name"
-              value={formik.values.name}
+              name="country"
+              label="Country"
+              value={formik.values.country}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              error={formik.touched.name && Boolean(formik.errors.name)}
-              helperText={formik.touched.name && formik.errors.name}
-            ></TextField>
+              error={formik.touched.country && Boolean(formik.errors.country)}
+              helperText={formik.touched.country && formik.errors.country}
+            />
           </Grid>
-          <Grid size={{ xs: 6 }}>
+          <Grid size={{ xs: 12 }}>
             <TextField
               fullWidth
-              name="mobile"
-              label="Mobile"
-              value={formik.values.mobile}
+              name="street"
+              label="Street"
+              value={formik.values.street}
               onChange={formik.handleChange}
               onBlur={formik.handleBlur}
-              error={formik.touched.mobile && Boolean(formik.errors.mobile)}
-              helperText={formik.touched.mobile && formik.errors.mobile}
-            ></TextField>
+              error={formik.touched.street && Boolean(formik.errors.street)}
+              helperText={formik.touched.street && formik.errors.street}
+            />
           </Grid>
-          <Grid size={{ xs: 6 }}>
+          <Grid size={{ xs: 12 }}>
             <TextField
               fullWidth
               name="zip"
@@ -73,31 +87,7 @@ const AddressForm = () => {
               onBlur={formik.handleBlur}
               error={formik.touched.zip && Boolean(formik.errors.zip)}
               helperText={formik.touched.zip && formik.errors.zip}
-            ></TextField>
-          </Grid>
-          <Grid size={{ xs: 12 }}>
-            <TextField
-              fullWidth
-              name="country"
-              label="Country"
-              value={formik.values.country}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.country && Boolean(formik.errors.country)}
-              helperText={formik.touched.country && formik.errors.country}
-            ></TextField>
-          </Grid>
-          <Grid size={{ xs: 12 }}>
-            <TextField
-              fullWidth
-              name="address"
-              label="Address"
-              value={formik.values.address}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.address && Boolean(formik.errors.address)}
-              helperText={formik.touched.address && formik.errors.address}
-            ></TextField>
+            />
           </Grid>
         </Grid>
         <Box sx={{ textAlign: "center", pt: 2 }}>

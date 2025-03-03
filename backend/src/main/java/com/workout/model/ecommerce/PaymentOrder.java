@@ -11,7 +11,6 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
 public class PaymentOrder {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,9 +20,10 @@ public class PaymentOrder {
     private PaymentStatus status = PaymentStatus.PENDING;
 
     @Enumerated(EnumType.STRING)
+    @Column(length = 50)
     private PaymentMethod paymentMethod;
 
-    @Column(nullable = false, unique = true)
+    @Column(columnDefinition = "TEXT")
     private String paymentLinkId;
 
     @OneToOne

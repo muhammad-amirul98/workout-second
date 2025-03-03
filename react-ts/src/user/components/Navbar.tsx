@@ -9,25 +9,28 @@ import {
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import { DEFAULT_AVATAR } from "../../constant";
-import { useState } from "react";
 import FitnessCenterIcon from "@mui/icons-material/FitnessCenter";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch, useAppSelector } from "../../state/store";
+import { logOut } from "../../state/AuthSlice";
 
 const Navbar = () => {
   const theme = useTheme();
   const navigate = useNavigate();
   const isLargeScreen = useMediaQuery(theme.breakpoints.up("lg"));
-  const [loggedIn, setLoggedIn] = useState(true);
-  const Login = () => {
-    navigate("/login");
+  const dispatch = useAppDispatch();
+  const auth = useAppSelector((store) => store.auth);
 
-    // setLoggedIn(true); // Update login state to true after successful login
-  };
   const Logout = () => {
-    setLoggedIn(false); // Update login state to true after successful login
+    dispatch(logOut(navigate));
   };
+
+  const menuItems = [
+    { name: "My Workouts", path: "/workout" },
+    { name: "Supplements", path: "/products" },
+  ];
 
   return (
     <div>
@@ -45,57 +48,49 @@ const Navbar = () => {
                 Workout App
               </h1>
             </div>
-            <ul className="flex items-center font-medium text-gray-800">
-              {["Workout History", "Progress Charts", "Macro Calculator"].map(
-                (item, index) => (
-                  <li
-                    key={index}
-                    className="mainCategory hover:text-[#008080] hover:border-b-2 h-[70px] px-4 border-[#008080] flex items-center"
-                  >
-                    {item}
-                  </li>
-                )
-              )}
+            <ul className="items-center font-medium text-gray-800 hidden lg:flex cursor-pointer">
+              {menuItems.map((item, index) => (
+                <li
+                  key={index}
+                  className="mainCategory hover:text-[#008080] hover:border-b-2 h-[70px] px-4 border-[#008080] flex items-center"
+                  onClick={() => navigate(item.path)}
+                >
+                  {item.name}
+                </li>
+              ))}
               <li></li>
             </ul>
           </div>
           <div>
-            {loggedIn ? (
+            <IconButton>
+              <SearchIcon />
+            </IconButton>
+            <Button
+              onClick={() => navigate("/account/orders")}
+              className="flex items-center gap-x-2"
+            >
+              <Avatar src={auth.user?.profilePicture || DEFAULT_AVATAR} />
+
+              <h1 className="hidden lg:block logo text-lg md:text-2xl">
+                {auth.user?.fullName}
+              </h1>
+            </Button>
+            {isLargeScreen && (
               <>
                 <IconButton>
-                  <SearchIcon />
+                  <FitnessCenterIcon />
                 </IconButton>
-                <Button
-                  onClick={() => navigate("/account/orders")}
-                  className="flex items-center gap-x-2"
-                >
-                  <Avatar src={DEFAULT_AVATAR} />
-                  <h1 className="hidden lg:block logo text-lg md:text-2xl">
-                    USER
-                  </h1>
-                </Button>
-                {isLargeScreen && (
-                  <>
-                    <IconButton>
-                      <FitnessCenterIcon />
-                    </IconButton>
-                    <IconButton>
-                      <FavoriteBorderIcon />
-                    </IconButton>
-                    <IconButton onClick={() => navigate("/cart")}>
-                      <ShoppingCartIcon />
-                    </IconButton>
-                  </>
-                )}
-                <Button variant="outlined" onClick={Logout}>
-                  Logout
-                </Button>
+                <IconButton>
+                  <FavoriteBorderIcon />
+                </IconButton>
+                <IconButton onClick={() => navigate("/cart")}>
+                  <ShoppingCartIcon />
+                </IconButton>
               </>
-            ) : (
-              <Button variant="outlined" onClick={Login}>
-                Login
-              </Button>
             )}
+            <Button variant="outlined" onClick={Logout}>
+              Logout
+            </Button>
           </div>
         </div>
       </Box>

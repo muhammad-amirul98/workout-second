@@ -1,5 +1,4 @@
 import { Button, Divider } from "@mui/material";
-import image1 from "../../../assets/weights.avif";
 import StarIcon from "@mui/icons-material/Star";
 import {
   Add,
@@ -11,13 +10,26 @@ import {
   Wallet,
   WorkspacePremium,
 } from "@mui/icons-material";
-import { useState } from "react";
-import ONProductDescription from "./ONProductDescription";
+import { useEffect, useState } from "react";
 import SimilarProduct from "./SimilarProduct";
 import ReviewCard from "../Review/ReviewCard";
+import { useAppDispatch, useAppSelector } from "../../../state/store";
+import { useParams } from "react-router-dom";
+import { fetchProductById } from "../../../state/user/userProductSlice";
+import { addItemToCart } from "../../../state/user/userCartSlice";
 
 const ProductDetail = () => {
+  const dispatch = useAppDispatch();
+  const { productId } = useParams<{ productId: string }>();
+  const { userproduct } = useAppSelector((store) => store);
   const [quantity, setQuantity] = useState(0);
+  const [activeImage, setActiveImage] = useState(0);
+  const jwt = localStorage.getItem("jwt");
+
+  const handleChangeActiveImage = (value: number) => {
+    setActiveImage(value);
+  };
+
   const add = () => {
     setQuantity(quantity + 1);
   };
@@ -28,31 +40,48 @@ const ProductDetail = () => {
     }
   };
 
+  const addToCart = () => {
+    if (jwt) {
+      dispatch(addItemToCart({ jwt, productId: Number(productId) }));
+    }
+  };
+
+  useEffect(() => {
+    if (productId) {
+      dispatch(fetchProductById(productId));
+    }
+  }, [productId, dispatch]);
+
   return (
     <div className="px-5 lg:px-20 pt-10">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 mb-10">
         <section className="flex flex-col lg:flex-row gap-5">
           {/* SIDE IMAGES */}
           <div className="flex flex-wrap lg:flex-col w-full lg:w-[15%] gap-3">
-            {[1, 1, 1, 1].map((_, index) => (
+            {userproduct.product?.images.map((image, index) => (
               <img
+                onClick={() => handleChangeActiveImage(index)}
                 className="rounded-md lg:w-full w-[50px] cursor-pointer "
                 key={index}
-                src={image1}
+                src={image}
               />
             ))}
           </div>
           {/* MAIN IMAGE */}
           <div className="w-full lg:w-[85%]">
-            <img className="w-full rounded-md" src={image1} alt="" />
+            <img
+              className="w-full rounded-md"
+              src={userproduct.product?.images[activeImage]}
+              alt=""
+            />
           </div>
         </section>
 
         {/* PRODUCT DETAILS */}
         <section>
-          <h1 className="font-bold text-lg">OPTIMUM NUTRITION</h1>
+          <h1 className="font-bold text-lg">{userproduct.product?.brand}</h1>
           <p className="text-gray-500 font-semibold">
-            GOLD STANDARD 100% WHEY™
+            {userproduct.product?.name}
           </p>
           <div className="flex justify-between items-center py-2 border border-gray-400 w-[180px] px-3 mt-5">
             <div className="flex gap-1 items-center ">
@@ -64,7 +93,9 @@ const ProductDetail = () => {
           </div>
           <div>
             <div className="price flex items-center gap-3 mt-5 text-2xl">
-              <span className="font-sans text-gray-800">$100</span>
+              <span className="font-sans text-gray-800">
+                ${userproduct.product?.price}
+              </span>
             </div>
             <p className="text-sm">Free Shipping Above 200$.</p>
           </div>
@@ -108,6 +139,7 @@ const ProductDetail = () => {
               startIcon={<AddShoppingCart />}
               sx={{ py: "1rem" }}
               variant="contained"
+              onClick={addToCart}
             >
               Add to cart
             </Button>
@@ -121,8 +153,6 @@ const ProductDetail = () => {
             </Button>
           </div>
           {/* DESCRIPTION */}
-          <ONProductDescription />
-          <div></div>
           <div className="mt-7 space-y-5">
             <ReviewCard />
             <Divider />

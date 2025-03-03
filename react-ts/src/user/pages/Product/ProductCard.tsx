@@ -1,23 +1,21 @@
-import image1 from "../../../assets/gym7.avif";
-import image2 from "../../../assets/weights.avif";
-import image3 from "../../../assets/gym6.avif";
 import "./ProductCard.css";
 import { useEffect, useState } from "react";
 import { Button } from "@mui/material";
 import { Favorite, ModeComment } from "@mui/icons-material";
+import { Product } from "../../../types/ProductTypes";
+import { useNavigate } from "react-router-dom";
 
-const images = [image1, image2, image3];
-
-const ProductCard = () => {
+const ProductCard = ({ item }: { item: Product }) => {
   const [currentImage, setCurrentImage] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let interval: any;
     if (isHovered) {
       interval = setInterval(() => {
-        setCurrentImage((prevImage) => (prevImage + 1) % images.length);
+        setCurrentImage((prevImage) => (prevImage + 1) % item.images.length);
       }, 1000);
     } else if (interval) {
       clearInterval(interval);
@@ -27,16 +25,19 @@ const ProductCard = () => {
   }, [isHovered]);
 
   return (
-    <div className="group px-4 relative">
+    <div
+      onClick={() => navigate(`/product-details/${item.name}/${item.id}`)}
+      className="group px-4 relative"
+    >
       <div
         className="card"
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
       >
-        {images.map((image, index) => (
+        {item.images.map((image, index) => (
           <img
             key={index}
-            className="card-media object-top"
+            className="card-media "
             src={image}
             alt=""
             style={{

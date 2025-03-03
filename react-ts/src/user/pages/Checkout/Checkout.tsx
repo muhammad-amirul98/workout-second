@@ -6,12 +6,16 @@ import {
   Radio,
   RadioGroup,
 } from "@mui/material";
-import Address from "./AddressCard";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AddressForm from "./AddressForm";
 import PricingCard from "../Cart/PricingCard";
 import stripeImage from "../../../assets/images.png";
-import razorPayImage from "../../../assets/razorpay.webp";
+import paynow from "../../../assets/paynow.webp";
+import { useAppDispatch, useAppSelector } from "../../../state/store";
+import { fetchUserAddresses } from "../../../state/user/userSlice";
+import AddressCard from "./AddressCard";
+import { createOrder } from "../../../state/user/orderSlice";
+// import razorPayImage from "../../../assets/razorpay.webp";
 
 const style = {
   position: "absolute",
@@ -27,8 +31,8 @@ const style = {
 
 const paymentGateways = [
   {
-    value: "RAZORPAY",
-    image: razorPayImage,
+    value: "PAYNOW",
+    image: paynow,
     label: "",
   },
   {
@@ -39,7 +43,10 @@ const paymentGateways = [
 ];
 
 const Checkout = () => {
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((store) => store.user);
   const [open, setOpen] = useState(false);
+  const jwt = localStorage.getItem("jwt");
 
   const handleOpen = () => {
     setOpen(true);
@@ -48,9 +55,33 @@ const Checkout = () => {
     setOpen(false);
   };
 
-  const [paymentGateway, setPaymentGateway] = useState("RAZORPAY");
+  useEffect(() => {
+    if (jwt) {
+      dispatch(fetchUserAddresses(jwt));
+    } else {
+      console.error("JWT not found, unable to fetch user addresses");
+    }
+  }, []);
+
+  const [paymentGateway, setPaymentGateway] = useState("STRIPE");
   const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setPaymentGateway(e.target.value);
+  };
+
+  const [selectedAddress, setSelectedAddress] = useState<string | null>(null);
+  const handleAddressChange = (addressId: string) => {
+    setSelectedAddress(addressId);
+  };
+
+  const handleCheckout = () => {
+    if (!selectedAddress) {
+      console.log("Please select address");
+    }
+    if (jwt && selectedAddress) {
+      dispatch(
+        createOrder({ addressId: Number(selectedAddress), jwt, paymentGateway })
+      );
+    }
   };
 
   return (
@@ -63,8 +94,13 @@ const Checkout = () => {
           <div className="text-xs font-medium space-y-5">
             <p>Saved Addresses: </p>
             <div className="space-y-3">
-              {[1, 1, 1].map((_, index) => (
-                <Address key={`address${index}`} />
+              {user.addresses?.map((address, index) => (
+                <AddressCard
+                  address={address}
+                  key={`address${index}`}
+                  selected={selectedAddress}
+                  handleSelect={handleAddressChange}
+                />
               ))}
             </div>
           </div>
@@ -79,7 +115,7 @@ const Checkout = () => {
             <h1 className="text-center">Choose Payment Gateway:</h1>
             <RadioGroup
               aria-labelledby="payment-method-group-label"
-              defaultValue="stripe"
+              defaultValue="STRIPE"
               name="payment-method-group"
               className="flex items-center pr-0"
               onChange={handlePaymentChange}
@@ -90,14 +126,21 @@ const Checkout = () => {
                   key={`payment${index}`}
                   value={item.value}
                   control={<Radio />}
-                  label={<img className="h-10" src={item.image} />}
+                  // label={<img className="h-10 w-20" src={item.image} />}
+                  label={
+                    item.value === "PAYNOW" ? (
+                      <img className="h-15 w-20" src={item.image} />
+                    ) : (
+                      <img className="h-10" src={item.image} />
+                    )
+                  }
                 />
               ))}
             </RadioGroup>
           </div>
           <PricingCard />
           <div className="items-center">
-            <Button variant="contained" fullWidth>
+            <Button variant="contained" fullWidth onClick={handleCheckout}>
               Checkout
             </Button>
           </div>
@@ -110,7 +153,7 @@ const Checkout = () => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <AddressForm />
+          <AddressForm paymentGateway={paymentGateway} onSubmit={handleClose} />
         </Box>
       </Modal>
     </div>

@@ -9,9 +9,7 @@ import com.workout.service.OrderService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 
 @Service
@@ -23,26 +21,28 @@ public class OrderServiceImpl implements OrderService {
     private final OrderItemRepository orderItemRepository;
 
     @Override
-    public Order createOrder(User user, Address shippingAddress, Cart cart) {
-        user.getAddresses().add(shippingAddress);
-        addressRepository.save(shippingAddress);
+    public Order createOrder(User user, Long addressId, Cart cart) throws Exception {
+        Address address = addressRepository.findById(addressId).
+                orElseThrow(() -> new Exception("Address Not Found"));
 
         Order order = new Order();
+
         order.setTotalPrice(cart.getTotalPrice());
-        order.setShippingAddress(shippingAddress);
+
+        order.setShippingAddress(address);
+
         order.setUser(user);
 
-        Set<OrderItem> orderItems = new HashSet<>();
+        Set<OrderItem> orderItems = order.getOrderItems();
         for (CartItem cartItem : cart.getCartItems()) {
             OrderItem orderItem = new OrderItem();
             orderItem.setOrder(order);
             orderItem.setProduct(cartItem.getProduct());
             orderItem.setQuantity(cartItem.getQuantity());
+
             orderItems.add(orderItem);
         }
-
         order.setOrderItems(orderItems);
-
         return orderRepository.save(order);
     }
 

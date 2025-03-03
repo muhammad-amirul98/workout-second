@@ -9,6 +9,7 @@ import com.workout.model.ecommerce.*;
 import com.workout.model.userdetails.Address;
 import com.workout.model.userdetails.User;
 import com.workout.repository.PaymentOrderRepository;
+import com.workout.repository.UserRepository;
 import com.workout.response.PaymentLinkResponse;
 import com.workout.service.*;
 import lombok.RequiredArgsConstructor;
@@ -31,37 +32,43 @@ public class OrderController {
     private final ProductService productService;
     private final PaymentService paymentService;
     private final PaymentOrderRepository paymentOrderRepository;
+    private final UserRepository userRepository;
 
     @PostMapping
-    public ResponseEntity<PaymentLinkResponse> createOrder(@RequestBody Address shippingAddress,
-                                                           @RequestParam PaymentMethod paymentMethod,
+    public ResponseEntity<PaymentLinkResponse> createOrder(@RequestParam Long addressId,
+                                                           @RequestParam String paymentMethod,
                                                            @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt)
             throws UserException, RazorpayException, StripeException {
 
         User user = userService.findUserByJwtToken(jwt);
         Cart cart = user.getCart();
-        Order order = orderService.createOrder(user, shippingAddress, cart);
-        PaymentOrder paymentOrder = paymentService.createPaymentOrder(order);
-        PaymentLinkResponse res = new PaymentLinkResponse();
 
-        if (paymentMethod.equals(PaymentMethod.RAZORPAY)) {
-            PaymentLink paymentLink = paymentService.createRazorPayPaymentLink(order);
+        Order order = orderService.createOrder(user, addressId, cart);
 
-            String paymentUrl = paymentLink.get("short_url");
-            String paymentUrlId = paymentLink.get("id");
+        PaymentLinkResponse res = paymentService.createStripePaymentLink(order);
 
-            res.setPaymentLinkUrl(paymentUrl);
-            res.setPaymentLinkId(paymentUrlId);
+        paymentService.createPaymentOrder(order, res.getPaymentLinkId(), PaymentMethod.valueOf(paymentMethod));
 
-            paymentOrder.setPaymentLinkId(paymentUrlId);
-            paymentOrderRepository.save(paymentOrder);
-        } else {
-            String paymentUrl = paymentService.createStripePaymentLink(order);
-            res.setPaymentLinkUrl(paymentUrl);
-        }
+        return ResponseEntity.ok(res);
 
-        return new ResponseEntity<>(res, HttpStatus.OK);
 
+
+
+//        if (paymentMethod.equals(PaymentMethod.RAZORPAY)) {
+//
+//            PaymentLink paymentLink = paymentService.createRazorPayPaymentLink(order);
+//
+//            String paymentUrl = paymentLink.get("short_url");
+//            String paymentUrlId = paymentLink.get("id");
+//
+//            res.setPaymentLinkUrl(paymentUrl);
+//            res.setPaymentLinkId(paymentUrlId);
+//
+//
+////            paymentOrder.setPaymentLinkId(paymentUrlId);
+//        } else {
+//            res = paymentService.createStripePaymentLink(order);
+//        }
     }
 
     @GetMapping

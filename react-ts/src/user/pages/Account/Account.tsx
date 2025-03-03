@@ -19,7 +19,7 @@ const Account = () => {
   return (
     <div className="px-5 lg:px-52 min-h-screen mt-10">
       <div className="">
-        <h1 className="text-xl font-bold pb-5">USER</h1>
+        <h1 className="text-xl font-bold pb-5">Account</h1>
       </div>
       <Divider />
 

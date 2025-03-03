@@ -19,6 +19,8 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -128,12 +130,15 @@ public class ProductServiceImpl implements ProductService {
         Specification<Product> specification = (root, _, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
+            List<String> brandList = brand != null ? Arrays.asList(brand.split(",")) : Collections.emptyList();
+
             if (category != null) {
                 Join<Product, Category> categoryJoin = root.join("category");
                 predicates.add(criteriaBuilder.equal(categoryJoin.get("name"), category));
             }
-            if (brand != null) {
-                predicates.add(criteriaBuilder.equal(root.get("brand"), brand));
+            if (!brandList.isEmpty()) {
+                predicates.add(root.get("brand").in(brandList));
+//                predicates.add(criteriaBuilder.equal(root.get("brand"), brand));
             }
             if (minPrice != null) {
                 predicates.add(criteriaBuilder.greaterThanOrEqualTo(root.get("price"), minPrice));

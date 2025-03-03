@@ -10,19 +10,21 @@ public interface CartService {
 
     CartItem addCartItem(
             User user,
-            Product product,
-            int quantity
+            Product product
     );
 
     void removeCartItem(
             User user,
-            Product product,
-            int quantity
+            Product product
     );
 
     Cart findUserCart(User user);
 
-
+    CartItem updateCartItemQuantity(
+            User user,
+            Product product,
+            int quantity
+    );
 
 
 

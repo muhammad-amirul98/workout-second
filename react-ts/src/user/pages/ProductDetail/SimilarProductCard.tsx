@@ -2,8 +2,8 @@ import image from "../../../assets/gym3.avif";
 
 const SimilarProductCard = () => {
   return (
-    <div className="group px-4 relative">
-      <div className="card">
+    <div className="items-center justify-center group">
+      <div className="card rounded-md">
         <img className="card-media object-top" src={image} alt="" />
       </div>
       <div className="details pt-3 space-y-1 group-hover-effect rounded-md">

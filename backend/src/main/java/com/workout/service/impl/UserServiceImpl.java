@@ -2,13 +2,16 @@ package com.workout.service.impl;
 
 import com.workout.config.JwtProvider;
 import com.workout.exception.UserException;
+import com.workout.model.userdetails.Address;
 import com.workout.model.userdetails.User;
 import com.workout.model.workouts.Workout;
+import com.workout.repository.AddressRepository;
 import com.workout.repository.UserRepository;
 import com.workout.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.nio.file.AccessDeniedException;
 import java.util.List;
 import java.util.Set;
 
@@ -18,6 +21,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
+    private final AddressRepository addressRepository;
 
     @Override
     public User findUserByJwtToken(String jwt) throws UserException {
@@ -126,6 +130,40 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<Workout> getUserWorkoutHistory(Long userId) {
         return List.of();
+    }
+
+    @Override
+    public void addAddress(User user, Address newAddress) {
+        newAddress.setUser(user);
+
+        user.getAddresses().add(newAddress);
+        userRepository.save(user);
+    }
+
+    @Override
+    public void deleteAddress(User user, Long addressId) throws Exception {
+        Address address = addressRepository.findById(addressId).
+                orElseThrow(() -> new Exception("Address Not Found"));
+        if (!user.getAddresses().contains(address)) {
+            throw new AccessDeniedException("You do not have permission to edit this address");
+        }
+        user.getAddresses().remove(address);
+        addressRepository.delete(address);
+    }
+
+    @Override
+    public Address editAddress(User user, Address newAddress, Long addressId) throws Exception {
+        Address currentAddress = addressRepository.
+                findById(addressId).orElseThrow(() -> new Exception("Address Not Found"));
+        if (!user.getAddresses().contains(currentAddress)) {
+            throw new AccessDeniedException("You do not have permission to edit this address");
+        }
+
+        currentAddress.setZip(newAddress.getZip());
+        currentAddress.setStreet(newAddress.getStreet());
+        currentAddress.setCountry(newAddress.getCountry());
+
+        return addressRepository.save(currentAddress);
     }
 
 

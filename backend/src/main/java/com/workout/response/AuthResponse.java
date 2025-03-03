@@ -1,6 +1,7 @@
 package com.workout.response;
 
 import com.workout.enums.UserRole;
+import com.workout.model.userdetails.User;
 import lombok.Data;
 
 @Data
