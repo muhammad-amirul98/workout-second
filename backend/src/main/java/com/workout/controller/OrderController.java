@@ -10,6 +10,7 @@ import com.workout.model.userdetails.Address;
 import com.workout.model.userdetails.User;
 import com.workout.repository.PaymentOrderRepository;
 import com.workout.repository.UserRepository;
+import com.workout.request.CreateOrderRequest;
 import com.workout.response.PaymentLinkResponse;
 import com.workout.service.*;
 import lombok.RequiredArgsConstructor;
@@ -35,40 +36,21 @@ public class OrderController {
     private final UserRepository userRepository;
 
     @PostMapping
-    public ResponseEntity<PaymentLinkResponse> createOrder(@RequestParam Long addressId,
-                                                           @RequestParam String paymentMethod,
+    public ResponseEntity<PaymentLinkResponse> createOrder(@RequestBody CreateOrderRequest req,
                                                            @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt)
-            throws UserException, RazorpayException, StripeException {
+            throws Exception {
 
         User user = userService.findUserByJwtToken(jwt);
         Cart cart = user.getCart();
 
-        Order order = orderService.createOrder(user, addressId, cart);
+        Order order = orderService.createOrder(user, req.getAddressId(), cart);
 
         PaymentLinkResponse res = paymentService.createStripePaymentLink(order);
 
-        paymentService.createPaymentOrder(order, res.getPaymentLinkId(), PaymentMethod.valueOf(paymentMethod));
+        paymentService.createPaymentOrder(order, res.getPaymentLinkId(), PaymentMethod.valueOf(req.getPaymentMethod()));
 
         return ResponseEntity.ok(res);
 
-
-
-
-//        if (paymentMethod.equals(PaymentMethod.RAZORPAY)) {
-//
-//            PaymentLink paymentLink = paymentService.createRazorPayPaymentLink(order);
-//
-//            String paymentUrl = paymentLink.get("short_url");
-//            String paymentUrlId = paymentLink.get("id");
-//
-//            res.setPaymentLinkUrl(paymentUrl);
-//            res.setPaymentLinkId(paymentUrlId);
-//
-//
-////            paymentOrder.setPaymentLinkId(paymentUrlId);
-//        } else {
-//            res = paymentService.createStripePaymentLink(order);
-//        }
     }
 
     @GetMapping

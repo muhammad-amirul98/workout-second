@@ -72,7 +72,7 @@ public class ProductServiceImpl implements ProductService {
                 .orElseThrow(() -> new ProductException("Product not found with ID: " + productId));
         productRepository.delete(product);
         //OR
-        productRepository.deleteById(productId);
+//        productRepository.deleteById(productId);
 
     }
 

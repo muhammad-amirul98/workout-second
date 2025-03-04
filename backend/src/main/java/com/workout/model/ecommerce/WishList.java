@@ -34,6 +34,5 @@ public class WishList {
 
     public WishList(User newUser) {
         this.user = newUser;
-
     }
 }

@@ -1,5 +1,6 @@
 package com.workout.model.ecommerce;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.workout.enums.PaymentMethod;
 import com.workout.enums.PaymentStatus;
 import com.workout.model.userdetails.User;
@@ -28,6 +29,7 @@ public class PaymentOrder {
 
     @OneToOne
     @JoinColumn(name = "order_id", nullable = false)
+    @JsonIgnore
     private Order order;
 
 }

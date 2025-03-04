@@ -78,7 +78,7 @@ const Login = () => {
             error={formik.touched.email && Boolean(formik.errors.email)}
             helperText={formik.touched.email && formik.errors.email}
           />
-          {/* {otpSent && (
+          {otpSent && (
             <div>
               <p className="m-3 mb-4 font-medium text-sm opacity-60">
                 Enter OTP sent to your email:
@@ -94,22 +94,8 @@ const Login = () => {
                 helperText={formik.touched.otp && formik.errors.otp}
               />
             </div>
-          )} */}
-          <div>
-            <p className="m-3 mb-4 font-medium text-sm opacity-60">
-              Enter OTP sent to your email:
-            </p>
-            <TextField
-              fullWidth
-              name="otp"
-              label="OTP"
-              value={formik.values.otp}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.otp && Boolean(formik.errors.otp)}
-              helperText={formik.touched.otp && formik.errors.otp}
-            />
-          </div>
+          )}
+
           <div className="mt-3">
             {otpSent ? (
               <Button

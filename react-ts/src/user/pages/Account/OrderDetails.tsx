@@ -1,21 +1,47 @@
 /* eslint-disable no-constant-condition */
 import { Box, Button, Divider } from "@mui/material";
-import image from "../../../assets/protein1.jpg";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import OrderStepper from "./OrderStepper";
 import { Payments } from "@mui/icons-material";
+import { useAppDispatch, useAppSelector } from "../../../state/store";
+import { useEffect } from "react";
+import { fetchOrderById } from "../../../state/user/orderSlice";
+import { fetchUserProfile } from "../../../state/AuthSlice";
 
 const OrderDetails = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { orderId } = useParams();
+  const jwt = localStorage.getItem("jwt");
+  const order = useAppSelector((store) => store.order);
+  const auth = useAppSelector((store) => store.auth);
+
+  useEffect(() => {
+    const orderIdNumber = Number(orderId);
+    if (jwt) {
+      dispatch(fetchOrderById({ orderId: orderIdNumber, jwt }));
+      dispatch(fetchUserProfile(jwt));
+    }
+  }, []);
+
   return (
     <Box className="space-y-5">
       {/* PRODUCT */}
       <div className="flex flex-col gap-5 justify-center items-center">
-        <img className="w-[100px]" src={image} alt="" />
+        <img
+          className="w-[100px]"
+          src={order.currentOrder?.orderItems[0].product.images[0]}
+          alt=""
+        />
         <div className="text-sm space-y-1 text-center">
-          <h1 className="font-bold">Optimum Nutrition</h1>
-          <p>Gold Standard 100% Whey </p>
-          <p>Quantity: 1 </p>
+          <h1 className="font-bold">
+            {order.currentOrder?.orderItems[0].product.name}
+          </h1>
+          <p>{order.currentOrder?.orderItems[0].product.brand}</p>
+          <p>
+            Quantity:
+            {order.currentOrder?.orderItems[0].quantity}{" "}
+          </p>
         </div>
         <div>
           <Button onClick={() => navigate(`/reviews/${5}/create`)}>
@@ -33,12 +59,19 @@ const OrderDetails = () => {
       <div className="border p-5 rounded-md border-gray-300">
         <h1 className="font-bold pb-2">Delivery Address: </h1>
         <div className="text-sm space-y-2">
-          <div className="flex gap-5 font-medium">
-            <p>User</p>
+          <div className="flex gap-5 font-semibold">
+            <p>{auth.user?.fullName}</p>
             <Divider flexItem orientation="vertical" />
-            <p>123 Elm Street, Springfield, IL 62701, USA</p>
+            <p>{auth.user?.mobile}</p>
           </div>
-          <p>(555) 123-4567</p>
+          <div className="flex gap-5 font-medium">
+            {/* <p>{auth.user?.fullName}</p> */}
+            <p>{order.currentOrder?.shippingAddress.country}</p>
+            <Divider flexItem orientation="vertical" />
+            <p>{order.currentOrder?.shippingAddress.street}</p>
+            <Divider flexItem orientation="vertical" />
+            <p>{order.currentOrder?.shippingAddress.zip}</p>
+          </div>
         </div>
       </div>
       {/* PAYMENT */}
@@ -47,7 +80,7 @@ const OrderDetails = () => {
           <div className="space-y-1">
             <p className="font-bold">Total Price:</p>
           </div>
-          <p className="font-medium">$100</p>
+          <p className="font-medium">{order.currentOrder?.totalPrice}</p>
         </div>
         <div className="px-5">
           <div className="bg-teal-50 px-5 py-2 text-xs font-medium flex items-center gap-3 mb-3 rounded-md  ">

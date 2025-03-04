@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 public class WishListServiceImpl implements WishListService {
 
     private final WishListRepository wishListRepository;
-    private final UserRepository userRepository;
 
     @Override
     public WishList getWishListByUserId(User user) {
@@ -30,11 +29,14 @@ public class WishListServiceImpl implements WishListService {
     @Override
     public WishList addProductToWishList(User user, Product product) {
         WishList wishList = user.getWishList();
-        if (wishList.getProducts().contains(product)) {
-            wishList.getProducts().remove((product));
-        } else {
-            wishList.getProducts().add(product);
-        }
+        wishList.getProducts().add(product);
         return wishListRepository.save(wishList);
+    }
+
+    @Override
+    public void deleteProductFromWishList(User user, Product product) {
+        WishList wishList = user.getWishList();
+        wishList.getProducts().remove(product);
+        wishListRepository.save(wishList);
     }
 }

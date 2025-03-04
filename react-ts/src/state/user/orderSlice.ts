@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { OrderItem } from "../../types/OrderTypes";
-import { Order } from "../../types/UserTypes";
+import { Order } from "../../types/OrderTypes";
 import { api } from "../../config/api";
 
 export const fetchUserOrderHistory = createAsyncThunk<Order[], string>(
@@ -58,15 +58,18 @@ export const createOrder = createAsyncThunk<
   "/order/createOrder",
   async ({ jwt, addressId, paymentGateway }, { rejectWithValue }) => {
     try {
-      const response = await api.post<CreateOrderResponse>("/order", {
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-        params: {
+      const response = await api.post<CreateOrderResponse>(
+        "/order",
+        {
           paymentMethod: paymentGateway,
-          addressId,
+          addressId: addressId,
         },
-      });
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      );
       console.log("Order Created: ", response);
       if (response.data.paymentLinkUrl) {
         window.location.href = response.data.paymentLinkUrl;

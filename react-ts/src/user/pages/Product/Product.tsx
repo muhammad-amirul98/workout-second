@@ -25,7 +25,7 @@ const Product = () => {
   const [page, setPage] = useState(1);
   const dispatch = useAppDispatch();
   const [searchParams] = useSearchParams();
-  const { userproduct } = useAppSelector((store) => store);
+  const userproduct = useAppSelector((store) => store.userproduct);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSort = (event: any) => {

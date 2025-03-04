@@ -44,7 +44,7 @@ const Account = () => {
         <div className="right lg:col-span-2 lg:pl-5 py-5">
           <Routes>
             <Route path="/orders" element={<Orders />} />
-            <Route path="/order/:orderId" element={<OrderDetails />} />
+            <Route path="/orders/:orderId" element={<OrderDetails />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/addresses" element={<Address />} />
           </Routes>

@@ -4,11 +4,15 @@ import { Button } from "@mui/material";
 import { Favorite, ModeComment } from "@mui/icons-material";
 import { Product } from "../../../types/ProductTypes";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../../state/store";
+import { addProductToWishList } from "../../../state/user/wishListSlice";
 
 const ProductCard = ({ item }: { item: Product }) => {
   const [currentImage, setCurrentImage] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const jwt = localStorage.getItem("jwt");
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -23,6 +27,12 @@ const ProductCard = ({ item }: { item: Product }) => {
     }
     return () => clearInterval(interval);
   }, [isHovered]);
+
+  const addToWishList = () => {
+    if (jwt && item.id) {
+      dispatch(addProductToWishList({ productId: item.id, jwt }));
+    }
+  };
 
   return (
     <div
@@ -48,7 +58,13 @@ const ProductCard = ({ item }: { item: Product }) => {
         {isHovered && (
           <div className="indicator flex flex-col items-center space-y-2">
             <div className="flex gap-3">
-              <Button variant="contained">
+              <Button
+                variant="contained"
+                onClick={(e) => {
+                  e.stopPropagation(); // Stop the event from bubbling up
+                  addToWishList();
+                }}
+              >
                 <Favorite />
               </Button>
               <Button variant="contained">
@@ -60,9 +76,9 @@ const ProductCard = ({ item }: { item: Product }) => {
       </div>
       <div className="details pt-3 space-y-1 group-hover-effect rounded-md">
         <div className="name">
-          <h1 className="font-bold">Optimum Nutrition</h1>
-          <p>GOLD STANDARD 100% WHEY™</p>
-          <p>$100</p>
+          <h1 className="font-bold">{item.name}</h1>
+          <p>{item.brand}</p>
+          <p>${item.price}</p>
         </div>
       </div>
     </div>

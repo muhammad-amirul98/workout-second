@@ -10,7 +10,7 @@ import { Delete, Edit } from "@mui/icons-material";
 import TableContainer from "@mui/material/TableContainer";
 import { useAppDispatch, useAppSelector } from "../../state/store";
 import { useEffect } from "react";
-import { fetchProducts } from "../../state/admin/productSlice";
+import { deleteProduct, fetchProducts } from "../../state/admin/productSlice";
 import { Product } from "../../types/ProductTypes";
 
 // Styled components for table
@@ -35,14 +35,20 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 export default function ProductsTable() {
   const dispatch = useAppDispatch();
-  const { product } = useAppSelector((store) => store);
+  const product = useAppSelector((store) => store.product);
+  const jwt = localStorage.getItem("jwt"); // Get JWT inside the useEffect
 
   useEffect(() => {
-    const jwt = localStorage.getItem("jwt"); // Get JWT inside the useEffect
     if (jwt) {
       dispatch(fetchProducts(jwt));
     }
   }, []); // Empty dependency array makes it run only once when the component mounts
+
+  const handleDeleteProduct = (productId: number) => {
+    if (jwt) {
+      dispatch(deleteProduct({ productId, jwt }));
+    }
+  };
 
   return (
     <TableContainer component={Paper}>
@@ -86,7 +92,10 @@ export default function ProductsTable() {
                 </IconButton>
               </StyledTableCell>
               <StyledTableCell align="center">
-                <IconButton color="error">
+                <IconButton
+                  color="error"
+                  onClick={() => row.id && handleDeleteProduct(row.id)}
+                >
                   <Delete />
                 </IconButton>
               </StyledTableCell>

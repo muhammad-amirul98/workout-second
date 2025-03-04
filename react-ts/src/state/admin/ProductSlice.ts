@@ -42,6 +42,26 @@ export const createProduct = createAsyncThunk<
   }
 });
 
+export const deleteProduct = createAsyncThunk<
+  unknown,
+  { productId: number; jwt: string }
+>("/product/deleteProduct", async ({ productId, jwt }, { rejectWithValue }) => {
+  try {
+    const response = await api.delete(`/products/${productId}`, {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+    console.log("Delete Product: ", response);
+    return response.data;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return rejectWithValue(error.message || "Failed to delete product");
+    }
+    return rejectWithValue("An unknown error occurred");
+  }
+});
+
 interface ProductState {
   products: Product[];
   loading: boolean;
@@ -86,6 +106,22 @@ const productSlice = createSlice({
         }
       )
       .addCase(createProduct.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      });
+
+    builder
+      .addCase(deleteProduct.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteProduct.fulfilled, (state, action) => {
+        state.loading = false;
+        state.products = state.products.filter(
+          (product) => product.id !== action.meta.arg.productId
+        );
+      })
+      .addCase(deleteProduct.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload as string;
       });

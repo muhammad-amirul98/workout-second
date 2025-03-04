@@ -29,7 +29,18 @@ public class WishListController {
     private final WishListService wishListService;
     private final UserService userService;
 
-    @PostMapping("/add/{productId}")
+    @GetMapping
+    public ResponseEntity<WishList> getWishList(@RequestHeader(HttpHeaders.AUTHORIZATION) String jwt)
+            throws ProductException, UserException {
+
+
+        User user = userService.findUserByJwtToken(jwt);
+        WishList wishList = wishListService.getWishListByUserId(user);
+        return ResponseEntity.ok(wishList);
+    }
+
+
+    @PostMapping("/{productId}")
     public ResponseEntity<WishList> addProductToWishList(@PathVariable Long productId,
                                                          @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt)
             throws ProductException, UserException {
@@ -38,6 +49,17 @@ public class WishListController {
         User user = userService.findUserByJwtToken(jwt);
         WishList wishList = wishListService.addProductToWishList(user, product);
         return ResponseEntity.ok(wishList);
+    }
+
+    @DeleteMapping("/{productId}")
+    public ResponseEntity<Void> deleteProductFromWishList(@PathVariable Long productId,
+                                                         @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt)
+            throws ProductException, UserException {
+
+        Product product = productService.findProductById(productId);
+        User user = userService.findUserByJwtToken(jwt);
+        wishListService.deleteProductFromWishList(user, product);
+        return ResponseEntity.noContent().build();
     }
 
 }

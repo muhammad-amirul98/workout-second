@@ -2,7 +2,7 @@ import "./App.css";
 import Navbar from "./user/components/Navbar";
 import { ThemeProvider } from "@mui/material/styles";
 import theme from "./theme"; // Import your theme
-import Home from "./user/pages/Home/Home";
+// import Home from "./user/pages/Home/Home";
 import Product from "./user/pages/Product/Product";
 import ProductDetail from "./user/pages/ProductDetail/ProductDetail";
 import Review from "./user/pages/Review/Review";
@@ -19,6 +19,7 @@ import { fetchUserProfile } from "./state/AuthSlice";
 import Workout from "./user/pages/Dashboard/Workout";
 import PaymentSuccess from "./user/pages/Payment/PaymentSuccess";
 import PaymentCancel from "./user/pages/Payment/PaymentCancel";
+import WishList from "./user/pages/WishList/WishList";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -41,7 +42,7 @@ function App() {
         {isLoggedIn && <Navbar />}
 
         <Routes>
-          <Route path="/" element={<Home />} />
+          <Route path="/" element={<Auth />} />
           <Route path="/products" element={<Product />} />
 
           <Route path="/products/:brand" element={<Product />} />
@@ -60,8 +61,9 @@ function App() {
           <Route path="/account/*" element={<Account />} />
           <Route path="/dashboard/*" element={<Dashboard />} />
           <Route path="/admin/*" element={<AdminDashboard />} />
-          <Route path="/auth" element={<Auth />} />
+          {/* <Route path="/auth" element={<Auth />} /> */}
           <Route path="/workout" element={<Workout />} />
+          <Route path="/wishlist" element={<WishList />} />
         </Routes>
       </div>
     </ThemeProvider>

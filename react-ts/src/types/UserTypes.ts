@@ -1,4 +1,6 @@
 import { Cart } from "./CartTypes";
+import { Order } from "./OrderTypes";
+import { WishList } from "./WishListTypes";
 
 export interface User {
   id?: number;
@@ -26,14 +28,6 @@ export interface Address {
   country: string;
   zip: string;
   user?: User;
-}
-
-export interface Order {
-  id: number;
-}
-
-export interface WishList {
-  id: number;
 }
 
 export interface WorkoutWatchList {

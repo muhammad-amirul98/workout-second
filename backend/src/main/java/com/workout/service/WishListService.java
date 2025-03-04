@@ -8,4 +8,5 @@ public interface WishListService {
 
     WishList getWishListByUserId(User user);
     WishList addProductToWishList(User user, Product product);
+    void deleteProductFromWishList(User user, Product product);
 }

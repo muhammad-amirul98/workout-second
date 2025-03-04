@@ -80,7 +80,7 @@ const Navbar = () => {
                 <IconButton>
                   <FitnessCenterIcon />
                 </IconButton>
-                <IconButton>
+                <IconButton onClick={() => navigate("/wishlist")}>
                   <FavoriteBorderIcon />
                 </IconButton>
                 <IconButton onClick={() => navigate("/cart")}>
