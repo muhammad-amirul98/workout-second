@@ -20,26 +20,35 @@ import Workout from "./user/pages/Dashboard/Workout";
 import PaymentSuccess from "./user/pages/Payment/PaymentSuccess";
 import PaymentCancel from "./user/pages/Payment/PaymentCancel";
 import WishList from "./user/pages/WishList/WishList";
+import AdminNavbar from "./admin/AdminNavbar";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
+  // const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
   const dispatch = useAppDispatch();
   const auth = useAppSelector((state) => state.auth);
 
   const jwt = localStorage.getItem("jwt") || auth.jwt;
+  const [role, setRole] = useState<string | null>(null);
 
   useEffect(() => {
     if (jwt) {
-      dispatch(fetchUserProfile(jwt));
-      // console.log("USER: " + auth.user);
-      setIsLoggedIn(true);
+      dispatch(fetchUserProfile(jwt)); // Dispatch the async action
     }
-  }, [auth.jwt, dispatch, jwt]);
+  }, [jwt, dispatch]); // Runs when `jwt` changes
+
+  // Wait for auth.user to be populated
+  useEffect(() => {
+    if (auth.user?.role) {
+      setRole(auth.user.role);
+    }
+  }, [auth.user]);
 
   return (
     <ThemeProvider theme={theme}>
       <div>
-        {isLoggedIn && <Navbar />}
+        {role === "ROLE_ADMIN" && <AdminNavbar />}
+        {role === "ROLE_USER" && <Navbar />}
+        {!role && <Auth />}
 
         <Routes>
           <Route path="/" element={<Auth />} />
@@ -47,7 +56,7 @@ function App() {
 
           <Route path="/products/:brand" element={<Product />} />
           <Route
-            path="/product-details/:name/:productId"
+            path="/product-details/:productId"
             element={<ProductDetail />}
           />
           <Route path="/reviews/:productId" element={<Review />} />

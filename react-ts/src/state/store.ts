@@ -8,6 +8,7 @@ import authSlice from "./AuthSlice";
 import userCartSlice from "./user/userCartSlice";
 import orderSlice from "./user/orderSlice";
 import wishListSlice from "./user/wishListSlice";
+import adminOrderSlice from "./admin/adminOrderSlice";
 
 const rootReducer = combineReducers({
   user: userSlice,
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   usercart: userCartSlice,
   order: orderSlice,
   wishlist: wishListSlice,
+  adminorder: adminOrderSlice,
 });
 
 export const store = configureStore({

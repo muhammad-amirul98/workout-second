@@ -6,7 +6,14 @@ import com.workout.model.userdetails.Address;
 import com.workout.model.userdetails.User;
 import com.workout.repository.*;
 import com.workout.service.OrderService;
+import jakarta.persistence.criteria.Join;
+import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -77,6 +84,32 @@ public class OrderServiceImpl implements OrderService {
     public OrderItem findOrderItemById(Long id) throws Exception {
         return orderItemRepository.findById(id).orElseThrow(() -> new Exception("Order Item not found: " + id));
     }
+
+    @Override
+    public List<Order> findAllOrders() {
+        return orderRepository.findAll();
+    }
+
+    @Override
+    public Page<Order> findAllOrdersByPage(String sort, Integer pageNumber, Integer pageSize) {
+        // Sorting logic
+        Sort sorting = Sort.by("id"); // Default sorting by order ID
+        if ("price".equalsIgnoreCase(sort)) {
+            sorting = Sort.by("totalPrice");
+        } else if ("date".equalsIgnoreCase(sort)) {
+            sorting = Sort.by("orderDate"); // Assuming "orderDate" is the field for the order date
+        } else if ("price_desc".equalsIgnoreCase(sort)) {
+            sorting = Sort.by("totalPrice").descending();
+        }
+
+        // Pagination
+        Pageable pageable = PageRequest.of(pageNumber, pageSize != null ? pageSize : 10, sorting);
+
+        // Fetching orders from the repository with pagination
+        return orderRepository.findAll(pageable);
+    }
+
+
 
 
 }

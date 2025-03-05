@@ -4,6 +4,8 @@ import com.workout.enums.OrderStatus;
 import com.workout.model.ecommerce.*;
 import com.workout.model.userdetails.Address;
 import com.workout.model.userdetails.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -16,5 +18,9 @@ public interface OrderService {
     Order updateOrderStatus(Long orderId, OrderStatus orderStatus) throws Exception;
     void cancelOrder(Long orderId) throws Exception;
     OrderItem findOrderItemById(Long id) throws Exception;
+    List<Order> findAllOrders();
+    Page<Order> findAllOrdersByPage(String sort,
+                                    Integer pageNumber,
+                                    Integer pageSize);
 
 }

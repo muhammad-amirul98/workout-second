@@ -17,8 +17,11 @@ const WishList = () => {
   return (
     <div className="h-[85vh] p-5 lg:p-20">
       <div>
-        <h1>My WishList: {wishlist.wishlist?.products.length} items</h1>
-        <div className="pt-10 flex-wrap flex gap-5">
+        <h1>
+          <span className="font-bold">My WishList: </span>
+          {wishlist.wishlist?.products.length} items
+        </h1>
+        <div className="pt-5 flex-wrap flex gap-5">
           {wishlist.wishlist?.products.map((product, index) => (
             <WishListItem key={index} product={product} />
           ))}

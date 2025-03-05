@@ -3,6 +3,7 @@ package com.workout.controller;
 import com.razorpay.PaymentLink;
 import com.razorpay.RazorpayException;
 import com.stripe.exception.StripeException;
+import com.workout.enums.OrderStatus;
 import com.workout.enums.PaymentMethod;
 import com.workout.exception.UserException;
 import com.workout.model.ecommerce.*;
@@ -14,12 +15,16 @@ import com.workout.request.CreateOrderRequest;
 import com.workout.response.PaymentLinkResponse;
 import com.workout.service.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 
 @RestController
@@ -32,8 +37,6 @@ public class OrderController {
     private final CartService cartService;
     private final ProductService productService;
     private final PaymentService paymentService;
-    private final PaymentOrderRepository paymentOrderRepository;
-    private final UserRepository userRepository;
 
     @PostMapping
     public ResponseEntity<PaymentLinkResponse> createOrder(@RequestBody CreateOrderRequest req,
@@ -98,6 +101,41 @@ public class OrderController {
 
         orderService.cancelOrder(orderId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/admin/allOrders")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    public ResponseEntity<List<Order>> getAllOrders() {
+        List<Order> orders = orderService.findAllOrders();
+        System.out.println(orders);
+        return new ResponseEntity<>(orders, HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/admin/allOrdersPage")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Page<Order>> getAllOrdersByPage(
+            @RequestParam(defaultValue = "id") String sort,  // Default sorting by id
+            @RequestParam(defaultValue = "0") Integer pageNumber,
+            @RequestParam(defaultValue = "10") Integer pageSize
+    ) {
+        Page<Order> orders = orderService.findAllOrdersByPage(sort, pageNumber, pageSize);
+        return new ResponseEntity<>(orders, HttpStatus.ACCEPTED);
+    }
+
+    @GetMapping("/admin/{userId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<Order>> getUserOrdersById(@PathVariable Long userId) {
+        List<Order> orders = orderService.orderHistory(userId);
+        return new ResponseEntity<>(orders, HttpStatus.ACCEPTED);
+    }
+
+    @PutMapping("/admin/updateStatus/{orderId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Order> updateOrderStatus
+            (@PathVariable Long orderId, @RequestBody OrderStatus orderStatus) throws Exception {
+        Order order = orderService.updateOrderStatus(orderId, orderStatus);
+        return new ResponseEntity<>(order, HttpStatus.ACCEPTED);
+
     }
 
 }

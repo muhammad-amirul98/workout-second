@@ -15,8 +15,10 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { orderStatuses } from "../data/orderStatuses";
+import { useAppDispatch, useAppSelector } from "../../state/store";
+import { fetchAllOrders } from "../../state/admin/adminOrderSlice";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -57,6 +59,20 @@ const rows = [
 ];
 
 const Orders = () => {
+  const dispatch = useAppDispatch();
+  const jwt = localStorage.getItem("jwt");
+  const adminorder = useAppSelector((store) => store.adminorder);
+
+  useEffect(() => {
+    if (jwt) {
+      dispatch(fetchAllOrders(jwt));
+    }
+  }, []);
+
+  useEffect(() => {
+    console.log(adminorder.orders);
+  }, []);
+
   const [orderStatus, setOrderStatus] = useState(
     orderStatuses.find((status) => status.status === "ACTIVE")
   );

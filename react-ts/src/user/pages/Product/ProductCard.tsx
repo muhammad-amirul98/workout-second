@@ -36,7 +36,7 @@ const ProductCard = ({ item }: { item: Product }) => {
 
   return (
     <div
-      onClick={() => navigate(`/product-details/${item.name}/${item.id}`)}
+      onClick={() => navigate(`/product-details/${item.id}`)}
       className="group px-4 relative"
     >
       <div
@@ -47,7 +47,7 @@ const ProductCard = ({ item }: { item: Product }) => {
         {item.images.map((image, index) => (
           <img
             key={index}
-            className="card-media "
+            className="card-media rounded-md"
             src={image}
             alt=""
             style={{
