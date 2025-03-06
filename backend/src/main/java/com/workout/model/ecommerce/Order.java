@@ -43,6 +43,7 @@ public class Order {
     private double totalPrice;
 
     @Enumerated(EnumType.STRING)
+    @Column(length = 50)
     private OrderStatus orderStatus = OrderStatus.PENDING;
 
     private int totalQuantity;

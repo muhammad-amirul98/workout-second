@@ -76,7 +76,7 @@ public class OrderServiceImpl implements OrderService {
     public void cancelOrder(Long orderId) throws Exception {
         Order order = orderRepository.findById(orderId).
                 orElseThrow(() -> new Exception("Order not found with id: " + orderId));
-        order.setOrderStatus(OrderStatus.CANCELED);
+        order.setOrderStatus(OrderStatus.CANCELLED);
         orderRepository.save(order);
     }
 

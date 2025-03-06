@@ -48,7 +48,7 @@ function App() {
       <div>
         {role === "ROLE_ADMIN" && <AdminNavbar />}
         {role === "ROLE_USER" && <Navbar />}
-        {!role && <Auth />}
+        {/* {!role && <Auth />} */}
 
         <Routes>
           <Route path="/" element={<Auth />} />

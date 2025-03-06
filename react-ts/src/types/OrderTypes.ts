@@ -22,11 +22,13 @@ export interface OrderItem {
 }
 
 export enum OrderStatus {
-  PENDING = "PENDING", // Order has been created but not yet processed
-  SHIPPED = "SHIPPED", // Order has been shipped to the customer
-  DELIVERED = "DELIVERED", // Order has been delivered to the customer
-  CANCELED = "CANCELED", // Order has been canceled
-  RETURNED = "RETURNED", // Order has been returned by the customer
-  COMPLETED = "COMPLETED", // Order has been successfully completed
-  FAILED = "FAILED", // Order failed (e.g., payment failed, delivery issue)
+  PENDING = "PENDING", // Order has been placed but not yet processed
+  PROCESSING = "PROCESSING", // Order is being prepared and packed
+  SHIPPED = "SHIPPED", // Order has been shipped and is on its way
+  DELIVERED = "DELIVERED", // Order has been successfully delivered
+  CANCELLED = "CANCELLED", // Order was cancelled by the user or admin
+  REFUNDED = "REFUNDED", // Order has been refunded to the user
+  FAILED = "FAILED", // Payment failed, order not processed
+  RETURN_REQUESTED = "RETURN_REQUESTED", // User has requested a return for the order
+  RETURNED = "RETURNED", // Order has been returned and processed
 }

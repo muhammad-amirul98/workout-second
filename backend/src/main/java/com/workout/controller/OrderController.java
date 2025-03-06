@@ -132,10 +132,14 @@ public class OrderController {
     @PutMapping("/admin/updateStatus/{orderId}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Order> updateOrderStatus
-            (@PathVariable Long orderId, @RequestBody OrderStatus orderStatus) throws Exception {
-        Order order = orderService.updateOrderStatus(orderId, orderStatus);
-        return new ResponseEntity<>(order, HttpStatus.ACCEPTED);
+            (@PathVariable Long orderId, @RequestBody String orderStatus) throws Exception {
 
+        orderStatus = orderStatus.replace("\"", "").trim();
+
+        OrderStatus orderStatus1 = OrderStatus.valueOf(orderStatus);
+        Order order = orderService.updateOrderStatus(orderId, orderStatus1);
+
+        return new ResponseEntity<>(order, HttpStatus.ACCEPTED);
     }
 
 }

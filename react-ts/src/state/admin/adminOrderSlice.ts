@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { OrderItem, OrderStatus } from "../../types/OrderTypes";
+import { OrderItem } from "../../types/OrderTypes";
 import { Order } from "../../types/OrderTypes";
 import { api } from "../../config/api";
 import axios from "axios";
@@ -73,14 +73,14 @@ export const fetchAllOrdersByPage = createAsyncThunk<
 
 export const updateOrderStatus = createAsyncThunk<
   Order,
-  { jwt: string; orderId: number; orderStatus: OrderStatus }
+  { jwt: string; orderId: number; orderStatus: string }
 >(
   "/adminorder/updateOrderStatus",
   async ({ jwt, orderId, orderStatus }, { rejectWithValue }) => {
     try {
       const response = await api.put(
         `/order/admin/updateStatus/${orderId}`,
-        { orderStatus },
+        orderStatus,
         {
           headers: { Authorization: `Bearer ${jwt}` },
         }

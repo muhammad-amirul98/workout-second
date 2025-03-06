@@ -16,7 +16,7 @@ import {
 export const adminMenu = [
   {
     name: "Dashboard",
-    path: "/admin/dashboard",
+    path: "/admin",
     icon: <LayoutDashboard className="text-teal-600" />,
     activeIcon: <LayoutDashboard className="text-white" />,
   },
