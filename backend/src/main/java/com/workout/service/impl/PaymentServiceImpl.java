@@ -13,6 +13,7 @@ import com.workout.enums.PaymentStatus;
 import com.workout.model.ecommerce.*;
 import com.workout.repository.*;
 import com.workout.response.PaymentLinkResponse;
+import com.workout.response.PaymentStatusResponse;
 import com.workout.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.json.JSONObject;
@@ -152,7 +153,7 @@ public class PaymentServiceImpl implements PaymentService {
                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.PAYNOW)
                 .setMode(SessionCreateParams.Mode.PAYMENT)
                 .setSuccessUrl(successUrl + order.getId())
-                .setCancelUrl(cancelUrl)
+                .setCancelUrl(cancelUrl + order.getId())
                 .addAllLineItem(lineItems)
                 .build();
 
@@ -161,5 +162,22 @@ public class PaymentServiceImpl implements PaymentService {
         res.setPaymentLinkUrl(session.getUrl());
         res.setPaymentLinkId(session.getId());
         return res;
+    }
+
+    public PaymentStatusResponse retrieveSessionStatus(String sessionId) throws StripeException {
+        Stripe.apiKey = stripeSecretKey;
+        Session session = Session.retrieve(sessionId);
+        String paymentStatus = session.getPaymentStatus();  // The status will be either "paid" or "unpaid" or other possible statuses
+
+        // Return the payment status as a response
+        PaymentStatusResponse paymentStatusResponse = new PaymentStatusResponse();
+        if ("paid".equals(paymentStatus)) {
+            paymentStatusResponse.setStatus("success");
+        } else {
+            paymentStatusResponse.setStatus("failed");
+        }
+        paymentStatusResponse.setSessionId(session.getId());
+
+        return paymentStatusResponse;
     }
 }

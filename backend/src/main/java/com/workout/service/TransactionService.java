@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface TransactionService {
 
-    Transaction createTransaction(Order order);
+    Transaction createTransaction(String sessionId);
     List<Transaction> getAllTransactions();
 }

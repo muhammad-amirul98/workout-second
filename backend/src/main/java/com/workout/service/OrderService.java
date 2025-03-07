@@ -23,4 +23,6 @@ public interface OrderService {
                                     Integer pageNumber,
                                     Integer pageSize);
 
+    void updateOrderSessionId(String sessionId);
+    void markOrderAsPaid(String sessionId);
 }

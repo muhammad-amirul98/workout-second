@@ -6,6 +6,7 @@ import Analytics from "./Analytics";
 import HomeCategoryTable from "./HomePage/HomeCategoryTable";
 import Tabs from "./Tabs";
 import AdminOrders from "./AdminOrders";
+import Transaction from "../../user/pages/Account/Transaction";
 
 const AdminRoutes = () => {
   return (
@@ -18,6 +19,7 @@ const AdminRoutes = () => {
         <Route path="/analytics" element={<Analytics />} />
         <Route path="/reports" element={<GridTable />} />
         <Route path="/community" element={<Tabs />} />
+        <Route path="/transactions" element={<Transaction />} />
       </Routes>
     </div>
   );

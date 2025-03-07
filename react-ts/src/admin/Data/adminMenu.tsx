@@ -64,8 +64,8 @@ export const adminMenu = [
     activeIcon: <MessageSquare className="text-white" />,
   },
   {
-    name: "System Settings",
-    path: "/admin/system-settings",
+    name: "Transactions",
+    path: "/admin/transactions",
     icon: <Settings className="text-teal-600" />,
     activeIcon: <Settings className="text-white" />,
   },

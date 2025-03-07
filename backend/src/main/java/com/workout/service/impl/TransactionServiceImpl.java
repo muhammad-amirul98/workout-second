@@ -4,6 +4,7 @@ import com.workout.model.ecommerce.*;
 import com.workout.model.userdetails.User;
 import com.workout.repository.CartItemRepository;
 import com.workout.repository.CartRepository;
+import com.workout.repository.OrderRepository;
 import com.workout.repository.TransactionRepository;
 import com.workout.service.CartService;
 import com.workout.service.TransactionService;
@@ -18,10 +19,14 @@ import java.util.List;
 public class TransactionServiceImpl implements TransactionService {
 
     private final TransactionRepository transactionRepository;
+    private final OrderRepository orderRepository;
 
     @Override
-    public Transaction createTransaction(Order order) {
+    public Transaction createTransaction(String sessionId) {
+
+        Order order = orderRepository.findBySessionId(sessionId);
         Transaction transaction = new Transaction();
+
         transaction.setOrder(order);
 
         return transactionRepository.save(transaction);

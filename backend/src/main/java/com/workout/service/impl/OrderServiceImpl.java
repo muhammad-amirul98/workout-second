@@ -1,6 +1,7 @@
 package com.workout.service.impl;
 
 import com.workout.enums.OrderStatus;
+import com.workout.enums.PaymentStatus;
 import com.workout.model.ecommerce.*;
 import com.workout.model.userdetails.Address;
 import com.workout.model.userdetails.User;
@@ -109,6 +110,23 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findAll(pageable);
     }
 
+    @Override
+    public void updateOrderSessionId(String sessionId) {
+        Order order = orderRepository.findBySessionId(sessionId);
+        if (order != null) {
+            order.setSessionId(sessionId);
+            orderRepository.save(order);
+        }
+    }
+
+    @Override
+    public void markOrderAsPaid(String sessionId) {
+        Order order = orderRepository.findBySessionId(sessionId);
+        if (order != null) {
+            order.setPaymentStatus(PaymentStatus.COMPLETED);
+            orderRepository.save(order);
+        }
+    }
 
 
 

@@ -58,6 +58,8 @@ public class Order {
     @OneToOne(mappedBy = "order", cascade = CascadeType.ALL)
     private PaymentOrder paymentOrder;
 
+    private String sessionId;
+
 
 
 

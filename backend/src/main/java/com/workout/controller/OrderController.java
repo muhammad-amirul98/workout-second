@@ -34,9 +34,8 @@ public class OrderController {
 
     private final OrderService orderService;
     private final UserService userService;
-    private final CartService cartService;
-    private final ProductService productService;
     private final PaymentService paymentService;
+    private final TransactionService transactionService;
 
     @PostMapping
     public ResponseEntity<PaymentLinkResponse> createOrder(@RequestBody CreateOrderRequest req,
@@ -49,6 +48,9 @@ public class OrderController {
         Order order = orderService.createOrder(user, req.getAddressId(), cart);
 
         PaymentLinkResponse res = paymentService.createStripePaymentLink(order);
+
+        orderService.updateOrderSessionId(res.getPaymentLinkId());
+
 
         paymentService.createPaymentOrder(order, res.getPaymentLinkId(), PaymentMethod.valueOf(req.getPaymentMethod()));
 
@@ -112,7 +114,7 @@ public class OrderController {
     }
 
     @GetMapping("/admin/allOrdersPage")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Page<Order>> getAllOrdersByPage(
             @RequestParam(defaultValue = "id") String sort,  // Default sorting by id
             @RequestParam(defaultValue = "0") Integer pageNumber,
@@ -123,14 +125,14 @@ public class OrderController {
     }
 
     @GetMapping("/admin/{userId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<Order>> getUserOrdersById(@PathVariable Long userId) {
         List<Order> orders = orderService.orderHistory(userId);
         return new ResponseEntity<>(orders, HttpStatus.ACCEPTED);
     }
 
     @PutMapping("/admin/updateStatus/{orderId}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<Order> updateOrderStatus
             (@PathVariable Long orderId, @RequestBody String orderStatus) throws Exception {
 

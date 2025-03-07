@@ -39,9 +39,9 @@ public class PaymentController {
                 paymentId,
                 paymentLinkId);
 
-        if (paymentSuccess) {
-            transactionService.createTransaction(paymentOrder.getOrder());
-        }
+//        if (paymentSuccess) {
+//            transactionService.createTransaction(paymentOrder.getOrder());
+//        }
 
         ApiResponse res = new ApiResponse();
         res.setMessage("Successful Payment");

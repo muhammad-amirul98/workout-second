@@ -32,3 +32,12 @@ export enum OrderStatus {
   RETURN_REQUESTED = "RETURN_REQUESTED", // User has requested a return for the order
   RETURNED = "RETURNED", // Order has been returned and processed
 }
+
+export interface Transaction {
+  id: number;
+  order: Order;
+  transactionId: string;
+  paymentStatus: string;
+  paymentGateway: string;
+  createdAt: string;
+}
