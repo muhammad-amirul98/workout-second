@@ -26,6 +26,8 @@ public interface CartService {
             int quantity
     );
 
+    void emptyCart(String sessionId);
+
 
 
 }

@@ -139,7 +139,8 @@ const AdminOrders = () => {
               <StyledTableCell align="center">Delivery Date</StyledTableCell>
               <StyledTableCell align="center">Total Price</StyledTableCell>
               <StyledTableCell align="center">Address</StyledTableCell>
-              <StyledTableCell align="center">Status</StyledTableCell>
+              <StyledTableCell align="center">Order Status</StyledTableCell>
+              <StyledTableCell align="center">Payment Status</StyledTableCell>
 
               <StyledTableCell align="center">Edit</StyledTableCell>
             </TableRow>
@@ -193,6 +194,15 @@ const AdminOrders = () => {
                     </p>
                   </StyledTableCell>
                   <StyledTableCell align="center">
+                    <p
+                      className="p-2 border rounded-full
+                  border-teal-700 text-teal-700"
+                    >
+                      {order.paymentStatus}
+                    </p>
+                  </StyledTableCell>
+
+                  <StyledTableCell align="center">
                     <div>
                       <Button
                         id="basic-button"
@@ -240,7 +250,7 @@ const AdminOrders = () => {
                           />
                         </div>
                       </StyledTableCell>
-                      <StyledTableCell colSpan={3} className="space-y-1">
+                      <StyledTableCell colSpan={8} className="space-y-1">
                         <p className="font-bold">{item.product.brand}</p>
                         <p>{item.product.name}</p>
                         <p>${item.product.price}</p>

@@ -47,6 +47,7 @@ const Checkout = () => {
   const user = useAppSelector((store) => store.user);
   const [open, setOpen] = useState(false);
   const jwt = localStorage.getItem("jwt");
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const handleOpen = () => {
     setOpen(true);
@@ -78,6 +79,9 @@ const Checkout = () => {
       console.log("Please select address");
     }
     if (jwt && selectedAddress) {
+      setIsProcessing(true);
+
+      //disable button here
       dispatch(
         createOrder({ addressId: Number(selectedAddress), jwt, paymentGateway })
       );
@@ -140,7 +144,12 @@ const Checkout = () => {
           </div>
           <PricingCard />
           <div className="items-center">
-            <Button variant="contained" fullWidth onClick={handleCheckout}>
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={handleCheckout}
+              disabled={!selectedAddress || isProcessing}
+            >
               Checkout
             </Button>
           </div>

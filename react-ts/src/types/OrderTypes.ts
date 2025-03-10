@@ -11,6 +11,7 @@ export interface Order {
   totalItems: number;
   totalPrice: number;
   orderStatus: OrderStatus;
+  paymentStatus: string;
   deliverDate: string;
 }
 

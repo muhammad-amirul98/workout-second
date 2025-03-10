@@ -35,7 +35,6 @@ public class OrderController {
     private final OrderService orderService;
     private final UserService userService;
     private final PaymentService paymentService;
-    private final TransactionService transactionService;
 
     @PostMapping
     public ResponseEntity<PaymentLinkResponse> createOrder(@RequestBody CreateOrderRequest req,
@@ -47,12 +46,12 @@ public class OrderController {
 
         Order order = orderService.createOrder(user, req.getAddressId(), cart);
 
+        //create the stripe link to redirect the user to receive the stripe payment link to redirect user
         PaymentLinkResponse res = paymentService.createStripePaymentLink(order);
 
-        orderService.updateOrderSessionId(res.getPaymentLinkId());
+//        paymentService.createPaymentOrder(order, res.getPaymentLinkId(), PaymentMethod.valueOf(req.getPaymentMethod()));
 
-
-        paymentService.createPaymentOrder(order, res.getPaymentLinkId(), PaymentMethod.valueOf(req.getPaymentMethod()));
+        //empty the cart after checking out
 
         return ResponseEntity.ok(res);
 
@@ -109,7 +108,6 @@ public class OrderController {
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<Order>> getAllOrders() {
         List<Order> orders = orderService.findAllOrders();
-        System.out.println(orders);
         return new ResponseEntity<>(orders, HttpStatus.ACCEPTED);
     }
 

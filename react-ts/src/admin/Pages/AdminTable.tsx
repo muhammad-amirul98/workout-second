@@ -15,8 +15,10 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { accountStatuses } from "../data/accountStatuses";
+import { useAppDispatch, useAppSelector } from "../../state/store";
+import { fetchAllUsers } from "../../state/admin/adminUserSlice";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -57,6 +59,9 @@ const rows = [
 ];
 
 const AdminTable = () => {
+  const dispatch = useAppDispatch();
+  const adminuser = useAppSelector((store) => store.adminuser);
+  const jwt = localStorage.getItem("jwt");
   const [accountStatus, setAccountStatus] = useState(
     accountStatuses.find((status) => status.status === "ACTIVE")
   );
@@ -69,6 +74,13 @@ const AdminTable = () => {
     );
     setAccountStatus(statusObject);
   };
+
+  useEffect(() => {
+    if (jwt) {
+      dispatch(fetchAllUsers(jwt));
+    }
+    console.log(adminuser.users);
+  }, []);
 
   return (
     <>

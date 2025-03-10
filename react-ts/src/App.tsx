@@ -51,7 +51,19 @@ function App() {
         {/* {!role && <Auth />} */}
 
         <Routes>
-          <Route path="/" element={<Auth />} />
+          {/* <Route path="/" element={<Auth />} /> */}
+          <Route
+            path="/"
+            element={
+              role === "ROLE_ADMIN" ? (
+                <AdminDashboard />
+              ) : role === "ROLE_USER" ? (
+                <Workout />
+              ) : (
+                <Auth />
+              )
+            }
+          />
           <Route path="/products" element={<Product />} />
 
           <Route path="/products/:brand" element={<Product />} />
@@ -62,7 +74,7 @@ function App() {
           <Route path="/reviews/:productId" element={<Review />} />
           <Route path="/cart" element={<Cart />} />
           <Route path="/checkout" element={<Checkout />} />
-          <Route path="/payment-cancel" element={<PaymentCancel />} />
+          <Route path="/payment-cancel/:orderId" element={<PaymentCancel />} />
           <Route
             path="/payment-success/:orderId"
             element={<PaymentSuccess />}

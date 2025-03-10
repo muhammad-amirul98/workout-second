@@ -31,7 +31,6 @@ export const signIn = createAsyncThunk(
       const response = await api.post("/auth/signin", { email, otp });
       const jwt = response.data.jwt;
       localStorage.setItem("jwt", jwt);
-      console.log(jwt);
       return response.data;
     } catch (error: unknown) {
       if (axios.isAxiosError(error)) {

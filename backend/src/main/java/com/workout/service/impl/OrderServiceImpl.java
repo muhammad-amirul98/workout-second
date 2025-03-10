@@ -61,6 +61,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public Order findOrderBySessionId(String sessionId) throws Exception {
+        return orderRepository.findBySessionId(sessionId);
+    }
+
+    @Override
     public List<Order> orderHistory(Long userId) {
         return orderRepository.findByUserId(userId);
     }
@@ -110,14 +115,7 @@ public class OrderServiceImpl implements OrderService {
         return orderRepository.findAll(pageable);
     }
 
-    @Override
-    public void updateOrderSessionId(String sessionId) {
-        Order order = orderRepository.findBySessionId(sessionId);
-        if (order != null) {
-            order.setSessionId(sessionId);
-            orderRepository.save(order);
-        }
-    }
+
 
     @Override
     public void markOrderAsPaid(String sessionId) {
@@ -126,7 +124,28 @@ public class OrderServiceImpl implements OrderService {
             order.setPaymentStatus(PaymentStatus.COMPLETED);
             orderRepository.save(order);
         }
+
     }
+
+    @Override
+    public void markOrderAsFailed(String sessionId) {
+        if (sessionId != null) {
+            // Try to find the order by sessionId
+
+            Order order = orderRepository.findBySessionId(sessionId);
+
+            if (order != null) {
+
+                // Mark the order as failed
+                order.setPaymentStatus(PaymentStatus.FAILED);
+                orderRepository.save(order);
+            }
+        }
+    }
+
+
+
+
 
 
 

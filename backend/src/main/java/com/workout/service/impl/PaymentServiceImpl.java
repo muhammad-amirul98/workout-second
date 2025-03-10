@@ -6,7 +6,9 @@ import com.razorpay.RazorpayClient;
 import com.razorpay.RazorpayException;
 import com.stripe.Stripe;
 import com.stripe.exception.StripeException;
+import com.stripe.model.PaymentIntent;
 import com.stripe.model.checkout.Session;
+import com.stripe.param.PaymentIntentCreateParams;
 import com.stripe.param.checkout.SessionCreateParams;
 import com.workout.enums.PaymentMethod;
 import com.workout.enums.PaymentStatus;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -148,6 +151,22 @@ public class PaymentServiceImpl implements PaymentService {
             );
         }
 
+        // Fixed delivery fee of $10
+        double deliveryPrice = 10.0; // Delivery price in SGD
+        lineItems.add(
+                SessionCreateParams.LineItem.builder()
+                        .setQuantity(1L)  // Single delivery charge
+                        .setPriceData(SessionCreateParams.LineItem.PriceData.builder()
+                                .setCurrency("SGD")
+                                .setUnitAmount(BigDecimal.valueOf(deliveryPrice * 100).longValue())  // Convert delivery price to cents
+                                .setProductData(SessionCreateParams.LineItem.PriceData.ProductData.builder()
+                                        .setName("Delivery Fee")
+                                        .build()
+                                ).build()
+                        ).build()
+        );
+
+
         SessionCreateParams params = SessionCreateParams.builder()
                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.CARD)
                 .addPaymentMethodType(SessionCreateParams.PaymentMethodType.PAYNOW)
@@ -158,23 +177,42 @@ public class PaymentServiceImpl implements PaymentService {
                 .build();
 
         Session session = Session.create(params);
+
+//        // Create PaymentIntent with the order amount and currency
+//        PaymentIntentCreateParams paymentIntentParams = PaymentIntentCreateParams.builder()
+//                .setAmount(BigDecimal.valueOf(order.getTotalPrice()).longValue())  // Amount in cents
+//                .setCurrency("sgd")
+//                .build();
+//
+//        PaymentIntent paymentIntent = PaymentIntent.create(paymentIntentParams);
+
+//        order.setPaymentIntentId(paymentIntent.getId());
+//        System.out.println("HELLO");
+//        System.out.println(paymentIntent.getId());
+//         Store sessionId in the database
+        order.setSessionId(session.getId());
+
+        orderRepository.save(order);
+
         PaymentLinkResponse res = new PaymentLinkResponse();
         res.setPaymentLinkUrl(session.getUrl());
         res.setPaymentLinkId(session.getId());
+        res.setPaymentIntentId(null);
         return res;
     }
 
     public PaymentStatusResponse retrieveSessionStatus(String sessionId) throws StripeException {
         Stripe.apiKey = stripeSecretKey;
         Session session = Session.retrieve(sessionId);
-        String paymentStatus = session.getPaymentStatus();  // The status will be either "paid" or "unpaid" or other possible statuses
+        String paymentStatus = session.getPaymentStatus();
+        Order order = orderRepository.findBySessionId(sessionId);// The status will be either "paid" or "unpaid" or other possible statuses
 
         // Return the payment status as a response
         PaymentStatusResponse paymentStatusResponse = new PaymentStatusResponse();
         if ("paid".equals(paymentStatus)) {
-            paymentStatusResponse.setStatus("success");
+            order.setPaymentStatus(PaymentStatus.COMPLETED);
         } else {
-            paymentStatusResponse.setStatus("failed");
+            order.setPaymentStatus(PaymentStatus.FAILED);
         }
         paymentStatusResponse.setSessionId(session.getId());
 

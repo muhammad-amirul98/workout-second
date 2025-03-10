@@ -60,6 +60,8 @@ public class Order {
 
     private String sessionId;
 
+    private String paymentIntentId;
+
 
 
 

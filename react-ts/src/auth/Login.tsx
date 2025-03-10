@@ -14,7 +14,6 @@ const Login = () => {
 
   useEffect(() => {
     if (auth.jwt) {
-      console.log("JWT Updated:", auth.jwt);
       navigate("/account/profile"); // Navigate only when JWT is available
       // window.location.reload();
     }

@@ -14,6 +14,7 @@ public interface OrderService {
 
     Order createOrder(User user, Long addressId, Cart cart) throws Exception;
     Order findOrderById(Long id) throws Exception;
+    Order findOrderBySessionId(String sessionId) throws Exception;
     List<Order> orderHistory(Long userId);
     Order updateOrderStatus(Long orderId, OrderStatus orderStatus) throws Exception;
     void cancelOrder(Long orderId) throws Exception;
@@ -23,6 +24,6 @@ public interface OrderService {
                                     Integer pageNumber,
                                     Integer pageSize);
 
-    void updateOrderSessionId(String sessionId);
     void markOrderAsPaid(String sessionId);
+    void markOrderAsFailed(String sessionId);
 }

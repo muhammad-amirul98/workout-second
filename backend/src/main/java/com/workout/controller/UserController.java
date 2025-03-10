@@ -7,6 +7,7 @@ import com.workout.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,7 +25,6 @@ public class UserController {
 
         User user = userService.findUserByJwtToken(jwt);
 
-
         return ResponseEntity.ok(user);
     }
 
@@ -35,6 +35,7 @@ public class UserController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public ResponseEntity<List<User>> getAllUsers() throws UserException {
         return ResponseEntity.ok(userService.getAllUsers());
     }

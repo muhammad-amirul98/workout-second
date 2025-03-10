@@ -2,13 +2,18 @@ package com.workout.service.impl;
 
 import com.workout.model.ecommerce.Cart;
 import com.workout.model.ecommerce.CartItem;
+import com.workout.model.ecommerce.Order;
 import com.workout.model.ecommerce.Product;
 import com.workout.model.userdetails.User;
 import com.workout.repository.CartItemRepository;
 import com.workout.repository.CartRepository;
+import com.workout.repository.OrderRepository;
 import com.workout.service.CartService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 
 
 @Service
@@ -17,6 +22,7 @@ public class CartServiceImpl implements CartService {
 
     private final CartRepository cartRepository;
     private final CartItemRepository cartItemRepository;
+    private final OrderRepository orderRepository;
 
     @Override
     public CartItem addCartItem(User user, Product product) {
@@ -71,6 +77,21 @@ public class CartServiceImpl implements CartService {
         return null;
     }
 
+    @Override
+    public void emptyCart(String sessionId) {
+
+            Order order = orderRepository.findBySessionId(sessionId);
+
+            Cart cart = cartRepository.findByUserId(order.getUser().getId());
+
+            cart.getCartItems().clear(); // Resetting items to an empty list
+            cart.setTotalPrice(0.0); // Reset the total price
+            cart.setTotalItems(0); // Reset the item count
+
+            cartRepository.save(cart);
+
+    }
+
     private void updateCartTotals(Cart cart) {
         double totalPrice = cart.getCartItems().stream()
                 .mapToDouble(item -> item.getProduct().getPrice() * item.getQuantity())
@@ -78,7 +99,7 @@ public class CartServiceImpl implements CartService {
         int totalItems = cart.getCartItems().stream()
                 .mapToInt(CartItem::getQuantity)
                 .sum();
-        cart.setTotalPrice(totalPrice);
+        cart.setTotalPrice(totalPrice + 10);
         cart.setTotalItems(totalItems);
         cartRepository.save(cart);
     }
