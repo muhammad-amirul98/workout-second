@@ -1,7 +1,11 @@
 package com.workout.model.workouts;
 
+
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import java.time.LocalDateTime;
 
@@ -10,8 +14,7 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
-public class ExerciseSet {
+public class SetLog {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
@@ -20,16 +23,15 @@ public class ExerciseSet {
 
     private double weight;
 
+    @ManyToOne
+    @JoinColumn(name = "exercise_log_id")
+    private ExerciseLog exerciseLog;
+
     private LocalDateTime timeStarted;
 
     private LocalDateTime timeCompleted;
 
-    // Many Sets belong to one Exercise
-    @ManyToOne
-    @JoinColumn(name = "exercise_id")
-    private Exercise exercise;
-
-    public double getTotalWeightLifted() {
+    public double getTotalWeightLiftedInSet() {
         return reps * weight;
     }
 

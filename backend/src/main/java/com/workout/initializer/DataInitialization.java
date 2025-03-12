@@ -1,12 +1,17 @@
-package com.workout.service.impl;
+package com.workout.initializer;
 
+import com.workout.constant.ExerciseList;
 import com.workout.model.userdetails.User;
+import com.workout.model.workouts.Exercise;
+import com.workout.repository.ExerciseRepository;
 import com.workout.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Component
@@ -14,10 +19,12 @@ import java.util.Optional;
 public class DataInitialization implements CommandLineRunner {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ExerciseDataLoader exerciseDataLoader;
 
     @Override
     public void run(String... args) {
         initializeAdminUser();
+        exerciseDataLoader.loadExercises();
     }
 
     private void initializeAdminUser() {
@@ -26,9 +33,9 @@ public class DataInitialization implements CommandLineRunner {
         if (optionalUser.isEmpty()) {
             User user = new User();
             user.setPassword(passwordEncoder.encode("12345678"));
-            user.setFullName("");
+            user.setFullName("ADMIN");
+            userRepository.save(user);
         }
     }
-
 
 }

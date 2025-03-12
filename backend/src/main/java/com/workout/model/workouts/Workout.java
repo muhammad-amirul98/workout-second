@@ -9,7 +9,9 @@ import lombok.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -17,7 +19,6 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
 public class Workout {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -29,18 +30,26 @@ public class Workout {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    @ManyToOne
-    private WorkoutType type;
+    private String type;
 
-    @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private Set<Exercise> exercises = new HashSet<>();
+    @ManyToMany
+    @JoinTable(
+            name = "workout_exercises", // Name of the join table
+            joinColumns = @JoinColumn(name = "workout_id"), // FK to Workout
+            inverseJoinColumns = @JoinColumn(name = "exercise_id") // FK to Exercise
+    )
+    private List<Exercise> exercises = new ArrayList<>();
 
-    private LocalDate date;
+    private LocalDateTime createdOn = LocalDateTime.now();
 
-    private LocalDateTime timeStarted;
+    @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private Set<WorkoutLog> workoutLogs = new HashSet<>();
 
-    private LocalDateTime timeCompleted;
+    private double totalWeightLifted = getTotalWeightLiftedInWorkout();
 
-    @Enumerated(EnumType.STRING)
-    private WorkoutStatus status = WorkoutStatus.IN_PROGRESS;
+    public double getTotalWeightLiftedInWorkout() {
+        return exercises.stream()
+                .mapToDouble(com.workout.model.workouts.Exercise::getTotalWeightLiftedInExercise)
+                .sum();
+    }
 }

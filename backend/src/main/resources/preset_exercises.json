@@ -1,0 +1,56 @@
+[
+  {
+    "name": "Bicep Curl",
+    "type": "Biceps",
+    "description": "A classic arm exercise targeting the biceps using dumbbells or barbells.",
+    "images": [
+      "/images/bicep-curl-1.jpg",
+      "/images/bicep-curl-2.jpg"
+    ]
+  },
+  {
+    "name": "Tricep Dips",
+    "type": "Triceps",
+    "description": "A bodyweight exercise that strengthens the triceps using parallel bars or a bench."
+  },
+  {
+    "name": "Bench Press",
+    "type": "Chest",
+    "description": "A compound exercise for developing upper body strength using a barbell or dumbbells."
+  },
+  {
+    "name": "Squat",
+    "type": "Legs",
+    "description": "A fundamental lower-body exercise that strengthens the quadriceps, hamstrings, and glutes."
+  },
+  {
+    "name": "Deadlift",
+    "type": "Back",
+    "description": "A full-body compound movement that targets the back, glutes, and hamstrings using a barbell."
+  },
+  {
+    "name": "Pull-Up",
+    "type": "Back",
+    "description": "A bodyweight exercise that builds upper-body strength by engaging the lats, biceps, and shoulders."
+  },
+  {
+    "name": "Overhead Press",
+    "type": "Shoulders",
+    "description": "A strength exercise that targets the shoulders, triceps, and upper chest by pressing weight overhead."
+  },
+  {
+    "name": "Lateral Raise",
+    "type": "Shoulders",
+    "description": "An isolation exercise for building shoulder width by raising dumbbells to the side."
+  },
+  {
+    "name": "Lunges",
+    "type": "Legs",
+    "description": "A unilateral leg exercise that enhances strength and balance by working the quads, hamstrings, and glutes."
+  },
+  {
+    "name": "Crunches",
+    "type": "Abs",
+    "description": "A core-strengthening exercise that targets the abdominal muscles to improve stability and definition."
+  }
+]

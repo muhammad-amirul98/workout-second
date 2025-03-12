@@ -5,6 +5,7 @@ import WorkoutLog from "../Dashboard/WorkoutLog";
 import Progress from "../Dashboard/Progress";
 import Product from "../Product/Product";
 import Orders from "../Account/Orders";
+import Exercise from "../Dashboard/Exercise";
 
 const DashboardRoutes = () => {
   return (
@@ -16,6 +17,7 @@ const DashboardRoutes = () => {
         <Route path="/progress" element={<Progress />} />
         <Route path="/shop" element={<Product />} />
         <Route path="/orders" element={<Orders />} />
+        <Route path="/exercise" element={<Exercise />} />
       </Routes>
     </div>
   );

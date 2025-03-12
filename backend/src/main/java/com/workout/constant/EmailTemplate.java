@@ -10,4 +10,9 @@ public class EmailTemplate {
 
     public static final String OTP_SUBJECT = "Workout Tracker OTP";
 
+    public static final String PAYMENT_SUCCESS_TEMPLATE = "";
+    public static final String PAYMENT_SUCCESS_SUBJECT = "";
+    public static final String PAYMENT_FAILURE_TEMPLATE = "";
+    public static final String PAYMENT_FAILURE_SUBJECT = "";
+
 }

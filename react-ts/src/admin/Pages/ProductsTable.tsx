@@ -1,7 +1,5 @@
-import { styled } from "@mui/material/styles";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
@@ -12,26 +10,10 @@ import { useAppDispatch, useAppSelector } from "../../state/store";
 import { useEffect } from "react";
 import { deleteProduct, fetchProducts } from "../../state/admin/productSlice";
 import { Product } from "../../types/ProductTypes";
-
-// Styled components for table
-const StyledTableCell = styled(TableCell)(({ theme }) => ({
-  [`&.${tableCellClasses.head}`]: {
-    backgroundColor: "#0f766e",
-    color: theme.palette.common.white,
-  },
-  [`&.${tableCellClasses.body}`]: {
-    fontSize: 14,
-  },
-}));
-
-const StyledTableRow = styled(TableRow)(({ theme }) => ({
-  "&:nth-of-type(odd)": {
-    backgroundColor: theme.palette.action.hover,
-  },
-  "&:last-child td, &:last-child th": {
-    border: 0,
-  },
-}));
+import {
+  StyledTableCell,
+  StyledTableRow,
+} from "../../component/TableComponent";
 
 export default function ProductsTable() {
   const dispatch = useAppDispatch();

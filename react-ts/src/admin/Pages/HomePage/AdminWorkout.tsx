@@ -1,6 +1,6 @@
 import HomeCategoryTable from "./HomeCategoryTable";
 
-const Workouts = () => {
+const AdminWorkout = () => {
   return (
     <div>
       <HomeCategoryTable />
@@ -8,4 +8,4 @@ const Workouts = () => {
   );
 };
 
-export default Workouts;
+export default AdminWorkout;

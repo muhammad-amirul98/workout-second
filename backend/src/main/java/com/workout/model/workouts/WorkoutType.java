@@ -17,8 +17,8 @@ public class WorkoutType {
 
     private String name;
 
-    @ManyToOne
-    private WorkoutType parentType;
+//    @ManyToOne
+//    private WorkoutType parentType;
 
 
 

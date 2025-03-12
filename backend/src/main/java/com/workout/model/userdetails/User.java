@@ -8,6 +8,7 @@ import com.workout.enums.UserRole;
 import com.workout.model.ecommerce.Cart;
 import com.workout.model.ecommerce.Order;
 import com.workout.model.ecommerce.WishList;
+import com.workout.model.workouts.Exercise;
 import com.workout.model.workouts.Workout;
 import com.workout.model.workouts.WorkoutWatchList;
 import jakarta.persistence.*;
@@ -23,7 +24,6 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
 public class User {
 
     @Id
@@ -53,6 +53,10 @@ public class User {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore
     private Set<Workout> workouts = new HashSet<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private Set<Exercise> exercises = new HashSet<>();
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "user_progress_id", unique = true)

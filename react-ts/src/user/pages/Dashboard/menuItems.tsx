@@ -1,10 +1,10 @@
+import DirectionsRunIcon from "@mui/icons-material/DirectionsRun";
 import {
   LayoutDashboard,
   Dumbbell,
   ClipboardList,
   BarChart,
   LineChart,
-  Trophy,
   MessageSquare,
   ShoppingCart,
   Package,
@@ -44,10 +44,10 @@ export const menu = [
     activeIcon: <LineChart className="text-white" />,
   },
   {
-    name: "Challenges",
-    path: "/dashboard/challenges",
-    icon: <Trophy className="text-teal-600" />,
-    activeIcon: <Trophy className="text-white" />,
+    name: "Exercises",
+    path: "/dashboard/exercise",
+    icon: <DirectionsRunIcon className="text-teal-600" />,
+    activeIcon: <DirectionsRunIcon className="text-white" />,
   },
   {
     name: "Community",

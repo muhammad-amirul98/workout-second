@@ -1,15 +1,13 @@
 package com.workout.request;
 
-import com.workout.model.workouts.Exercise;
-import com.workout.model.workouts.WorkoutType;
 import lombok.Data;
 
-import java.util.Set;
-
 @Data
-public class CreateWorkoutRequest {
+public class CreateExerciseRequest {
     private String name;
     private String type;
+    private String description;
+    private String[] images;
 //    private Set<Exercise> exercises;
 ////    private String type1;
 ////    private String type2;

@@ -1,10 +1,10 @@
-import { useState } from "react";
-import WorkoutTable from "./WorkoutTable";
 import { Box, Button, Modal, Typography } from "@mui/material";
+import ExerciseTable from "./ExerciseTable";
+import AddExercise from "./AddExercise";
+import { useState } from "react";
 import { style } from "../../../styles/styles";
-import AddWorkout from "./AddWorkout";
 
-const Workout = () => {
+const Exercise = () => {
   const [open, setOpen] = useState(false);
 
   const handleOpen = () => {
@@ -16,15 +16,14 @@ const Workout = () => {
   };
   return (
     <div className="space-y-3 p-5">
-      <WorkoutTable />
+      <ExerciseTable />
       <Button
         variant="contained"
         color="primary"
         sx={{ mb: 2 }}
         onClick={handleOpen}
-        fullWidth
       >
-        Add Workout
+        Add Exercise
       </Button>
 
       <Modal
@@ -34,12 +33,12 @@ const Workout = () => {
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography id="modal-modal-title">Add New Workout</Typography>
-          <AddWorkout onClose={handleClose} />
+          <Typography id="modal-modal-title">Add New Exercise</Typography>
+          <AddExercise onClose={handleClose} />
         </Box>
       </Modal>
     </div>
   );
 };
 
-export default Workout;
+export default Exercise;

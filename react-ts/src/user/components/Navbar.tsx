@@ -38,7 +38,7 @@ const Navbar = () => {
         <div className="flex items-center justify-between px-5 lg:px-10 h-[70px] border-b border-gray-300">
           <div className="flex items-center gap-9">
             <div className="flex items-center gap-2">
-              <IconButton>
+              <IconButton onClick={() => navigate("/dashboard")}>
                 <MenuIcon />
               </IconButton>
               <h1

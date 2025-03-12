@@ -1,6 +1,7 @@
 import { Cart } from "./CartTypes";
 import { Order } from "./OrderTypes";
 import { WishList } from "./WishListTypes";
+import { Workout } from "./WorkoutTypes";
 
 export interface User {
   id?: number;
@@ -31,9 +32,5 @@ export interface Address {
 }
 
 export interface WorkoutWatchList {
-  id: number;
-}
-
-export interface Workout {
   id: number;
 }
