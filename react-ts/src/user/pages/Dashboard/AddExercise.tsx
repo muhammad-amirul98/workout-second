@@ -7,7 +7,7 @@ import { uploadToCloudinary } from "../Util/uploadToCloudinary";
 import { useAppDispatch } from "../../../state/store";
 import {
   addExercise,
-  fetchAllExercises,
+  fetchAllWorkoutsByUser,
 } from "../../../state/user/userWorkoutSlice";
 import * as Yup from "yup";
 
@@ -30,9 +30,9 @@ const AddExercise = ({ onClose }: { onClose: () => void }) => {
     }),
     onSubmit: (values) => {
       if (jwt) {
-        dispatch(addExercise({ jwt, exerciseData: values }));
-        console.log("Form submitted with values:", values);
-        dispatch(fetchAllExercises);
+        dispatch(addExercise({ jwt, exerciseData: values }))
+          .unwrap()
+          .then(() => dispatch(fetchAllWorkoutsByUser(jwt)));
         onClose();
       }
     },

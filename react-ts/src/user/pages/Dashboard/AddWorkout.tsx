@@ -4,7 +4,7 @@ import * as Yup from "yup";
 import { useAppDispatch } from "../../../state/store";
 import {
   addWorkout,
-  fetchAllWorkouts,
+  fetchAllWorkoutsByUser,
 } from "../../../state/user/userWorkoutSlice";
 import { Button, TextField } from "@mui/material";
 
@@ -26,7 +26,7 @@ const AddWorkout = ({ onClose }: { onClose: () => void }) => {
         dispatch(addWorkout({ jwt, workoutData: values }))
           .unwrap()
           .then(() => {
-            dispatch(fetchAllWorkouts());
+            dispatch(fetchAllWorkoutsByUser(jwt));
           });
         console.log("Form submitted with values:", values);
         onClose();

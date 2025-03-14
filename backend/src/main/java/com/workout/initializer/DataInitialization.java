@@ -1,17 +1,12 @@
 package com.workout.initializer;
 
-import com.workout.constant.ExerciseList;
 import com.workout.model.userdetails.User;
-import com.workout.model.workouts.Exercise;
-import com.workout.repository.ExerciseRepository;
 import com.workout.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Component

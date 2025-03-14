@@ -9,7 +9,7 @@ import Review from "./user/pages/Review/Review";
 import Cart from "./user/pages/Cart/Cart";
 import Checkout from "./user/pages/Checkout/Checkout";
 import Account from "./user/pages/Account/Account";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import Dashboard from "./user/pages/Dashboard/Dashboard";
 import AdminDashboard from "./admin/pages/AdminDashboard";
 import { useEffect, useState } from "react";
@@ -21,6 +21,7 @@ import PaymentSuccess from "./user/pages/Payment/PaymentSuccess";
 import PaymentCancel from "./user/pages/Payment/PaymentCancel";
 import WishList from "./user/pages/WishList/WishList";
 import AdminNavbar from "./admin/AdminNavbar";
+import ProtectedRoute from "./auth/ProtectedRoutes";
 
 function App() {
   // const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
@@ -51,7 +52,7 @@ function App() {
         {/* {!role && <Auth />} */}
 
         <Routes>
-          {/* <Route path="/" element={<Auth />} /> */}
+          {/* Public Routes */}
           <Route
             path="/"
             element={
@@ -64,27 +65,37 @@ function App() {
               )
             }
           />
-          <Route path="/products" element={<Product />} />
 
-          <Route path="/products/:brand" element={<Product />} />
-          <Route
-            path="/product-details/:productId"
-            element={<ProductDetail />}
-          />
-          <Route path="/reviews/:productId" element={<Review />} />
-          <Route path="/cart" element={<Cart />} />
-          <Route path="/checkout" element={<Checkout />} />
-          <Route path="/payment-cancel/:orderId" element={<PaymentCancel />} />
-          <Route
-            path="/payment-success/:orderId"
-            element={<PaymentSuccess />}
-          />
-          <Route path="/account/*" element={<Account />} />
-          <Route path="/dashboard/*" element={<Dashboard />} />
-          <Route path="/admin/*" element={<AdminDashboard />} />
-          {/* <Route path="/auth" element={<Auth />} /> */}
-          <Route path="/workout" element={<Workout />} />
-          <Route path="/wishlist" element={<WishList />} />
+          {/* Protected Routes */}
+          <Route element={<ProtectedRoute isAuthenticated={!!jwt} />}>
+            <Route path="/products" element={<Product />} />
+
+            <Route path="/products/:brand" element={<Product />} />
+            <Route
+              path="/product-details/:productId"
+              element={<ProductDetail />}
+            />
+            <Route path="/reviews/:productId" element={<Review />} />
+            <Route path="/cart" element={<Cart />} />
+            <Route path="/checkout" element={<Checkout />} />
+            <Route
+              path="/payment-cancel/:orderId"
+              element={<PaymentCancel />}
+            />
+            <Route
+              path="/payment-success/:orderId"
+              element={<PaymentSuccess />}
+            />
+            <Route path="/account/*" element={<Account />} />
+            <Route path="/dashboard/*" element={<Dashboard />} />
+            <Route path="/admin/*" element={<AdminDashboard />} />
+            {/* <Route path="/auth" element={<Auth />} /> */}
+            <Route path="/workout" element={<Workout />} />
+            <Route path="/wishlist" element={<WishList />} />
+          </Route>
+
+          {/* Catch-All Redirect */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </div>
     </ThemeProvider>

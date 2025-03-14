@@ -2,8 +2,10 @@ package com.workout.model.workouts;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.workout.enums.WorkoutStatus;
 import com.workout.model.userdetails.User;
+import com.workout.utils.DateTimeFormater;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,6 +15,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
 
 @Entity
 @Getter
@@ -28,28 +31,26 @@ public class Workout {
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
     private User user;
 
     private String type;
 
-    @ManyToMany
-    @JoinTable(
-            name = "workout_exercises", // Name of the join table
-            joinColumns = @JoinColumn(name = "workout_id"), // FK to Workout
-            inverseJoinColumns = @JoinColumn(name = "exercise_id") // FK to Exercise
-    )
-    private List<Exercise> exercises = new ArrayList<>();
-
-    private LocalDateTime createdOn = LocalDateTime.now();
+    private String createdOn = DateTimeFormater.formatDateTime(LocalDateTime.now());
 
     @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private Set<WorkoutLog> workoutLogs = new HashSet<>();
 
+    @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonManagedReference
+    private List<WorkoutExercise> workoutExercises = new ArrayList<>();
+
     private double totalWeightLifted = getTotalWeightLiftedInWorkout();
 
+    @JsonIgnore
     public double getTotalWeightLiftedInWorkout() {
-        return exercises.stream()
-                .mapToDouble(com.workout.model.workouts.Exercise::getTotalWeightLiftedInExercise)
+        return workoutExercises.stream()
+                .mapToDouble(WorkoutExercise::getTotalWeightLiftedInExercise)
                 .sum();
     }
 }

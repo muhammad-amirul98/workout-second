@@ -6,6 +6,7 @@ import {
   UpdateExerciseRequest,
   UpdateWorkoutRequest,
   Workout,
+  WorkoutExercise,
 } from "../../types/WorkoutTypes";
 import { api } from "../../config/api";
 
@@ -28,13 +29,17 @@ export const fetchAllExercises = createAsyncThunk<
   }
 });
 
-export const fetchAllWorkouts = createAsyncThunk<
+export const fetchAllWorkoutsByUser = createAsyncThunk<
   Workout[],
-  void,
+  string,
   { rejectValue: string }
->("/userworkout/fetchAllWorkouts", async (_, { rejectWithValue }) => {
+>("/userworkout/fetchAllWorkoutsByUser", async (jwt, { rejectWithValue }) => {
   try {
-    const response = await api.get("/workout/all");
+    const response = await api.get(`/workout`, {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
     console.log("User Fetch All Workouts: ", response.data);
     return response.data;
   } catch (error: unknown) {
@@ -152,6 +157,36 @@ export const addExercise = createAsyncThunk<
   }
 );
 
+export const addExerciseToWorkout = createAsyncThunk<
+  WorkoutExercise,
+  { jwt: string; workoutId: number; exerciseId: number },
+  { rejectValue: string }
+>(
+  "/userworkout/addExerciseToWorkout",
+  async ({ jwt, workoutId, exerciseId }, { rejectWithValue }) => {
+    try {
+      const response = await api.post(
+        `/workout/${workoutId}/${exerciseId}/exercise`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      );
+      console.log("User Add Exercise To Workout: ", response.data);
+      return response.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return rejectWithValue(
+          error.message || "Failed to fetch user order history"
+        );
+      }
+      return rejectWithValue("An unknown error occurred");
+    }
+  }
+);
+
 export const updateExercise = createAsyncThunk<
   Exercise,
   { jwt: string; exerciseData: UpdateExerciseRequest; exerciseId: number },
@@ -205,9 +240,91 @@ export const deleteExercise = createAsyncThunk<
   }
 );
 
+export const deleteWorkoutExercise = createAsyncThunk<
+  void,
+  { jwt: string; workoutExerciseId: number },
+  { rejectValue: string }
+>(
+  "/userworkout/deleteWorkoutExercise",
+  async ({ jwt, workoutExerciseId }, { rejectWithValue }) => {
+    try {
+      const response = await api.delete(
+        `/workout/workout-exercise/${workoutExerciseId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      );
+      console.log("User Delete Exercise: ", response.data);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message || "Failed to delete exercise");
+      }
+      return rejectWithValue("An unknown error occurred");
+    }
+  }
+);
+
+export const fetchWorkoutByWorkoutExercise = createAsyncThunk<
+  WorkoutExercise,
+  { jwt: string; workoutExerciseId: number },
+  { rejectValue: string }
+>(
+  "/userworkout/fetchWorkoutByWorkoutExercise",
+  async ({ jwt, workoutExerciseId }, { rejectWithValue }) => {
+    try {
+      const response = await api.get(
+        `/workout/workout-exercise/${workoutExerciseId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      );
+      console.log("User Delete Exercise: ", response.data);
+      return response.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return rejectWithValue(
+          error.message || "Failed to fetch workout exercise"
+        );
+      }
+      return rejectWithValue("An unknown error occurred");
+    }
+  }
+);
+
+export const fetchWorkoutByWorkoutId = createAsyncThunk<
+  Workout,
+  { jwt: string; workoutId: number },
+  { rejectValue: string }
+>(
+  "/userworkout/fetchWorkoutByWorkoutId",
+  async ({ jwt, workoutId }, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/workout/${workoutId}`, {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+      console.log("User fetchWorkoutByWorkoutId: ", response.data);
+      return response.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return rejectWithValue(
+          error.message || "Failed to fetchWorkoutByWorkoutId"
+        );
+      }
+      return rejectWithValue("An unknown error occurred");
+    }
+  }
+);
+
 interface UserWorkoutState {
   workout: Workout | null;
   workouts: Workout[] | null;
+  workoutExercise: WorkoutExercise | null;
   exercises: Exercise[] | null;
   exercise: Exercise | null;
   loading: boolean;
@@ -217,6 +334,7 @@ interface UserWorkoutState {
 const initialState: UserWorkoutState = {
   workout: null,
   workouts: [],
+  workoutExercise: null,
   exercise: null,
   exercises: [],
   loading: false,
@@ -243,17 +361,17 @@ const userWorkoutSlice = createSlice({
         state.error = action.payload;
       });
 
-    //fetchAllWorkouts
+    //fetchAllWorkoutsByUser
     builder
-      .addCase(fetchAllWorkouts.pending, (state) => {
+      .addCase(fetchAllWorkoutsByUser.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchAllWorkouts.fulfilled, (state, action) => {
+      .addCase(fetchAllWorkoutsByUser.fulfilled, (state, action) => {
         state.loading = false;
         state.workouts = action.payload;
       })
-      .addCase(fetchAllWorkouts.rejected, (state, action) => {
+      .addCase(fetchAllWorkoutsByUser.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
@@ -316,6 +434,22 @@ const userWorkoutSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       });
+
+    //addExerciseToWorkout
+    builder
+      .addCase(addExerciseToWorkout.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addExerciseToWorkout.fulfilled, (state, action) => {
+        state.loading = false;
+        state.workoutExercise = action.payload;
+      })
+      .addCase(addExerciseToWorkout.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
     //updateExercise
     builder
       .addCase(updateExercise.pending, (state) => {
@@ -343,7 +477,70 @@ const userWorkoutSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       });
+
+    //deleteWorkoutExercise
+    builder
+      .addCase(deleteWorkoutExercise.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteWorkoutExercise.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(deleteWorkoutExercise.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    //fetchWorkoutByWorkoutExercise
+    builder
+      .addCase(fetchWorkoutByWorkoutExercise.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchWorkoutByWorkoutExercise.fulfilled, (state, action) => {
+        state.loading = false;
+        state.workoutExercise = action.payload;
+      })
+      .addCase(fetchWorkoutByWorkoutExercise.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    // fetchWorkoutByWorkoutId
+    builder
+      .addCase(fetchWorkoutByWorkoutId.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchWorkoutByWorkoutId.fulfilled, (state, action) => {
+        state.loading = false;
+        state.workout = action.payload;
+      })
+      .addCase(fetchWorkoutByWorkoutId.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 
 export default userWorkoutSlice.reducer;
+
+// export const fetchAllWorkouts = createAsyncThunk<
+//   Workout[],
+//   void,
+//   { rejectValue: string }
+// >("/userworkout/fetchAllWorkouts", async (_, { rejectWithValue }) => {
+//   try {
+//     const response = await api.get("/workout/all");
+//     console.log("User Fetch All Workouts: ", response.data);
+//     return response.data;
+//   } catch (error: unknown) {
+//     if (error instanceof Error) {
+//       return rejectWithValue(
+//         error.message || "Failed to fetch user order history"
+//       );
+//     }
+//     return rejectWithValue("An unknown error occurred");
+//   }
+// });

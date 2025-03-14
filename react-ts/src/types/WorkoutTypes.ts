@@ -5,16 +5,23 @@ export interface Workout {
   name: string;
   user?: User;
   type: string;
-  exercises: Exercise[];
   createdOn: string;
   workoutLogs?: WorkoutLog[];
   totalWeightLifted?: number;
   isEditing?: boolean;
   duration?: string;
+  workoutExercises?: WorkoutExercise[];
+}
+
+export interface WorkoutExercise {
+  id: number;
+  exercise: Exercise;
+  workout: Workout;
+  workoutSets: Set[];
 }
 
 export interface Exercise {
-  id?: number;
+  id: number;
   name: string;
   type: string;
   description: string;
@@ -25,6 +32,7 @@ export interface Exercise {
 
 export interface Set {
   id?: number;
+  setNumber: number;
   reps: number;
   weight: number;
   exercise: Exercise;

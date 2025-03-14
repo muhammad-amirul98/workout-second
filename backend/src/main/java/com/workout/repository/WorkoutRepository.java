@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Set;
 
 public interface WorkoutRepository extends JpaRepository<Workout, Long> {
 
@@ -16,4 +17,6 @@ public interface WorkoutRepository extends JpaRepository<Workout, Long> {
             "WHERE LOWER(w.name) LIKE LOWER(CONCAT('%', :query, '%')) " +
             "OR LOWER(w.type) LIKE LOWER(CONCAT('%', :query, '%'))")
     List<Workout> searchWorkout(@Param("query") String query);
+
+    List<Workout> findByUserIdOrderByCreatedOnAsc(Long userId);
 }

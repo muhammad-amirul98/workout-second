@@ -1,5 +1,8 @@
 package com.workout.model.workouts;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.workout.model.userdetails.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -7,13 +10,13 @@ import lombok.*;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
 public class Exercise {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -24,24 +27,18 @@ public class Exercise {
 
     private String type;
 
+    @Column(columnDefinition = "TEXT")
     private String description;
 
-    private java.util.Set<String> images = new HashSet<>();
+    private Set<String> images = new HashSet<>();
 
     @ManyToOne
     @JoinColumn(name = "user_id")
+    @JsonIgnore
     private User user;
 
-    @ManyToMany(mappedBy = "exercises") // Reference the field name in Workout
-    private List<Workout> workouts = new ArrayList<>();
-
-    @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private java.util.Set<Set> sets = new HashSet<>();
-
-    public double getTotalWeightLiftedInExercise() {
-        return sets.stream()
-                .mapToDouble(Set::getTotalWeightLiftedInSet)
-                .sum();
-    }
+    @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<WorkoutExercise> workoutExercises = new ArrayList<>();
 
 }

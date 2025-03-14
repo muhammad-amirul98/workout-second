@@ -3,10 +3,9 @@ package com.workout.controller;
 import com.workout.exception.UserException;
 import com.workout.exception.WorkoutException;
 import com.workout.model.userdetails.User;
-import com.workout.model.workouts.Exercise;
-import com.workout.model.workouts.Workout;
-import com.workout.model.workouts.WorkoutLog;
+import com.workout.model.workouts.*;
 import com.workout.request.CreateExerciseRequest;
+import com.workout.request.CreateSetRequest;
 import com.workout.request.CreateWorkoutRequest;
 import com.workout.service.UserService;
 import com.workout.service.WorkoutService;
@@ -52,32 +51,36 @@ public class WorkoutController {
         return ResponseEntity.ok(workoutService.getAllExercises());
     }
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<Set<Workout>> getUserWorkouts(@PathVariable Long userId) throws Exception {
-        return ResponseEntity.ok(workoutService.getWorkoutsByUserId(userId));
+    @GetMapping
+    public ResponseEntity<List<Workout>> getUserWorkouts(@RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) throws Exception {
+        User user = userService.findUserByJwtToken(jwt);
+        return ResponseEntity.ok(workoutService.getWorkoutsByUserId(user.getId()));
     }
 
     @GetMapping("/{workoutId}")
-    public ResponseEntity<Workout> getWorkoutById(@PathVariable Long workoutId) throws Exception {
-        return ResponseEntity.ok(workoutService.findWorkoutById(workoutId));
+    public ResponseEntity<Workout> getWorkoutById(@PathVariable Long workoutId,
+                                                  @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) throws Exception {
+        User user = userService.findUserByJwtToken(jwt);
+        return ResponseEntity.ok(workoutService.findWorkoutById(user, workoutId));
     }
 
-    @PostMapping("/{workoutId}/exercise")
-    public ResponseEntity<Workout> addExerciseToWorkout(@RequestParam String exerciseName,
+    @PostMapping("/{workoutId}/{exerciseId}/exercise")
+    public ResponseEntity<WorkoutExercise> addExerciseToWorkout(@PathVariable Long exerciseId,
+                                                                @PathVariable Long workoutId,
+                                                                @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) throws Exception {
+        User user = userService.findUserByJwtToken(jwt);
+        WorkoutExercise workoutExercise = workoutService.addExerciseToWorkout(exerciseId, user, workoutId);
+        return ResponseEntity.ok(workoutExercise);
+    }
+
+    @PostMapping("/{workoutId}/exercise/{exerciseId}")
+    public ResponseEntity<WorkoutSet> addSetToExercise(@RequestBody CreateSetRequest set,
+                                                        @PathVariable Long exerciseId,
                                                         @PathVariable Long workoutId,
                                                         @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) throws Exception {
         User user = userService.findUserByJwtToken(jwt);
-        Workout workout = workoutService.addExerciseToWorkout(exerciseName, user, workoutId);
-        return ResponseEntity.ok(workout);
-    }
-
-    @PostMapping("/exercise/{exerciseId}")
-    public ResponseEntity<Exercise> addSetToExercise(@RequestBody com.workout.model.workouts.Set set,
-                                                        @PathVariable Long exerciseId,
-                                                        @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) throws Exception {
-        User user = userService.findUserByJwtToken(jwt);
-        Exercise exercise = workoutService.addSetToExercise(exerciseId, user, set);
-        return ResponseEntity.ok(exercise);
+        WorkoutSet workoutSet = workoutService.addSetToExercise(exerciseId, workoutId, user, set);
+        return ResponseEntity.ok(workoutSet);
     }
 
     @PostMapping("/{workoutId}/start")
@@ -134,6 +137,15 @@ public class WorkoutController {
         User user = userService.findUserByJwtToken(jwt);
         Workout workout = workoutService.updateWorkout(workoutId, req, user);
         return ResponseEntity.ok(workout);
+    }
+
+    @DeleteMapping("/workout-exercise/{workoutExerciseId}")
+    public ResponseEntity<Void> deleteWorkoutExercise(@PathVariable Long workoutExerciseId,
+                                                      @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt)
+            throws Exception {
+        User user = userService.findUserByJwtToken(jwt);
+        workoutService.deleteWorkoutExercise(workoutExerciseId, user);
+        return ResponseEntity.noContent().build();
     }
 
 

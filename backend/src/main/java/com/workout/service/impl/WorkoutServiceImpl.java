@@ -5,6 +5,7 @@ import com.workout.model.userdetails.User;
 import com.workout.model.workouts.*;
 import com.workout.repository.*;
 import com.workout.request.CreateExerciseRequest;
+import com.workout.request.CreateSetRequest;
 import com.workout.request.CreateWorkoutRequest;
 import com.workout.service.WorkoutService;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -24,6 +26,8 @@ public class WorkoutServiceImpl implements WorkoutService {
     private final ExerciseRepository exerciseRepository;
     private final WorkoutLogRepository workoutLogRepository;
     private final UserRepository userRepository;
+    private final WorkoutExerciseRepository workoutExerciseRepository;
+    private final WorkoutSetRepository workoutSetRepository;
 
 
     @Override
@@ -35,12 +39,11 @@ public class WorkoutServiceImpl implements WorkoutService {
         return workoutRepository.save(workout);
     }
 
-
-
     @Override
-    public Workout addExerciseToWorkout(String exerciseName, User user, Long workoutId) throws Exception {
+    public WorkoutExercise addExerciseToWorkout(Long exerciseId, User user, Long workoutId) throws Exception {
 
-        Exercise exercise = exerciseRepository.findByName(exerciseName);
+        Exercise exercise = exerciseRepository.findById(exerciseId)
+                .orElseThrow(() -> new Exception("Exercise Not Found"));
 
         Workout workout = workoutRepository.findById(workoutId).
                 orElseThrow(() -> new Exception("Workout Not Found"));
@@ -49,12 +52,35 @@ public class WorkoutServiceImpl implements WorkoutService {
             throw new Exception("You are not authorized to modify this workout");
         }
 
-        if (!workout.getExercises().contains(exercise)) {
-            workout.getExercises().add(exercise);
-            exercise.getWorkouts().add(workout); // ensures bidirectional mapping
+        boolean exists = workoutExerciseRepository.existsByWorkoutAndExercise(workout, exercise);
+
+        if (exists) {
+            throw new Exception("Exercise already exists in workout");
         }
 
-        return workoutRepository.save(workout);
+        WorkoutExercise workoutExercise = new WorkoutExercise();
+        workoutExercise.setExercise(exercise);
+        workoutExercise.setWorkout(workout);
+
+        return workoutExerciseRepository.save(workoutExercise);
+    }
+
+    @Override
+    public WorkoutSet addSetToExercise(Long exerciseId, Long workoutId, User user, CreateSetRequest set) throws Exception {
+        Exercise exercise = exerciseRepository.findById(exerciseId).
+                orElseThrow(() -> new Exception("Exercise Not Found"));
+
+        Workout workout = workoutRepository.findById(workoutId).
+                orElseThrow(() -> new Exception("Workout Not Found"));
+
+        WorkoutExercise workoutExercise = workoutExerciseRepository.findByWorkoutAndExercise(workout, exercise);
+        WorkoutSet workoutSet = new WorkoutSet();
+        workoutSet.setWorkoutExercise(workoutExercise);
+        workoutSet.setSetNumber(set.getSetNumber());
+        workoutSet.setReps(set.getReps());
+        workoutSet.setWeight(set.getWeight());
+
+        return workoutSetRepository.save(workoutSet);
     }
 
     @Override
@@ -73,23 +99,7 @@ public class WorkoutServiceImpl implements WorkoutService {
         return exerciseRepository.save(exercise);
     }
 
-    @Override
-    public Exercise addSetToExercise(Long exerciseId, User user, Set set) throws Exception {
-        Exercise exercise = exerciseRepository.findById(exerciseId).
-                orElseThrow(() -> new Exception("Exercise Not Found"));
 
-        // Ensure the user has permission to modify at least one associated workout
-        boolean isAuthorized = exercise.getWorkouts().stream()
-                .anyMatch(workout -> workout.getUser().equals(user));
-
-        if (!isAuthorized) {
-            throw new Exception("You are not authorized to modify this exercise");
-        }
-
-        set.setExercise(exercise);
-        exercise.getSets().add(set);
-        return exerciseRepository.save(exercise);
-    }
 
     @Override
     public void deleteExercise(Long exerciseId, User user) throws WorkoutException {
@@ -137,7 +147,6 @@ public class WorkoutServiceImpl implements WorkoutService {
             throw new WorkoutException("Unauthorized Deletion of Workout");
         }
         user.getWorkouts().remove(workout);
-        workout.getExercises().clear();
         workoutRepository.delete(workout);
         workoutRepository.flush();
     }
@@ -157,8 +166,9 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
-    public Workout findWorkoutById(Long workoutId) throws WorkoutException {
+    public Workout findWorkoutById(User user, Long workoutId) throws WorkoutException {
         return workoutRepository.findById(workoutId)
+                .filter(workout -> workout.getUser().getId().equals(user.getId()))
                 .orElseThrow(() -> new WorkoutException("Workout not found with ID: " + workoutId));
     }
 
@@ -178,6 +188,32 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
+    public void deleteWorkoutExercise(Long workoutExerciseId, User user) throws Exception {
+        WorkoutExercise workoutExercise = workoutExerciseRepository.findById(workoutExerciseId)
+                .orElseThrow(()-> new Exception("Workout Exercise not found with id: " + workoutExerciseId));
+
+        Workout workout = workoutExercise.getWorkout();
+
+        if (!user.getWorkouts().contains(workout)) {
+            throw new Exception("Not authorized to delete exercise");
+        }
+
+        workoutExerciseRepository.delete(workoutExercise);
+    }
+
+    @Override
+    public WorkoutExercise getWorkoutExercise(Long workoutExerciseId, User user) throws Exception {
+        WorkoutExercise workoutExercise = workoutExerciseRepository.findById(workoutExerciseId)
+                .orElseThrow(() -> new Exception("Workout Exercise not found with id: " + workoutExerciseId));
+
+        if (workoutExercise.getWorkout().getUser() != user) {
+            throw new Exception("Not authorized to fetch workout exercise");
+        }
+
+        return workoutExercise;
+    }
+
+    @Override
     public List<Workout> getAllWorkouts() {
         return workoutRepository.findAll();
     }
@@ -188,10 +224,8 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
-    public java.util.Set<Workout> getWorkoutsByUserId(Long userId) throws Exception {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new Exception("User not found with ID: " + userId));
-        return user.getWorkouts();
+    public List<Workout> getWorkoutsByUserId(Long userId) throws Exception {
+        return workoutRepository.findByUserIdOrderByCreatedOnAsc(userId);
     }
 }
 

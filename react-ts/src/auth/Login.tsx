@@ -10,7 +10,7 @@ const Login = () => {
   const [otpSent, setOtpSent] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const { auth } = useAppSelector((store) => store);
+  const auth = useAppSelector((store) => store.auth);
 
   useEffect(() => {
     if (auth.jwt) {
