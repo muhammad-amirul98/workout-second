@@ -3,10 +3,13 @@ import background from "../assets/background.jpeg";
 import Login from "./Login";
 import Register from "./Register";
 import { Button } from "@mui/material";
+import FrontPageLeftCard from "./FrontPageLeftCard";
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
   return (
-    <div className="flex justify-center h-[90vh] items-center">
+    <div className="flex justify-center h-[90vh] items-center space-x-3">
+      <FrontPageLeftCard />
+
       <div className="max-w-md h-[85vh] rounded-md shadow-lg">
         <img className="rounded-t-md" src={background} alt="" />
         {isLogin ? <Login /> : <Register />}
