@@ -17,7 +17,7 @@ export interface WorkoutExercise {
   id: number;
   exercise: Exercise;
   workout: Workout;
-  workoutSets: Set[];
+  workoutSets: WorkoutSet[];
 }
 
 export interface Exercise {
@@ -27,15 +27,17 @@ export interface Exercise {
   description: string;
   images?: string[];
   workouts?: Workout[];
-  sets?: Set[];
+  sets?: WorkoutSet[];
 }
 
-export interface Set {
-  id?: number;
+export interface WorkoutSet {
+  id: number;
   setNumber: number;
   reps: number;
   weight: number;
   exercise: Exercise;
+  actualReps?: number;
+  actualWeight?: number;
 }
 
 export interface WorkoutLog {
@@ -84,4 +86,10 @@ export interface CreateWorkoutRequest {
 
 export interface UpdateWorkoutRequest extends CreateWorkoutRequest {
   id?: number;
+}
+
+export interface CreateSetRequest {
+  setNumber: number;
+  plannedReps: number;
+  plannedWeight: number;
 }

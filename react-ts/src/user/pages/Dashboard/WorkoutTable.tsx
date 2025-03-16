@@ -172,9 +172,6 @@ export default function WorkoutTable() {
                               <>
                                 <TableHead>
                                   <StyledTableRow>
-                                    <TableCell className="w-5" colSpan={1}>
-                                      No.
-                                    </TableCell>
                                     <TableCell align="left">
                                       Exercise Name
                                     </TableCell>
@@ -183,11 +180,8 @@ export default function WorkoutTable() {
                                 </TableHead>
                                 <TableBody>
                                   {workout.workoutExercises?.map(
-                                    (workoutExercise, index) => (
+                                    (workoutExercise) => (
                                       <TableRow key={workoutExercise.id}>
-                                        <TableCell className="w-5" colSpan={1}>
-                                          {index + 1}
-                                        </TableCell>
                                         <TableCell align="left">
                                           {workoutExercise.exercise.name}
                                         </TableCell>
@@ -248,40 +242,4 @@ export default function WorkoutTable() {
       </TableContainer>
     </>
   );
-}
-
-{
-  /* <TableBody>
-                                {workoutExercise.workoutSets?.map(
-                                  (workoutSet) => (
-                                    <>
-                                      <TableRow>
-                                        <TableCell>Set Number</TableCell>
-                                        <TableCell>Reps</TableCell>
-                                        <TableCell>Weight (kg)</TableCell>
-                                      </TableRow>
-                                      <TableRow>
-                                        <TableCell>
-                                          {workoutSet.setNumber}
-                                        </TableCell>
-                                        <TableCell>{workoutSet.reps}</TableCell>
-                                        <TableCell>
-                                          {workoutSet.weight}
-                                        </TableCell>
-                                      </TableRow>
-                                    </>
-                                  )
-                                )}
-                                <StyledTableRow>
-                                  <StyledTableCell colSpan={3}>
-                                    <Button
-                                      variant="outlined"
-                                      color="primary"
-                                      fullWidth
-                                    >
-                                      Add Set
-                                    </Button>
-                                  </StyledTableCell>
-                                </StyledTableRow>
-                              </TableBody> */
 }

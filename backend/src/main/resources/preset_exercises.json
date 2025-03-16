@@ -2,11 +2,7 @@
   {
     "name": "Bicep Curl",
     "type": "Biceps",
-    "description": "A classic arm exercise targeting the biceps using dumbbells or barbells.",
-    "images": [
-      "/images/bicep-curl-1.jpg",
-      "/images/bicep-curl-2.jpg"
-    ]
+    "description": "A classic arm exercise targeting the biceps using dumbbells or barbells."
   },
   {
     "name": "Tricep Dips",

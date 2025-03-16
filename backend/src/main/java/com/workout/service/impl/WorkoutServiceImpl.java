@@ -66,19 +66,16 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
-    public WorkoutSet addSetToExercise(Long exerciseId, Long workoutId, User user, CreateSetRequest set) throws Exception {
-        Exercise exercise = exerciseRepository.findById(exerciseId).
-                orElseThrow(() -> new Exception("Exercise Not Found"));
+    public WorkoutSet addSetToExercise(Long workoutExerciseId, User user, CreateSetRequest set) throws Exception {
 
-        Workout workout = workoutRepository.findById(workoutId).
-                orElseThrow(() -> new Exception("Workout Not Found"));
+        WorkoutExercise workoutExercise = workoutExerciseRepository.findById(workoutExerciseId).
+                orElseThrow(() -> new Exception("Workout Exercise Not Found"));
 
-        WorkoutExercise workoutExercise = workoutExerciseRepository.findByWorkoutAndExercise(workout, exercise);
         WorkoutSet workoutSet = new WorkoutSet();
         workoutSet.setWorkoutExercise(workoutExercise);
         workoutSet.setSetNumber(set.getSetNumber());
-        workoutSet.setReps(set.getReps());
-        workoutSet.setWeight(set.getWeight());
+        workoutSet.setReps(set.getPlannedReps());
+        workoutSet.setWeight(set.getPlannedWeight());
 
         return workoutSetRepository.save(workoutSet);
     }
@@ -226,6 +223,13 @@ public class WorkoutServiceImpl implements WorkoutService {
     @Override
     public List<Workout> getWorkoutsByUserId(Long userId) throws Exception {
         return workoutRepository.findByUserIdOrderByCreatedOnAsc(userId);
+    }
+
+    @Override
+    public void deleteSet(Long setId, User user) throws Exception {
+        WorkoutSet workoutSet = workoutSetRepository.findById(setId)
+                .orElseThrow(() -> new Exception("Workout set not found with id: " + setId));
+        workoutSetRepository.delete(workoutSet);
     }
 }
 

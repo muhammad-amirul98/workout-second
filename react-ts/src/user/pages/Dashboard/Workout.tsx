@@ -1,8 +1,8 @@
 import { useState } from "react";
-import WorkoutTable from "./WorkoutTable";
 import { Box, Button, Modal, Typography } from "@mui/material";
 import { style } from "../../../styles/styles";
 import AddWorkout from "./AddWorkout";
+import WorkoutTableCopy from "./WorkoutTableCopy";
 
 const Workout = () => {
   const [open, setOpen] = useState(false);
@@ -16,7 +16,8 @@ const Workout = () => {
   };
   return (
     <div className="space-y-3 p-5">
-      <WorkoutTable />
+      {/* <WorkoutTable /> */}
+      <WorkoutTableCopy />
       <Button
         variant="contained"
         color="primary"

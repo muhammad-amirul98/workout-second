@@ -14,11 +14,15 @@ public class WorkoutSet {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private int setNumber = 1;
+    private int setNumber;
 
-    private int reps = 0;
+    private int reps; //planned reps
 
-    private double weight = 0;
+    private double weight; // planned weight
+
+    private int actualReps;
+
+    private double actualWeight;
 
     @ManyToOne
     @JoinColumn(name = "workout_exercise_id")
@@ -28,8 +32,12 @@ public class WorkoutSet {
     @Column(columnDefinition = "TEXT")
     private String setNotes;
 
-    public double getTotalWeightLiftedInSet() {
+    public double getTotalExpectedWeightLiftedInSet() {
         return reps * weight;
+    }
+
+    public double getTotalActualWeightLiftedInSet() {
+        return actualReps * actualWeight;
     }
 
 }

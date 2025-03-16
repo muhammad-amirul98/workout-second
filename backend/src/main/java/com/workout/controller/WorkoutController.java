@@ -73,13 +73,12 @@ public class WorkoutController {
         return ResponseEntity.ok(workoutExercise);
     }
 
-    @PostMapping("/{workoutId}/exercise/{exerciseId}")
+    @PostMapping("/exercise/{workoutExerciseId}")
     public ResponseEntity<WorkoutSet> addSetToExercise(@RequestBody CreateSetRequest set,
-                                                        @PathVariable Long exerciseId,
-                                                        @PathVariable Long workoutId,
+                                                        @PathVariable Long workoutExerciseId,
                                                         @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) throws Exception {
         User user = userService.findUserByJwtToken(jwt);
-        WorkoutSet workoutSet = workoutService.addSetToExercise(exerciseId, workoutId, user, set);
+        WorkoutSet workoutSet = workoutService.addSetToExercise(workoutExerciseId, user, set);
         return ResponseEntity.ok(workoutSet);
     }
 
@@ -146,6 +145,24 @@ public class WorkoutController {
         User user = userService.findUserByJwtToken(jwt);
         workoutService.deleteWorkoutExercise(workoutExerciseId, user);
         return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/workout-exercise/set/{setId}")
+    public ResponseEntity<Void> deleteSet(@PathVariable Long setId,
+                                          @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt)
+            throws Exception {
+        User user = userService.findUserByJwtToken(jwt);
+        workoutService.deleteSet(setId, user);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/workout-exercise/{workoutExerciseId}")
+    public ResponseEntity<WorkoutExercise> getWorkoutExerciseById(@PathVariable Long workoutExerciseId,
+                                                                  @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt)
+            throws Exception {
+        User user = userService.findUserByJwtToken(jwt);
+        WorkoutExercise workoutExercise = workoutService.getWorkoutExercise(workoutExerciseId, user);
+        return ResponseEntity.ok(workoutExercise);
     }
 
 

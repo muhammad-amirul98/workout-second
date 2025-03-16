@@ -1,0 +1,59 @@
+[
+    {
+      "rpe": 10,
+      "description": "Max effort. No additional reps possible. Absolute failure."
+    },
+    {
+      "rpe": 9.5,
+      "description": "Could not do another rep, but maybe could increase weight slightly."
+    },
+    {
+      "rpe": 9,
+      "description": "1 rep left in the tank."
+    },
+    {
+      "rpe": 8.5,
+      "description": "Possibly 1-2 reps left in the tank."
+    },
+    {
+      "rpe": 8,
+      "description": "2 reps left in the tank."
+    },
+    {
+      "rpe": 7.5,
+      "description": "Possibly 2-3 reps left in the tank."
+    },
+    {
+      "rpe": 7,
+      "description": "3 reps left in the tank."
+    },
+    {
+      "rpe": 6.5,
+      "description": "Possibly 3-4 reps left in the tank."
+    },
+    {
+      "rpe": 6,
+      "description": "4 reps left in the tank. Light effort."
+    },
+    {
+      "rpe": 5,
+      "description": "5 reps left in the tank. Very light effort."
+    },
+    {
+      "rpe": 4,
+      "description": "Warm-up weight. No real fatigue."
+    },
+    {
+      "rpe": 3,
+      "description": "Very light effort. Mostly technique work."
+    },
+    {
+      "rpe": 2,
+      "description": "Extremely light effort. Recovery work."
+    },
+    {
+      "rpe": 1,
+      "description": "Minimal effort, almost no exertion."
+    }
+  ]
+

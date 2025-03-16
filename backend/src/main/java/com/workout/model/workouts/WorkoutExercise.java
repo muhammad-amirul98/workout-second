@@ -8,7 +8,6 @@ import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 @Entity
 @Getter
@@ -36,9 +35,15 @@ public class WorkoutExercise {
     @JsonManagedReference
     private List<WorkoutSet> workoutSets = new ArrayList<>();
 
-    public double getTotalWeightLiftedInExercise() {
+    public double getTotalExpectedWeightLiftedInExercise() {
         return workoutSets.stream()
-                .mapToDouble(WorkoutSet::getTotalWeightLiftedInSet)
+                .mapToDouble(WorkoutSet::getTotalExpectedWeightLiftedInSet)
+                .sum();
+    }
+
+    public double getTotalActualWeightLiftedInExercise() {
+        return workoutSets.stream()
+                .mapToDouble(WorkoutSet::getTotalActualWeightLiftedInSet)
                 .sum();
     }
 }

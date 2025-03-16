@@ -91,6 +91,7 @@ function App() {
             <Route path="/admin/*" element={<AdminDashboard />} />
             {/* <Route path="/auth" element={<Auth />} /> */}
             <Route path="/workout" element={<Workout />} />
+
             <Route path="/wishlist" element={<WishList />} />
           </Route>
 

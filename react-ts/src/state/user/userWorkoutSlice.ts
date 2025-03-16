@@ -1,12 +1,14 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   CreateExerciseRequest,
+  CreateSetRequest,
   CreateWorkoutRequest,
   Exercise,
   UpdateExerciseRequest,
   UpdateWorkoutRequest,
   Workout,
   WorkoutExercise,
+  WorkoutSet,
 } from "../../types/WorkoutTypes";
 import { api } from "../../config/api";
 
@@ -321,12 +323,127 @@ export const fetchWorkoutByWorkoutId = createAsyncThunk<
   }
 );
 
+export const addSetToExercise = createAsyncThunk<
+  WorkoutSet,
+  {
+    jwt: string;
+    workoutExerciseId: number;
+    createSetRequest: CreateSetRequest;
+  },
+  { rejectValue: string }
+>(
+  "/userworkout/addSetToExercise",
+  async ({ jwt, workoutExerciseId, createSetRequest }, { rejectWithValue }) => {
+    try {
+      const response = await api.post(
+        `/workout/exercise/${workoutExerciseId}`,
+        createSetRequest,
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      );
+      console.log("User addSetToExercise: ", response.data);
+      return response.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message || "Failed to addSetToExercise");
+      }
+      return rejectWithValue("An unknown error occurred");
+    }
+  }
+);
+
+export const fetchWorkoutExerciseById = createAsyncThunk<
+  WorkoutExercise,
+  { jwt: string; workoutExerciseId: number },
+  { rejectValue: string }
+>(
+  "/userworkout/fetchWorkoutExerciseById",
+  async ({ jwt, workoutExerciseId }, { rejectWithValue }) => {
+    try {
+      const response = await api.get(
+        `/workout/workout-exercise/${workoutExerciseId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      );
+      console.log("User fetchWorkoutExerciseById: ", response.data);
+      return response.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return rejectWithValue(
+          error.message || "Failed to fetchWorkoutExerciseById"
+        );
+      }
+      return rejectWithValue("An unknown error occurred");
+    }
+  }
+);
+
+export const deleteWorkoutSet = createAsyncThunk<
+  void,
+  { jwt: string; workoutSetId: number },
+  { rejectValue: string }
+>(
+  "/userworkout/deleteWorkoutSet",
+  async ({ jwt, workoutSetId }, { rejectWithValue }) => {
+    try {
+      const response = await api.delete(
+        `/workout/workout-exercise/set/${workoutSetId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      );
+      console.log("User deleteWorkoutSet: ", response.data);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message || "Failed to deleteWorkoutSet");
+      }
+      return rejectWithValue("An unknown error occurred");
+    }
+  }
+);
+
+export const updateWorkoutSet = createAsyncThunk<
+  WorkoutSet,
+  { jwt: string; workoutSetId: number },
+  { rejectValue: string }
+>(
+  "/userworkout/updateWorkoutSet",
+  async ({ jwt, workoutSetId }, { rejectWithValue }) => {
+    try {
+      const response = await api.post(
+        `/workout/workout-exercise/set/${workoutSetId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      );
+      console.log("User updateWorkoutSet: ", response.data);
+      return response.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message || "Failed to updateWorkoutSet");
+      }
+      return rejectWithValue("An unknown error occurred");
+    }
+  }
+);
+
 interface UserWorkoutState {
   workout: Workout | null;
   workouts: Workout[] | null;
   workoutExercise: WorkoutExercise | null;
   exercises: Exercise[] | null;
   exercise: Exercise | null;
+  workoutSet: WorkoutSet | null;
   loading: boolean;
   error: unknown;
 }
@@ -335,6 +452,7 @@ const initialState: UserWorkoutState = {
   workout: null,
   workouts: [],
   workoutExercise: null,
+  workoutSet: null,
   exercise: null,
   exercises: [],
   loading: false,
@@ -518,6 +636,64 @@ const userWorkoutSlice = createSlice({
         state.workout = action.payload;
       })
       .addCase(fetchWorkoutByWorkoutId.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    //addSetToExercise
+    builder
+      .addCase(addSetToExercise.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addSetToExercise.fulfilled, (state, action) => {
+        state.loading = false;
+        state.workoutSet = action.payload;
+      })
+      .addCase(addSetToExercise.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+    //fetchWorkoutExerciseById
+    builder
+      .addCase(fetchWorkoutExerciseById.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchWorkoutExerciseById.fulfilled, (state, action) => {
+        state.loading = false;
+        state.workoutExercise = action.payload;
+      })
+      .addCase(fetchWorkoutExerciseById.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    //deleteWorkoutSet
+    builder
+      .addCase(deleteWorkoutSet.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteWorkoutSet.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(deleteWorkoutSet.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    //updateWorkoutSet
+    builder
+      .addCase(updateWorkoutSet.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateWorkoutSet.fulfilled, (state, action) => {
+        state.loading = false;
+        state.workoutSet = action.payload;
+      })
+      .addCase(updateWorkoutSet.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

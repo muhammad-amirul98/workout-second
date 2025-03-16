@@ -45,12 +45,16 @@ public class Workout {
     @JsonManagedReference
     private List<WorkoutExercise> workoutExercises = new ArrayList<>();
 
-    private double totalWeightLifted = getTotalWeightLiftedInWorkout();
 
-    @JsonIgnore
-    public double getTotalWeightLiftedInWorkout() {
+    public double getTotalExpectedWeightLiftedInWorkout() {
         return workoutExercises.stream()
-                .mapToDouble(WorkoutExercise::getTotalWeightLiftedInExercise)
+                .mapToDouble(WorkoutExercise::getTotalExpectedWeightLiftedInExercise)
+                .sum();
+    }
+
+    public double getTotalActualWeightLiftedInWorkout() {
+        return workoutExercises.stream()
+                .mapToDouble(WorkoutExercise::getTotalActualWeightLiftedInExercise)
                 .sum();
     }
 }

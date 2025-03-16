@@ -34,8 +34,6 @@ public class WorkoutLog {
     @Enumerated(EnumType.STRING)
     private WorkoutStatus workoutStatus = WorkoutStatus.IN_PROGRESS;
 
-    private double totalWeightLifted = getTotalWeightLiftedInWorkout();
-
     public double getTotalWeightLiftedInWorkout() {
         return exerciseLogs.stream()
                 .mapToDouble(com.workout.model.workouts.ExerciseLog::getTotalWeightLiftedInExercise)
