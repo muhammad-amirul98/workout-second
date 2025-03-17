@@ -7,9 +7,11 @@ import com.workout.model.workouts.*;
 import com.workout.request.CreateExerciseRequest;
 import com.workout.request.CreateSetRequest;
 import com.workout.request.CreateWorkoutRequest;
+import com.workout.request.UpdateSetRequest;
 import com.workout.service.UserService;
 import com.workout.service.WorkoutService;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.sql.Update;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -147,12 +149,12 @@ public class WorkoutController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/workout-exercise/set/{setId}")
-    public ResponseEntity<Void> deleteSet(@PathVariable Long setId,
+    @DeleteMapping("/workout-exercise/set/{workoutSetId}")
+    public ResponseEntity<Void> deleteSet(@PathVariable Long workoutSetId,
                                           @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt)
             throws Exception {
         User user = userService.findUserByJwtToken(jwt);
-        workoutService.deleteSet(setId, user);
+        workoutService.deleteSet(workoutSetId, user);
         return ResponseEntity.noContent().build();
     }
 
@@ -163,6 +165,17 @@ public class WorkoutController {
         User user = userService.findUserByJwtToken(jwt);
         WorkoutExercise workoutExercise = workoutService.getWorkoutExercise(workoutExerciseId, user);
         return ResponseEntity.ok(workoutExercise);
+    }
+
+    @PutMapping("/set/{workoutSetId}")
+    public ResponseEntity<WorkoutSet> updateWorkoutSet(@PathVariable Long workoutSetId,
+                                                       @RequestBody UpdateSetRequest req,
+                                                       @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt)
+            throws Exception {
+   
+        User user = userService.findUserByJwtToken(jwt);
+        return ResponseEntity.ok(workoutService.updateWorkoutSet(workoutSetId, user, req));
+
     }
 
 

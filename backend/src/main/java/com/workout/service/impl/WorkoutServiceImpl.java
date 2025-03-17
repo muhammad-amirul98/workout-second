@@ -7,6 +7,7 @@ import com.workout.repository.*;
 import com.workout.request.CreateExerciseRequest;
 import com.workout.request.CreateSetRequest;
 import com.workout.request.CreateWorkoutRequest;
+import com.workout.request.UpdateSetRequest;
 import com.workout.service.WorkoutService;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.jdbc.Work;
@@ -230,6 +231,20 @@ public class WorkoutServiceImpl implements WorkoutService {
         WorkoutSet workoutSet = workoutSetRepository.findById(setId)
                 .orElseThrow(() -> new Exception("Workout set not found with id: " + setId));
         workoutSetRepository.delete(workoutSet);
+    }
+
+    @Override
+    public WorkoutSet updateWorkoutSet(Long workoutSetId, User user, UpdateSetRequest req) throws Exception {
+        WorkoutSet workoutSet = workoutSetRepository.findById(workoutSetId)
+                .orElseThrow(() -> new Exception("Workout set not found with id: " + workoutSetId));
+        if (workoutSet.getWorkoutExercise().getWorkout().getUser() != user) {
+            throw new Exception("Not authorized to edit this workout set");
+        }
+        workoutSet.setSetNumber(req.getSetNumber());
+        workoutSet.setReps(req.getPlannedReps());
+        workoutSet.setWeight(req.getPlannedWeight());
+
+        return workoutSetRepository.save(workoutSet);
     }
 }
 

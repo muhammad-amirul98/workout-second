@@ -6,6 +6,7 @@ import com.workout.model.workouts.*;
 import com.workout.request.CreateExerciseRequest;
 import com.workout.request.CreateSetRequest;
 import com.workout.request.CreateWorkoutRequest;
+import com.workout.request.UpdateSetRequest;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -33,6 +34,7 @@ public interface WorkoutService {
     List<Exercise> getAllExercises();
     List<Workout> getWorkoutsByUserId(Long userId) throws Exception;
     void deleteSet(Long setId, User user) throws Exception;
+    WorkoutSet updateWorkoutSet(Long workoutSetId, User user, UpdateSetRequest req) throws Exception;
 
 
 

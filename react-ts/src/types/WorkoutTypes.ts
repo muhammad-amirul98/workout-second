@@ -93,3 +93,7 @@ export interface CreateSetRequest {
   plannedReps: number;
   plannedWeight: number;
 }
+
+export interface UpdateWorkoutSetRequest extends CreateSetRequest {
+  id?: number;
+}

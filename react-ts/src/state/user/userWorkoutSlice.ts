@@ -6,6 +6,7 @@ import {
   Exercise,
   UpdateExerciseRequest,
   UpdateWorkoutRequest,
+  UpdateWorkoutSetRequest,
   Workout,
   WorkoutExercise,
   WorkoutSet,
@@ -412,14 +413,22 @@ export const deleteWorkoutSet = createAsyncThunk<
 
 export const updateWorkoutSet = createAsyncThunk<
   WorkoutSet,
-  { jwt: string; workoutSetId: number },
+  {
+    jwt: string;
+    workoutSetId: number;
+    updateWorkoutSetRequest: UpdateWorkoutSetRequest;
+  },
   { rejectValue: string }
 >(
   "/userworkout/updateWorkoutSet",
-  async ({ jwt, workoutSetId }, { rejectWithValue }) => {
+  async (
+    { jwt, workoutSetId, updateWorkoutSetRequest },
+    { rejectWithValue }
+  ) => {
     try {
-      const response = await api.post(
-        `/workout/workout-exercise/set/${workoutSetId}`,
+      const response = await api.put(
+        `/workout/set/${workoutSetId}`,
+        updateWorkoutSetRequest,
         {
           headers: {
             Authorization: `Bearer ${jwt}`,

@@ -8,3 +8,4 @@ public class CreateSetRequest {
     private int plannedReps;
     private double plannedWeight;
 }
+

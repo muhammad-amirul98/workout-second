@@ -11,14 +11,16 @@ import {
   TextField,
 } from "@mui/material";
 import { Delete, Edit, Save } from "@mui/icons-material";
-import { WorkoutExercise } from "../../../types/WorkoutTypes";
+import { WorkoutExercise, WorkoutSet } from "../../../types/WorkoutTypes";
 import { useState } from "react";
 import { useAppDispatch } from "../../../state/store";
 import {
   addSetToExercise,
   deleteWorkoutSet,
   fetchAllWorkoutsByUser,
+  updateWorkoutSet,
 } from "../../../state/user/userWorkoutSlice";
+import { StyledTableCell } from "../../../component/TableComponent";
 
 export default function WorkoutSetTable({
   workoutExercise,
@@ -30,6 +32,7 @@ export default function WorkoutSetTable({
     plannedWeight: string;
     plannedReps: string;
   } | null>(null);
+
   const dispatch = useAppDispatch();
 
   const addNewSetRow = () => {
@@ -37,6 +40,15 @@ export default function WorkoutSetTable({
   };
 
   const jwt = localStorage.getItem("jwt");
+
+  const handleInputChange = (
+    field: "setNumber" | "plannedWeight" | "plannedReps",
+    value: string
+  ) => {
+    if (newSet) {
+      setNewSet({ ...newSet, [field]: value });
+    }
+  };
 
   const handleSaveSet = (workoutExercise: WorkoutExercise) => {
     // Placeholder for API call
@@ -71,24 +83,50 @@ export default function WorkoutSetTable({
     console.log("Deleting new set:", newSet);
   };
 
-  const handleInputChange = (
-    field: "setNumber" | "plannedWeight" | "plannedReps",
-    value: string
-  ) => {
-    if (newSet) {
-      setNewSet({ ...newSet, [field]: value });
-    }
+  const [editingSet, setEditingSet] = useState<WorkoutSet | null>(null);
+
+  const handleEditSet = (workoutSet: WorkoutSet) => {
+    setEditingSet(workoutSet);
   };
 
-  const handleEditSet = (workoutSetId: number) => {
-    if (jwt) {
-      dispatch(deleteWorkoutSet({ jwt, workoutSetId: workoutSetId }))
-        .unwrap()
-        .then(() => dispatch(fetchAllWorkoutsByUser(jwt)));
-    }
-    // Placeholder for API call
+  const handleEditInputChange = (
+    field: "setNumber" | "weight" | "reps",
+    value: string
+  ) => {
+    setEditingSet((prev) => {
+      if (!prev) return null;
+      const updatedSet = { ...prev, [field]: value };
+      return updatedSet;
+    });
+  };
 
-    console.log("Updating new set:", newSet);
+  // useEffect(() => {
+  //   // console.log(editingSet?.reps);
+  //   // console.log(editingSet?.setNumber);
+  //   console.log(editingSet?.weight);
+  // }, [editingSet]);
+
+  const handleSaveUpdatedSet = () => {
+    if (!editingSet || !jwt) return;
+    console.log(editingSet.setNumber); //this line only displays previous value and not new value
+    console.log(editingSet.reps); //this line only displays previous value and not new value
+    console.log(editingSet.weight); //this line only displays previous value and not new value
+    dispatch(
+      updateWorkoutSet({
+        jwt,
+        workoutSetId: editingSet.id,
+        updateWorkoutSetRequest: {
+          setNumber: Number(editingSet.setNumber),
+          plannedWeight: Number(editingSet.weight),
+          plannedReps: Number(editingSet.reps),
+        },
+      })
+    )
+      .unwrap()
+      .then(() => {
+        dispatch(fetchAllWorkoutsByUser(jwt));
+        setEditingSet(null);
+      });
   };
 
   return (
@@ -96,39 +134,94 @@ export default function WorkoutSetTable({
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell>Set Number</TableCell>
-            <TableCell>Planned Weight (kg)</TableCell>
-            <TableCell>Planned Reps</TableCell>
-            <TableCell colSpan={2}>
+            <StyledTableCell>Set Number</StyledTableCell>
+            <StyledTableCell>Planned Reps</StyledTableCell>
+            <StyledTableCell>Planned Weight (kg)</StyledTableCell>
+            <StyledTableCell colSpan={2}>
               <div className="font-light">Edit/Save</div>
-            </TableCell>
-            <TableCell colSpan={2}>Delete</TableCell>
+            </StyledTableCell>
+            <StyledTableCell colSpan={2}>Delete</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {workoutExercise?.workoutSets.map((workoutSet) => (
-            <TableRow key={workoutSet.id}>
-              <TableCell align="left">{workoutSet.setNumber}</TableCell>
-              <TableCell align="left">{workoutSet.weight}</TableCell>
-              <TableCell align="left">{workoutSet.reps}</TableCell>
-              <TableCell align="left" colSpan={2}>
-                <IconButton
-                  color="primary"
-                  onClick={() => handleEditSet(workoutSet.id)}
-                >
-                  <Edit />
-                </IconButton>
-              </TableCell>
+            <>
+              {editingSet && editingSet.id === workoutSet.id ? (
+                <TableRow key={workoutSet.id}>
+                  <TableCell>
+                    <TextField
+                      variant="outlined"
+                      size="small"
+                      value={editingSet.setNumber}
+                      onChange={(e) =>
+                        handleEditInputChange("setNumber", e.target.value)
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      variant="outlined"
+                      size="small"
+                      value={editingSet.reps}
+                      onChange={(e) =>
+                        handleEditInputChange("reps", e.target.value)
+                      }
+                    />
+                  </TableCell>
+                  <TableCell>
+                    <TextField
+                      variant="outlined"
+                      size="small"
+                      value={editingSet.weight}
+                      onChange={(e) =>
+                        handleEditInputChange("weight", e.target.value)
+                      }
+                    />
+                  </TableCell>
+                  <TableCell colSpan={2}>
+                    <IconButton
+                      onClick={() => handleSaveUpdatedSet()}
+                      disabled={
+                        !editingSet.reps ||
+                        !editingSet.setNumber ||
+                        !editingSet.weight
+                      }
+                      color="primary"
+                    >
+                      <Save />
+                    </IconButton>
+                  </TableCell>
+                  <TableCell colSpan={2}>
+                    <IconButton onClick={() => setNewSet(null)} color="error">
+                      <Delete />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ) : (
+                <TableRow key={workoutSet.id}>
+                  <TableCell align="left">{workoutSet.setNumber}</TableCell>
+                  <TableCell align="left">{workoutSet.reps}</TableCell>
+                  <TableCell align="left">{workoutSet.weight}</TableCell>
+                  <TableCell align="left" colSpan={2}>
+                    <IconButton
+                      color="primary"
+                      onClick={() => handleEditSet(workoutSet)}
+                    >
+                      <Edit />
+                    </IconButton>
+                  </TableCell>
 
-              <TableCell align="left">
-                <IconButton
-                  color="error"
-                  onClick={() => handleDeleteSet(workoutSet.id)}
-                >
-                  <Delete />
-                </IconButton>
-              </TableCell>
-            </TableRow>
+                  <TableCell align="left">
+                    <IconButton
+                      color="error"
+                      onClick={() => handleDeleteSet(workoutSet.id)}
+                    >
+                      <Delete />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              )}
+            </>
           ))}
           {newSet && (
             <TableRow>
@@ -146,9 +239,9 @@ export default function WorkoutSetTable({
                 <TextField
                   variant="outlined"
                   size="small"
-                  value={newSet.plannedWeight}
+                  value={newSet.plannedReps}
                   onChange={(e) =>
-                    handleInputChange("plannedWeight", e.target.value)
+                    handleInputChange("plannedReps", e.target.value)
                   }
                 />
               </TableCell>
@@ -156,9 +249,9 @@ export default function WorkoutSetTable({
                 <TextField
                   variant="outlined"
                   size="small"
-                  value={newSet.plannedReps}
+                  value={newSet.plannedWeight}
                   onChange={(e) =>
-                    handleInputChange("plannedReps", e.target.value)
+                    handleInputChange("plannedWeight", e.target.value)
                   }
                 />
               </TableCell>
