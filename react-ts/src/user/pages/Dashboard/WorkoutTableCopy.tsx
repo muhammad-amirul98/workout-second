@@ -29,7 +29,7 @@ export default function WorkoutTableCopy() {
             <StyledTableCell align="center">Created On</StyledTableCell>
             <StyledTableCell align="center">View Details</StyledTableCell>
             <StyledTableCell align="center">Start Workout</StyledTableCell>
-            <StyledTableCell align="center">Edit</StyledTableCell>
+            <StyledTableCell align="center">Edit/Save</StyledTableCell>
             <StyledTableCell align="center">Delete</StyledTableCell>
           </TableRow>
         </TableHead>

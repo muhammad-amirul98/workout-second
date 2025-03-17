@@ -172,7 +172,7 @@ public class WorkoutController {
                                                        @RequestBody UpdateSetRequest req,
                                                        @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt)
             throws Exception {
-   
+
         User user = userService.findUserByJwtToken(jwt);
         return ResponseEntity.ok(workoutService.updateWorkoutSet(workoutSetId, user, req));
 

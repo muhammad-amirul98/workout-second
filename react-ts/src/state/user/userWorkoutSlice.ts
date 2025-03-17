@@ -89,7 +89,7 @@ export const updateWorkout = createAsyncThunk<
   "/userworkout/updateWorkout",
   async ({ jwt, workoutData, workoutId }, { rejectWithValue }) => {
     try {
-      const response = await api.post(
+      const response = await api.put(
         `/workout/update/${workoutId}`,
         workoutData,
         {
@@ -98,13 +98,11 @@ export const updateWorkout = createAsyncThunk<
           },
         }
       );
-      console.log("User Create Workout: ", response.data);
+      console.log("User updateWorkout: ", response.data);
       return response.data;
     } catch (error: unknown) {
       if (error instanceof Error) {
-        return rejectWithValue(
-          error.message || "Failed to fetch user order history"
-        );
+        return rejectWithValue(error.message || "Failed to updateWorkout");
       }
       return rejectWithValue("An unknown error occurred");
     }
