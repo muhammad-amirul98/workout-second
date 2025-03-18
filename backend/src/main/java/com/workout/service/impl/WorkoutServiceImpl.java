@@ -1,5 +1,6 @@
 package com.workout.service.impl;
 
+import com.workout.enums.WorkoutStatus;
 import com.workout.exception.WorkoutException;
 import com.workout.model.userdetails.User;
 import com.workout.model.workouts.*;
@@ -16,8 +17,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -111,28 +112,85 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     @Override
     public WorkoutLog startWorkout(Long workoutId, User user) throws WorkoutException {
+        //find workout
         Workout workout = workoutRepository.findById(workoutId)
                 .orElseThrow(() -> new WorkoutException("Workout not found with ID: " + workoutId));
+
+        //check authorization
         if (!user.getWorkouts().contains(workout)) {
             throw new WorkoutException("Unauthorized to start workout");
-        };
+        }
+
+        //check if user already has an ongoing workout
+        if (user.getCurrentWorkout() != null){
+            throw new WorkoutException("User already has an ongoing workout");
+        }
+
         WorkoutLog workoutLog = new WorkoutLog();
         workoutLog.setTimeStarted(LocalDateTime.now());
         workoutLog.setWorkout(workout);
-        return workoutLogRepository.save(workoutLog);
+        workoutLog.setUser(user);
+
+        // populate workout log with sorted exercise values
+        List<ExerciseLog> exerciseLogs = workout.getWorkoutExercises().stream()
+                .sorted(Comparator.comparing(WorkoutExercise::getId))
+                .map(we -> getExerciseLog(we, workoutLog))
+                .toList();
+
+        workoutLog.setExerciseLogs(new LinkedHashSet<>(exerciseLogs));
+
+        WorkoutLog savedWorkoutLog = workoutLogRepository.save(workoutLog);
+
+        // Set the current workout for the user
+        user.setCurrentWorkout(savedWorkoutLog);
+        userRepository.save(user);
+
+        return workoutLog;
     }
 
+    private static ExerciseLog getExerciseLog(WorkoutExercise workoutExercise, WorkoutLog workoutLog) {
+        ExerciseLog exerciseLog = new ExerciseLog();
+        exerciseLog.setExercise(workoutExercise.getExercise());
+        exerciseLog.setWorkoutLog(workoutLog);
+
+        // Create SetLogs based on the sets in the workout exercise
+        List<SetLog> setLogs = workoutExercise.getWorkoutSets().stream()
+                .sorted(Comparator.comparing(WorkoutSet::getId)) // Sort by ID or natural order
+                .map(ws -> createSetLog(ws, exerciseLog))
+                .toList();
+
+        exerciseLog.setSetLogs(new LinkedHashSet<>(setLogs)); // Maintain order
+        return exerciseLog;
+    }
+
+    private static SetLog createSetLog(WorkoutSet workoutSet, ExerciseLog exerciseLog) {
+        SetLog setLog = new SetLog();
+        setLog.setReps(workoutSet.getReps());
+        setLog.setWeight(workoutSet.getWeight());
+        setLog.setExerciseLog(exerciseLog);
+        return setLog;
+    }
 
 
     @Override
     public WorkoutLog endWorkout(Long workoutLogId, User user) throws WorkoutException {
         WorkoutLog workoutLog = workoutLogRepository.findById(workoutLogId)
                 .orElseThrow(() -> new WorkoutException("Workout Log not found with ID: " + workoutLogId));
-        Workout workout = workoutLog.getWorkout();
-        if (!user.getWorkouts().contains(workout)) {
+
+        //check authorization
+        if (!user.getWorkouts().contains(workoutLog.getWorkout())) {
             throw new WorkoutException("Unauthorized to start workout");
-        };
+        }
+
+        //check if current workout is equal to that workout
+        if (user.getCurrentWorkout() != workoutLog) {
+            throw new WorkoutException("This workout is not currently ongoing");
+        }
+
+        workoutLog.setWorkoutStatus(WorkoutStatus.COMPLETED);
         workoutLog.setTimeCompleted(LocalDateTime.now());
+        user.setCurrentWorkout(null);
+        userRepository.save(user);
         return workoutLogRepository.save(workoutLog);
     }
 
@@ -144,6 +202,8 @@ public class WorkoutServiceImpl implements WorkoutService {
         if (!user.getWorkouts().contains(workout)) {
             throw new WorkoutException("Unauthorized Deletion of Workout");
         }
+
+
         user.getWorkouts().remove(workout);
         workoutRepository.delete(workout);
         workoutRepository.flush();
@@ -245,6 +305,33 @@ public class WorkoutServiceImpl implements WorkoutService {
         workoutSet.setWeight(req.getPlannedWeight());
 
         return workoutSetRepository.save(workoutSet);
+    }
+
+    @Override
+    public List<WorkoutLog> getWorkoutLogsByUserId(User user) {
+        return user.getWorkouts().stream()
+                .flatMap(workout -> workout.getWorkoutLogs().stream()) // Flatten all workout logs
+                .sorted((log1, log2) -> {
+                    // Sort by timeStarted, descending order (latest first)
+                    return log2.getTimeStarted().compareTo(log1.getTimeStarted());
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void deleteWorkoutLog(Long workoutLogId, User user) throws Exception {
+        WorkoutLog workoutLog = workoutLogRepository.findById(workoutLogId)
+                .orElseThrow(() -> new Exception("Workout Log not found with id: " + workoutLogId));
+
+        if (workoutLog.getWorkout().getUser() != user) {
+            throw new Exception("Not authorized to delete this workout");
+        }
+
+        if (user.getCurrentWorkout() != null && user.getCurrentWorkout().equals(workoutLog)) {
+            user.setCurrentWorkout(null);
+            userRepository.save(user); // Ensure the change is persisted
+        }
+        workoutLogRepository.delete(workoutLog);
     }
 }
 

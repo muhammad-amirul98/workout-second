@@ -39,6 +39,7 @@ public class Workout {
     private String createdOn = DateTimeFormater.formatDateTime(LocalDateTime.now());
 
     @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JsonManagedReference
     private Set<WorkoutLog> workoutLogs = new HashSet<>();
 
     @OneToMany(mappedBy = "workout", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -52,9 +53,4 @@ public class Workout {
                 .sum();
     }
 
-    public double getTotalActualWeightLiftedInWorkout() {
-        return workoutExercises.stream()
-                .mapToDouble(WorkoutExercise::getTotalActualWeightLiftedInExercise)
-                .sum();
-    }
 }

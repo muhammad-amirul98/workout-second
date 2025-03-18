@@ -1,6 +1,7 @@
 package com.workout.model.workouts;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -25,6 +26,7 @@ public class SetLog {
 
     @ManyToOne
     @JoinColumn(name = "exercise_log_id")
+    @JsonBackReference
     private ExerciseLog exerciseLog;
 
     private LocalDateTime timeStarted;

@@ -41,7 +41,7 @@ export interface WorkoutSet {
 }
 
 export interface WorkoutLog {
-  id?: number;
+  id: number;
   workout: Workout;
   timeStarted: string;
   timeCompleted?: string;
@@ -51,7 +51,7 @@ export interface WorkoutLog {
 }
 
 export interface ExerciseLog {
-  id?: number;
+  id: number;
   exercise: Exercise;
   workoutLog?: WorkoutLog;
   timeStarted?: string;
@@ -60,7 +60,7 @@ export interface ExerciseLog {
 }
 
 export interface SetLog {
-  id?: number;
+  id: number;
   reps?: number;
   weight?: number;
   exerciseLog?: ExerciseLog;

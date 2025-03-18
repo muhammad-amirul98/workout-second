@@ -1,6 +1,8 @@
 package com.workout.model.workouts;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -26,6 +28,7 @@ public class ExerciseLog {
 
     @ManyToOne
     @JoinColumn(name = "workout_log_id")
+    @JsonBackReference
     private WorkoutLog workoutLog;
 
     private LocalDateTime timeStarted;
@@ -33,6 +36,7 @@ public class ExerciseLog {
     private LocalDateTime timeCompleted;
 
     @OneToMany(mappedBy = "exerciseLog", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonManagedReference
     private Set<SetLog> setLogs = new HashSet<>();
 
     public double getTotalWeightLiftedInExercise() {

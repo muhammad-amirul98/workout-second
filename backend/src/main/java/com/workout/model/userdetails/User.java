@@ -10,6 +10,7 @@ import com.workout.model.ecommerce.Order;
 import com.workout.model.ecommerce.WishList;
 import com.workout.model.workouts.Exercise;
 import com.workout.model.workouts.Workout;
+import com.workout.model.workouts.WorkoutLog;
 import com.workout.model.workouts.WorkoutWatchList;
 import jakarta.persistence.*;
 import lombok.*;
@@ -39,6 +40,13 @@ public class User {
     private String fullName;
 
     private String mobile;
+
+    @OneToOne
+    private WorkoutLog currentWorkout;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    @JsonManagedReference
+    private Set<WorkoutLog> workoutLogs = new HashSet<>();
 
     @Embedded
     private BankDetails bankDetails = new BankDetails();

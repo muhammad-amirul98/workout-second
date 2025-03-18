@@ -21,6 +21,7 @@ import {
   updateWorkoutSet,
 } from "../../../state/user/userWorkoutSlice";
 import { StyledTableCell } from "../../../component/TableComponent";
+import React from "react";
 
 export default function WorkoutSetTable({
   workoutExercise,
@@ -145,7 +146,7 @@ export default function WorkoutSetTable({
         </TableHead>
         <TableBody>
           {workoutExercise?.workoutSets.map((workoutSet) => (
-            <>
+            <React.Fragment key={workoutSet.id}>
               {editingSet && editingSet.id === workoutSet.id ? (
                 <TableRow key={workoutSet.id}>
                   <TableCell>
@@ -221,7 +222,7 @@ export default function WorkoutSetTable({
                   </TableCell>
                 </TableRow>
               )}
-            </>
+            </React.Fragment>
           ))}
           {newSet && (
             <TableRow>

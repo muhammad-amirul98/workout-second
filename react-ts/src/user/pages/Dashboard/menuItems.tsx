@@ -14,8 +14,8 @@ import {
 
 export const menu = [
   {
-    name: "Dashboard",
-    path: "/dashboard",
+    name: "Current Workout",
+    path: "/dashboard/current-workout",
     icon: <LayoutDashboard className="text-teal-600" />,
     activeIcon: <LayoutDashboard className="text-white" />,
   },

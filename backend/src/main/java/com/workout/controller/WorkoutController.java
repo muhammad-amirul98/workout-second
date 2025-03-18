@@ -92,11 +92,11 @@ public class WorkoutController {
         return ResponseEntity.ok(workoutLog);
     }
 
-    @PostMapping("/{workoutId}/end")
-    public ResponseEntity<WorkoutLog> endWorkout(@PathVariable Long workoutId,
+    @PutMapping("/{workoutLogId}/end")
+    public ResponseEntity<WorkoutLog> endWorkout(@PathVariable Long workoutLogId,
                                                  @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) throws Exception {
         User user = userService.findUserByJwtToken(jwt);
-        WorkoutLog workoutLog = workoutService.endWorkout(workoutId, user);
+        WorkoutLog workoutLog = workoutService.endWorkout(workoutLogId, user);
         return ResponseEntity.ok(workoutLog);
     }
 
@@ -176,6 +176,34 @@ public class WorkoutController {
         User user = userService.findUserByJwtToken(jwt);
         return ResponseEntity.ok(workoutService.updateWorkoutSet(workoutSetId, user, req));
 
+    }
+
+    @GetMapping("/workout-logs")
+    public ResponseEntity<List<WorkoutLog>> getWorkoutLogsByUser(@RequestHeader(HttpHeaders.AUTHORIZATION) String jwt)
+            throws Exception {
+
+        User user = userService.findUserByJwtToken(jwt);
+        return ResponseEntity.ok(workoutService.getWorkoutLogsByUserId(user));
+    }
+
+    @DeleteMapping("/workout-logs/{workoutLogId}")
+    public ResponseEntity<Void> deleteWorkoutLogById(
+            @PathVariable Long workoutLogId,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt)
+            throws Exception {
+
+        User user = userService.findUserByJwtToken(jwt);
+        workoutService.deleteWorkoutLog(workoutLogId, user);
+        return ResponseEntity.noContent().build();
+
+    }
+
+    @GetMapping("/current-workout")
+    public ResponseEntity<WorkoutLog> getCurrentWorkout(@RequestHeader(HttpHeaders.AUTHORIZATION) String jwt)
+            throws Exception {
+
+        User user = userService.findUserByJwtToken(jwt);
+        return ResponseEntity.ok(user.getCurrentWorkout());
     }
 
 

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { IconButton, TextField } from "@mui/material";
+import { useEffect, useState } from "react";
+import { Alert, IconButton, Snackbar, TextField } from "@mui/material";
 import {
   Delete,
   Edit,
@@ -13,21 +13,33 @@ import {
   StyledTableRow,
 } from "../../../component/TableComponent";
 import HandleDeleteDialog from "./HandleDeleteDialog";
-import { useAppDispatch } from "../../../state/store";
+import { useAppDispatch, useAppSelector } from "../../../state/store";
 import {
   deleteWorkout,
   fetchAllWorkoutsByUser,
+  fetchCurrentWorkout,
+  startWorkout,
   updateWorkout,
 } from "../../../state/user/userWorkoutSlice";
 import { Workout } from "../../../types/WorkoutTypes";
 import WorkoutExerciseTable from "./WorkoutExerciseTable";
+import { useNavigate } from "react-router-dom";
 
 export default function WorkoutTableRow({ workout }: { workout: Workout }) {
   const dispatch = useAppDispatch();
+  const userworkout = useAppSelector((store) => store.userworkout);
   const jwt = localStorage.getItem("jwt");
   const [expandedRow, setExpandedRow] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [editWorkout, setEditWorkout] = useState<Workout | null>(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+
+  useEffect(() => {
+    if (!jwt) return;
+    dispatch(fetchCurrentWorkout(jwt));
+  }, []);
+
+  const navigate = useNavigate();
 
   const handleToggle = () => {
     setExpandedRow(!expandedRow);
@@ -67,6 +79,21 @@ export default function WorkoutTableRow({ workout }: { workout: Workout }) {
       .unwrap()
       .then(() => dispatch(fetchAllWorkoutsByUser(jwt)));
     setEditWorkout(null);
+  };
+
+  const handleStartWorkout = () => {
+    if (!jwt) return;
+    if (userworkout.currentWorkout) {
+      setSnackbarOpen(true);
+      return;
+    }
+    dispatch(startWorkout({ jwt, workoutId: workout.id }))
+      .unwrap()
+      .then(() => navigate("/dashboard/current-workout"));
+  };
+
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -124,10 +151,11 @@ export default function WorkoutTableRow({ workout }: { workout: Workout }) {
             </IconButton>
           </StyledTableCell>
           <StyledTableCell align="center">
-            <IconButton color="success">
+            <IconButton color="success" onClick={handleStartWorkout}>
               <PlayCircleOutline />
             </IconButton>
           </StyledTableCell>
+
           <StyledTableCell align="center">
             <IconButton onClick={handleEditWorkout}>
               <Edit />
@@ -137,6 +165,30 @@ export default function WorkoutTableRow({ workout }: { workout: Workout }) {
             <IconButton color="error" onClick={() => setOpenDeleteDialog(true)}>
               <Delete />
             </IconButton>
+            {snackbarOpen && (
+              <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={3000}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: "bottom", horizontal: "center" }}
+              >
+                <Alert
+                  onClose={handleCloseSnackbar}
+                  severity="error"
+                  variant="filled"
+                >
+                  A workout is currently ongoing!
+                </Alert>
+              </Snackbar>
+            )}
+            {openDeleteDialog && (
+              <HandleDeleteDialog
+                workoutId={workout.id}
+                open={openDeleteDialog}
+                handleDelete={handleDelete}
+                onClose={() => setOpenDeleteDialog(false)}
+              />
+            )}
           </StyledTableCell>
         </StyledTableRow>
       )}
@@ -148,12 +200,6 @@ export default function WorkoutTableRow({ workout }: { workout: Workout }) {
           </StyledTableCell>
         </StyledTableRow>
       )}
-      <HandleDeleteDialog
-        workoutId={workout.id}
-        open={openDeleteDialog}
-        handleDelete={handleDelete}
-        onClose={() => setOpenDeleteDialog(false)}
-      />
     </>
   );
 }

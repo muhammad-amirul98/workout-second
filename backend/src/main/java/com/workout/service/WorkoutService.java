@@ -35,7 +35,7 @@ public interface WorkoutService {
     List<Workout> getWorkoutsByUserId(Long userId) throws Exception;
     void deleteSet(Long setId, User user) throws Exception;
     WorkoutSet updateWorkoutSet(Long workoutSetId, User user, UpdateSetRequest req) throws Exception;
-
-
+    List<WorkoutLog> getWorkoutLogsByUserId(User user);
+    void deleteWorkoutLog(Long workoutLogId, User user) throws Exception;
 
 }

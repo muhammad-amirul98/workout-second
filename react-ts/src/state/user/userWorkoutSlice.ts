@@ -9,6 +9,7 @@ import {
   UpdateWorkoutSetRequest,
   Workout,
   WorkoutExercise,
+  WorkoutLog,
   WorkoutSet,
 } from "../../types/WorkoutTypes";
 import { api } from "../../config/api";
@@ -444,13 +445,148 @@ export const updateWorkoutSet = createAsyncThunk<
   }
 );
 
+export const startWorkout = createAsyncThunk<
+  WorkoutLog,
+  {
+    jwt: string;
+    workoutId: number;
+  },
+  { rejectValue: string }
+>(
+  "/userworkout/startWorkout",
+  async ({ jwt, workoutId }, { rejectWithValue }) => {
+    try {
+      const response = await api.post(
+        `/workout/${workoutId}/start`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      );
+      console.log("User startWorkout: ", response.data);
+      return response.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message || "Failed to startWorkout");
+      }
+      return rejectWithValue("An unknown error occurred");
+    }
+  }
+);
+
+export const fetchAllWorkoutLogsByUser = createAsyncThunk<
+  WorkoutLog[],
+  { jwt: string },
+  { rejectValue: string }
+>(
+  "/userworkout/fetchAllWorkoutLogsByUser",
+  async ({ jwt }, { rejectWithValue }) => {
+    try {
+      const response = await api.get("/workout/workout-logs", {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+      console.log("User fetchAllWorkoutLogsByUser: ", response.data);
+      return response.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return rejectWithValue(
+          error.message || "Failed to fetchAllWorkoutLogsByUser"
+        );
+      }
+      return rejectWithValue("An unknown error occurred");
+    }
+  }
+);
+
+export const deleteWorkoutLog = createAsyncThunk<
+  void,
+  { jwt: string; workoutLogId: number },
+  { rejectValue: string }
+>(
+  "/userworkout/deleteWorkoutLog",
+  async ({ jwt, workoutLogId }, { rejectWithValue }) => {
+    try {
+      const response = await api.delete(
+        `/workout/workout-logs/${workoutLogId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      );
+      console.log("User deleteWorkoutLog: ", response.data);
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message || "Failed to deleteWorkoutLog");
+      }
+      return rejectWithValue("An unknown error occurred");
+    }
+  }
+);
+
+export const fetchCurrentWorkout = createAsyncThunk<
+  WorkoutLog,
+  string,
+  { rejectValue: string }
+>("/userworkout/getCurrentWorkout", async (jwt, { rejectWithValue }) => {
+  try {
+    const response = await api.get("/workout/current-workout", {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+    console.log("User getCurrentWorkout: ", response.data);
+    return response.data;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return rejectWithValue(error.message || "Failed to getCurrentWorkout");
+    }
+    return rejectWithValue("An unknown error occurred");
+  }
+});
+
+export const endWorkout = createAsyncThunk<
+  WorkoutLog,
+  { jwt: string; workoutLogId: number },
+  { rejectValue: string }
+>(
+  "/userworkout/endWorkout",
+  async ({ jwt, workoutLogId }, { rejectWithValue }) => {
+    try {
+      const response = await api.put(
+        `/workout/${workoutLogId}/end`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      );
+      console.log("User endWorkout: ", response.data);
+      return response.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message || "Failed to endWorkout");
+      }
+      return rejectWithValue("An unknown error occurred");
+    }
+  }
+);
+
 interface UserWorkoutState {
   workout: Workout | null;
   workouts: Workout[] | null;
   workoutExercise: WorkoutExercise | null;
+  workoutLog: WorkoutLog | null;
+  workoutLogs: WorkoutLog[] | null;
   exercises: Exercise[] | null;
   exercise: Exercise | null;
   workoutSet: WorkoutSet | null;
+  currentWorkout: WorkoutLog | null;
   loading: boolean;
   error: unknown;
 }
@@ -459,9 +595,12 @@ const initialState: UserWorkoutState = {
   workout: null,
   workouts: [],
   workoutExercise: null,
+  workoutLog: null,
+  workoutLogs: [],
   workoutSet: null,
   exercise: null,
   exercises: [],
+  currentWorkout: null,
   loading: false,
   error: null,
 };
@@ -704,26 +843,81 @@ const userWorkoutSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       });
+
+    // startWorkout
+    builder
+      .addCase(startWorkout.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(startWorkout.fulfilled, (state, action) => {
+        state.loading = false;
+        state.workoutLog = action.payload;
+      })
+      .addCase(startWorkout.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    //fetchAllWorkoutLogsByUser
+    builder
+      .addCase(fetchAllWorkoutLogsByUser.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchAllWorkoutLogsByUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.workoutLogs = action.payload;
+      })
+      .addCase(fetchAllWorkoutLogsByUser.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    //deleteWorkoutLog
+    builder
+      .addCase(deleteWorkoutLog.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteWorkoutLog.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(deleteWorkoutLog.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    //fetchCurrentWorkout
+    builder
+      .addCase(fetchCurrentWorkout.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchCurrentWorkout.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentWorkout = action.payload;
+      })
+      .addCase(fetchCurrentWorkout.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    //endWorkout
+    builder
+      .addCase(endWorkout.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(endWorkout.fulfilled, (state) => {
+        state.loading = false;
+        state.currentWorkout = null;
+      })
+      .addCase(endWorkout.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
   },
 });
 
 export default userWorkoutSlice.reducer;
-
-// export const fetchAllWorkouts = createAsyncThunk<
-//   Workout[],
-//   void,
-//   { rejectValue: string }
-// >("/userworkout/fetchAllWorkouts", async (_, { rejectWithValue }) => {
-//   try {
-//     const response = await api.get("/workout/all");
-//     console.log("User Fetch All Workouts: ", response.data);
-//     return response.data;
-//   } catch (error: unknown) {
-//     if (error instanceof Error) {
-//       return rejectWithValue(
-//         error.message || "Failed to fetch user order history"
-//       );
-//     }
-//     return rejectWithValue("An unknown error occurred");
-//   }
-// });

@@ -53,7 +53,7 @@ const PlateWorkoutCalculatorModal = ({
     const platesNeeded: number[] = [];
 
     const availableSelectedPlates = Array.from(selectedPlates).sort(
-      (a, b) => b - a
+      (a, b) => a - b
     );
 
     for (let i = availableSelectedPlates.length - 1; i >= 0; i--) {

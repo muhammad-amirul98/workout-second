@@ -10,60 +10,73 @@ import {
   StyledTableCell,
   StyledTableRow,
 } from "../../../component/TableComponent";
-
-function createData(
-  name: string,
-  calories: number,
-  fat: number,
-  carbs: number,
-  protein: number
-) {
-  return { name, calories, fat, carbs, protein };
-}
-
-const rows = [
-  createData("Frozen yoghurt", 159, 6.0, 24, 4.0),
-  createData("Ice cream sandwich", 237, 9.0, 37, 4.3),
-  createData("Eclair", 262, 16.0, 24, 6.0),
-  createData("Cupcake", 305, 3.7, 67, 4.3),
-  createData("Gingerbread", 356, 16.0, 49, 3.9),
-];
+import { useEffect } from "react";
+import { useAppDispatch, useAppSelector } from "../../../state/store";
+import {
+  deleteWorkoutLog,
+  fetchAllWorkoutLogsByUser,
+} from "../../../state/user/userWorkoutSlice";
+import { timeDuration, timeFormat } from "../Util/dateFormat";
 
 export default function WorkoutLogTable() {
+  const jwt = localStorage.getItem("jwt");
+  const dispatch = useAppDispatch();
+  const userworkout = useAppSelector((store) => store.userworkout);
+
+  useEffect(() => {
+    if (!jwt) return;
+
+    dispatch(fetchAllWorkoutLogsByUser({ jwt }));
+  }, []);
+
+  const handleDeleteWorkoutLog = (workoutLogId: number) => {
+    if (!jwt) return;
+    dispatch(deleteWorkoutLog({ jwt, workoutLogId }))
+      .unwrap()
+      .then(() => dispatch(fetchAllWorkoutLogsByUser({ jwt })));
+  };
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
         <TableHead>
           <TableRow>
-            <StyledTableCell>Workout Name</StyledTableCell>
-            <StyledTableCell align="center">Workout Type</StyledTableCell>
-            <StyledTableCell align="center">
-              Exercises Performed
-            </StyledTableCell>
-            <StyledTableCell align="center">
-              Total Sets Completed
-            </StyledTableCell>
-            <StyledTableCell align="center">Total Reps</StyledTableCell>
-            <StyledTableCell align="center">Workout Duration</StyledTableCell>
-            <StyledTableCell align="center">Completed On</StyledTableCell>
-            <StyledTableCell align="center">Status</StyledTableCell>
-            <StyledTableCell align="center">View Details</StyledTableCell>
-            <StyledTableCell align="center">Delete</StyledTableCell>
+            <StyledTableCell>No.</StyledTableCell>
+
+            <StyledTableCell>Time Started</StyledTableCell>
+            <StyledTableCell>Time Ended</StyledTableCell>
+            <StyledTableCell>Workout Status</StyledTableCell>
+            <StyledTableCell>Workout Duration</StyledTableCell>
+            <StyledTableCell>View Details</StyledTableCell>
+            <StyledTableCell>Delete</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {rows.map((row) => (
-            <StyledTableRow key={row.name}>
+          {userworkout.workoutLogs?.map((workoutLog, index) => (
+            <StyledTableRow key={workoutLog.id}>
               <StyledTableCell component="th" scope="row">
-                {row.name}
+                {index + 1}
               </StyledTableCell>
-              <StyledTableCell align="center">{row.calories}</StyledTableCell>
-              <StyledTableCell align="center">{row.fat}</StyledTableCell>
-              <StyledTableCell align="center">{row.carbs}</StyledTableCell>
-              <StyledTableCell align="center">{row.protein}</StyledTableCell>
-              <StyledTableCell align="center">date</StyledTableCell>
-              <StyledTableCell align="center">completed</StyledTableCell>
-              <StyledTableCell align="center">status</StyledTableCell>
+              <StyledTableCell component="th" scope="row">
+                {timeFormat(workoutLog.timeStarted)}
+              </StyledTableCell>
+              <StyledTableCell component="th" scope="row">
+                {workoutLog.timeCompleted
+                  ? timeFormat(workoutLog.timeCompleted)
+                  : "N/A"}
+              </StyledTableCell>
+              <StyledTableCell component="th" scope="row">
+                {workoutLog.workoutStatus}
+              </StyledTableCell>
+              <StyledTableCell component="th" scope="row">
+                {workoutLog.timeCompleted
+                  ? timeDuration(
+                      workoutLog.timeStarted,
+                      workoutLog.timeCompleted
+                    )
+                  : "N/A"}
+              </StyledTableCell>
+
               <StyledTableCell align="center">
                 <IconButton>
                   <KeyboardArrowDown color="primary" />
@@ -71,7 +84,10 @@ export default function WorkoutLogTable() {
               </StyledTableCell>
 
               <StyledTableCell align="center">
-                <IconButton color="error">
+                <IconButton
+                  color="error"
+                  onClick={() => handleDeleteWorkoutLog(workoutLog.id)}
+                >
                   <Delete />
                 </IconButton>
               </StyledTableCell>

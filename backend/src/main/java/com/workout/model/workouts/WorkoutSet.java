@@ -20,9 +20,7 @@ public class WorkoutSet {
 
     private double weight; // planned weight
 
-    private int actualReps;
 
-    private double actualWeight;
 
     @ManyToOne
     @JoinColumn(name = "workout_exercise_id")
@@ -36,8 +34,6 @@ public class WorkoutSet {
         return reps * weight;
     }
 
-    public double getTotalActualWeightLiftedInSet() {
-        return actualReps * actualWeight;
-    }
+
 
 }

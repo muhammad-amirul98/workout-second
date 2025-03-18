@@ -35,7 +35,6 @@ const Workout = () => {
       >
         Plate Calculator
       </Button>
-      {/* <WorkoutTable /> */}
       <WorkoutTableCopy />
       <Button
         variant="contained"

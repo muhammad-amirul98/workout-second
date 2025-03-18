@@ -41,10 +41,5 @@ public class WorkoutExercise {
                 .sum();
     }
 
-    public double getTotalActualWeightLiftedInExercise() {
-        return workoutSets.stream()
-                .mapToDouble(WorkoutSet::getTotalActualWeightLiftedInSet)
-                .sum();
-    }
 }
 
