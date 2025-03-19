@@ -10,8 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Getter
@@ -37,7 +36,7 @@ public class ExerciseLog {
 
     @OneToMany(mappedBy = "exerciseLog", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
-    private Set<SetLog> setLogs = new HashSet<>();
+    private List<SetLog> setLogs = new ArrayList<>();
 
     public double getTotalWeightLiftedInExercise() {
         return setLogs.stream()

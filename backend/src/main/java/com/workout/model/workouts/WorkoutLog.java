@@ -11,8 +11,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Getter
@@ -38,7 +37,13 @@ public class WorkoutLog {
 
     @OneToMany(mappedBy = "workoutLog", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonManagedReference
-    private Set<ExerciseLog> exerciseLogs = new HashSet<>();
+    private List<ExerciseLog> exerciseLogs = new ArrayList<>();
+
+    public boolean getAllSetsCompleted() {
+        return exerciseLogs != null && exerciseLogs.stream()
+                .flatMap(exerciseLog -> exerciseLog.getSetLogs().stream())
+                .allMatch(SetLog::isComplete);
+    }
 
     @Enumerated(EnumType.STRING)
     private WorkoutStatus workoutStatus = WorkoutStatus.IN_PROGRESS;

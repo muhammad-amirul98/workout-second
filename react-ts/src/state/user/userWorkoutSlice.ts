@@ -1,9 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
+  CompleteSetLogRequest,
   CreateExerciseRequest,
   CreateSetRequest,
   CreateWorkoutRequest,
   Exercise,
+  SetLog,
   UpdateExerciseRequest,
   UpdateWorkoutRequest,
   UpdateWorkoutSetRequest,
@@ -549,16 +551,16 @@ export const fetchCurrentWorkout = createAsyncThunk<
   }
 });
 
-export const endWorkout = createAsyncThunk<
+export const completeWorkout = createAsyncThunk<
   WorkoutLog,
   { jwt: string; workoutLogId: number },
   { rejectValue: string }
 >(
-  "/userworkout/endWorkout",
+  "/userworkout/completeWorkout",
   async ({ jwt, workoutLogId }, { rejectWithValue }) => {
     try {
       const response = await api.put(
-        `/workout/${workoutLogId}/end`,
+        `/workout/${workoutLogId}/complete`,
         {},
         {
           headers: {
@@ -566,11 +568,95 @@ export const endWorkout = createAsyncThunk<
           },
         }
       );
-      console.log("User endWorkout: ", response.data);
+      console.log("User completeWorkout: ", response.data);
       return response.data;
     } catch (error: unknown) {
       if (error instanceof Error) {
-        return rejectWithValue(error.message || "Failed to endWorkout");
+        return rejectWithValue(error.message || "Failed to completeWorkout");
+      }
+      return rejectWithValue("An unknown error occurred");
+    }
+  }
+);
+
+export const cancelWorkout = createAsyncThunk<
+  WorkoutLog,
+  { jwt: string; workoutLogId: number },
+  { rejectValue: string }
+>(
+  "/userworkout/cancelWorkout",
+  async ({ jwt, workoutLogId }, { rejectWithValue }) => {
+    try {
+      const response = await api.put(
+        `/workout/${workoutLogId}/cancel`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      );
+      console.log("User cancelWorkout: ", response.data);
+      return response.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message || "Failed to cancelWorkout");
+      }
+      return rejectWithValue("An unknown error occurred");
+    }
+  }
+);
+
+export const completeSetLog = createAsyncThunk<
+  SetLog,
+  { jwt: string; setLogId: number; req: CompleteSetLogRequest },
+  { rejectValue: string }
+>(
+  "/userworkout/completeSetLog",
+  async ({ jwt, setLogId, req }, { rejectWithValue }) => {
+    try {
+      const response = await api.put(
+        `/workout/set-log/${setLogId}/complete`,
+        req,
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      );
+      console.log("User completeSetLog: ", response.data);
+      return response.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message || "Failed to completeSetLog");
+      }
+      return rejectWithValue("An unknown error occurred");
+    }
+  }
+);
+
+export const uncompleteSetLog = createAsyncThunk<
+  SetLog,
+  { jwt: string; setLogId: number },
+  { rejectValue: string }
+>(
+  "/userworkout/uncompleteSetLog",
+  async ({ jwt, setLogId }, { rejectWithValue }) => {
+    try {
+      const response = await api.put(
+        `/workout/set-log/${setLogId}/uncompleted`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      );
+      console.log("User uncompleteSetLog: ", response.data);
+      return response.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message || "Failed to uncompleteSetLog");
       }
       return rejectWithValue("An unknown error occurred");
     }
@@ -587,6 +673,7 @@ interface UserWorkoutState {
   exercise: Exercise | null;
   workoutSet: WorkoutSet | null;
   currentWorkout: WorkoutLog | null;
+  setLog: SetLog | null;
   loading: boolean;
   error: unknown;
 }
@@ -601,6 +688,7 @@ const initialState: UserWorkoutState = {
   exercise: null,
   exercises: [],
   currentWorkout: null,
+  setLog: null,
   loading: false,
   error: null,
 };
@@ -903,17 +991,62 @@ const userWorkoutSlice = createSlice({
         state.error = action.payload;
       });
 
-    //endWorkout
+    //completeWorkout
     builder
-      .addCase(endWorkout.pending, (state) => {
+      .addCase(completeWorkout.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(endWorkout.fulfilled, (state) => {
+      .addCase(completeWorkout.fulfilled, (state) => {
         state.loading = false;
         state.currentWorkout = null;
       })
-      .addCase(endWorkout.rejected, (state, action) => {
+      .addCase(completeWorkout.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    //cancelWorkout
+    builder
+      .addCase(cancelWorkout.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(cancelWorkout.fulfilled, (state) => {
+        state.loading = false;
+        state.currentWorkout = null;
+      })
+      .addCase(cancelWorkout.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    //completeSetLog
+    builder
+      .addCase(completeSetLog.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(completeSetLog.fulfilled, (state, action) => {
+        state.loading = false;
+        state.setLog = action.payload;
+      })
+      .addCase(completeSetLog.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    //uncompleteSetLog
+    builder
+      .addCase(uncompleteSetLog.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(uncompleteSetLog.fulfilled, (state, action) => {
+        state.loading = false;
+        state.setLog = action.payload;
+      })
+      .addCase(uncompleteSetLog.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

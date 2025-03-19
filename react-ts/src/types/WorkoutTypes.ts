@@ -48,6 +48,7 @@ export interface WorkoutLog {
   exerciseLogs: ExerciseLog[];
   workoutStatus: string;
   totalWeightLifted?: number;
+  allSetsCompleted: boolean;
 }
 
 export interface ExerciseLog {
@@ -56,7 +57,7 @@ export interface ExerciseLog {
   workoutLog?: WorkoutLog;
   timeStarted?: string;
   timeCompleted?: string;
-  setLogs?: SetLog[];
+  setLogs: SetLog[];
 }
 
 export interface SetLog {
@@ -66,6 +67,7 @@ export interface SetLog {
   exerciseLog?: ExerciseLog;
   timeStarted: string;
   timeCompleted?: string;
+  complete: boolean;
 }
 
 export interface CreateExerciseRequest {
@@ -96,4 +98,9 @@ export interface CreateSetRequest {
 
 export interface UpdateWorkoutSetRequest extends CreateSetRequest {
   id?: number;
+}
+
+export interface CompleteSetLogRequest {
+  weight: number | null;
+  reps: number | null;
 }

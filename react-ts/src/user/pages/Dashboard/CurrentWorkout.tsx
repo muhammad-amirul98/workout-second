@@ -2,7 +2,10 @@ import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../state/store";
-import { fetchCurrentWorkout } from "../../../state/user/userWorkoutSlice";
+import {
+  cancelWorkout,
+  fetchCurrentWorkout,
+} from "../../../state/user/userWorkoutSlice";
 import CurrentWorkoutTable from "./CurrentWorkoutTable";
 import PlateWorkoutCalculator from "./PlateWorkoutCalculator";
 
@@ -27,6 +30,13 @@ const CurrentWorkout = () => {
     setCalculatorOpen(false);
   };
 
+  const handleCancelWorkout = () => {
+    if (!jwt || !userworkout.currentWorkout) return;
+    dispatch(
+      cancelWorkout({ jwt, workoutLogId: userworkout.currentWorkout.id })
+    );
+  };
+
   return (
     <div className="justify-center">
       {userworkout.currentWorkout ? (
@@ -48,6 +58,16 @@ const CurrentWorkout = () => {
           </div>
           <div>
             <CurrentWorkoutTable currentWorkout={userworkout.currentWorkout} />
+          </div>
+          <div className="mt-5">
+            <Button
+              color="error"
+              variant="contained"
+              fullWidth
+              onClick={handleCancelWorkout}
+            >
+              Cancel Workout
+            </Button>
           </div>
         </div>
       ) : (

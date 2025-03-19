@@ -15,8 +15,8 @@ import {
 import CurrentWorkoutExerciseRow from "./CurrentWorkoutExerciseRow";
 import { timeDuration, timeFormat } from "../Util/dateFormat";
 import { useEffect, useState } from "react";
-import { useAppDispatch } from "../../../state/store";
-import { endWorkout } from "../../../state/user/userWorkoutSlice";
+import { useAppDispatch, useAppSelector } from "../../../state/store";
+import { completeWorkout } from "../../../state/user/userWorkoutSlice";
 
 const CurrentWorkoutTable = ({
   currentWorkout,
@@ -26,6 +26,7 @@ const CurrentWorkoutTable = ({
   const [timer, setTimer] = useState("");
   const dispatch = useAppDispatch();
   const jwt = localStorage.getItem("jwt");
+  const userworkout = useAppSelector((store) => store.userworkout);
   useEffect(() => {
     const interval = setInterval(() => {
       setTimer(
@@ -38,8 +39,9 @@ const CurrentWorkoutTable = ({
 
   const handleCompleteWorkout = () => {
     if (!jwt) return;
-    dispatch(endWorkout({ jwt, workoutLogId: currentWorkout.id }));
+    dispatch(completeWorkout({ jwt, workoutLogId: currentWorkout.id }));
   };
+
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 700 }} aria-label="customized table">
@@ -47,7 +49,7 @@ const CurrentWorkoutTable = ({
           <TableRow>
             <StyledTableCell>Time Started</StyledTableCell>
             <StyledTableCell align="left">Timer</StyledTableCell>
-            <StyledTableCell align="center">Finish Workout</StyledTableCell>
+            <StyledTableCell align="center"></StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -57,13 +59,21 @@ const CurrentWorkoutTable = ({
             </StyledTableCell>
             <StyledTableCell>{timer}</StyledTableCell>
             <StyledTableCell align="center">
-              <Button color="primary" onClick={handleCompleteWorkout}>
+              <Button
+                color="primary"
+                onClick={handleCompleteWorkout}
+                variant="contained"
+                disabled={!userworkout.currentWorkout?.allSetsCompleted}
+              >
                 Complete Workout
               </Button>
             </StyledTableCell>
           </StyledTableRow>
-          {currentWorkout.exerciseLogs.map((exercise) => (
-            <CurrentWorkoutExerciseRow key={exercise.id} exercise={exercise} />
+          {currentWorkout.exerciseLogs.map((exerciseLog) => (
+            <CurrentWorkoutExerciseRow
+              key={exerciseLog.id}
+              exercise={exerciseLog}
+            />
           ))}
         </TableBody>
       </Table>

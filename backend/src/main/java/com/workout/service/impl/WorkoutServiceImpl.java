@@ -5,10 +5,7 @@ import com.workout.exception.WorkoutException;
 import com.workout.model.userdetails.User;
 import com.workout.model.workouts.*;
 import com.workout.repository.*;
-import com.workout.request.CreateExerciseRequest;
-import com.workout.request.CreateSetRequest;
-import com.workout.request.CreateWorkoutRequest;
-import com.workout.request.UpdateSetRequest;
+import com.workout.request.*;
 import com.workout.service.WorkoutService;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.jdbc.Work;
@@ -16,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Array;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -27,6 +25,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     private final WorkoutRepository workoutRepository;
     private final ExerciseRepository exerciseRepository;
     private final WorkoutLogRepository workoutLogRepository;
+    private final SetLogRepository setLogRepository;
     private final UserRepository userRepository;
     private final WorkoutExerciseRepository workoutExerciseRepository;
     private final WorkoutSetRepository workoutSetRepository;
@@ -138,7 +137,7 @@ public class WorkoutServiceImpl implements WorkoutService {
                 .map(we -> getExerciseLog(we, workoutLog))
                 .toList();
 
-        workoutLog.setExerciseLogs(new LinkedHashSet<>(exerciseLogs));
+        workoutLog.setExerciseLogs(new ArrayList<>(exerciseLogs));
 
         WorkoutLog savedWorkoutLog = workoutLogRepository.save(workoutLog);
 
@@ -160,7 +159,7 @@ public class WorkoutServiceImpl implements WorkoutService {
                 .map(ws -> createSetLog(ws, exerciseLog))
                 .toList();
 
-        exerciseLog.setSetLogs(new LinkedHashSet<>(setLogs)); // Maintain order
+        exerciseLog.setSetLogs(new ArrayList<>(setLogs)); // Maintain order
         return exerciseLog;
     }
 
@@ -174,7 +173,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 
 
     @Override
-    public WorkoutLog endWorkout(Long workoutLogId, User user) throws WorkoutException {
+    public WorkoutLog completeWorkout(Long workoutLogId, User user) throws WorkoutException {
         WorkoutLog workoutLog = workoutLogRepository.findById(workoutLogId)
                 .orElseThrow(() -> new WorkoutException("Workout Log not found with ID: " + workoutLogId));
 
@@ -189,6 +188,28 @@ public class WorkoutServiceImpl implements WorkoutService {
         }
 
         workoutLog.setWorkoutStatus(WorkoutStatus.COMPLETED);
+        workoutLog.setTimeCompleted(LocalDateTime.now());
+        user.setCurrentWorkout(null);
+        userRepository.save(user);
+        return workoutLogRepository.save(workoutLog);
+    }
+
+    @Override
+    public WorkoutLog cancelWorkout(Long workoutLogId, User user) throws WorkoutException {
+        WorkoutLog workoutLog = workoutLogRepository.findById(workoutLogId)
+                .orElseThrow(() -> new WorkoutException("Workout Log not found with ID: " + workoutLogId));
+
+        //check authorization
+        if (!user.getWorkouts().contains(workoutLog.getWorkout())) {
+            throw new WorkoutException("Unauthorized to start workout");
+        }
+
+        //check if current workout is equal to that workout
+        if (user.getCurrentWorkout() != workoutLog) {
+            throw new WorkoutException("This workout is not currently ongoing");
+        }
+
+        workoutLog.setWorkoutStatus(WorkoutStatus.CANCELLED);
         workoutLog.setTimeCompleted(LocalDateTime.now());
         user.setCurrentWorkout(null);
         userRepository.save(user);
@@ -334,6 +355,32 @@ public class WorkoutServiceImpl implements WorkoutService {
         }
         workoutLogRepository.delete(workoutLog);
     }
+
+    @Override
+    public SetLog completeSetLog(Long setLogId, User user, CompleteSetLogRequest req) throws Exception {
+        SetLog setLog = setLogRepository.findById(setLogId)
+                .orElseThrow(() -> new Exception("Set Log not found with id: " + setLogId));
+        if (setLog.getExerciseLog().getWorkoutLog().getWorkout().getUser() != user) {
+            throw new Exception("Not authorized to update set");
+        }
+        setLog.setWeight(req.getWeight());
+        setLog.setReps(req.getReps());
+        setLog.setComplete(true);
+        setLog.setTimeCompleted(LocalDateTime.now());
+        return setLogRepository.save(setLog);
+    }
+
+    @Override
+    public SetLog uncompleteSetLog(Long setLogId, User user) throws Exception {
+        SetLog setLog = setLogRepository.findById(setLogId)
+                .orElseThrow(() -> new Exception("Set Log not found with id: " + setLogId));
+        if (setLog.getExerciseLog().getWorkoutLog().getWorkout().getUser() != user) {
+            throw new Exception("Not authorized to update set");
+        }
+        setLog.setComplete(false);
+        return setLogRepository.save(setLog);
+    }
+
 }
 
 

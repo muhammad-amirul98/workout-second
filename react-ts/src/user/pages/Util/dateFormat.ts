@@ -35,3 +35,12 @@ export const timeDuration = (startTime: string, endTime: string) => {
   // Return the result as a string
   return `${hours}h ${minutes}m ${seconds}s`;
 };
+
+export const hourFormat = (deliverDate: string) => {
+  // Convert the ISO string into a JavaScript Date object
+  const date = new Date(deliverDate);
+
+  // Format the date to "DD-MM-YYYY, Day"
+  const formattedDate = format(date, "hh:mm:ss a");
+  return formattedDate;
+};

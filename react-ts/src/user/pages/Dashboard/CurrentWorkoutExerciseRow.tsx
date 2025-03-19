@@ -14,6 +14,15 @@ import {
 } from "@mui/material";
 
 const CurrentWorkoutExerciseRow = ({ exercise }: { exercise: ExerciseLog }) => {
+  // const [setsData, setSetsData] = useState(
+  //   exercise.setLogs?.map((setLog) => ({
+  //     reps: setLog.reps ?? null,
+  //     weight: setLog.weight ?? null,
+  //     timeCompleted: "",
+  //     completeSet: false,
+  //   }))
+  // );
+
   return (
     <>
       <StyledTableRow key={exercise.id}>
@@ -28,6 +37,7 @@ const CurrentWorkoutExerciseRow = ({ exercise }: { exercise: ExerciseLog }) => {
                   <StyledTableCell>Set Number</StyledTableCell>
                   <StyledTableCell>Reps</StyledTableCell>
                   <StyledTableCell>Weight (kg)</StyledTableCell>
+                  <StyledTableCell>Time Completed</StyledTableCell>
                   <StyledTableCell colSpan={2}>
                     <div className="font-light">Save</div>
                   </StyledTableCell>
@@ -35,7 +45,11 @@ const CurrentWorkoutExerciseRow = ({ exercise }: { exercise: ExerciseLog }) => {
               </TableHead>
               <TableBody>
                 {exercise.setLogs?.map((setLog, index) => (
-                  <CurrentWorkoutSetRow setLog={setLog} index={index} />
+                  <CurrentWorkoutSetRow
+                    key={index}
+                    setLog={setLog}
+                    setNumber={index + 1}
+                  />
                 ))}
               </TableBody>
             </Table>

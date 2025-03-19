@@ -24,6 +24,8 @@ public class SetLog {
 
     private double weight;
 
+    private boolean isComplete = false;
+
     @ManyToOne
     @JoinColumn(name = "exercise_log_id")
     @JsonBackReference

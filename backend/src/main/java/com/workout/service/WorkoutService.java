@@ -3,10 +3,7 @@ package com.workout.service;
 import com.workout.exception.WorkoutException;
 import com.workout.model.userdetails.User;
 import com.workout.model.workouts.*;
-import com.workout.request.CreateExerciseRequest;
-import com.workout.request.CreateSetRequest;
-import com.workout.request.CreateWorkoutRequest;
-import com.workout.request.UpdateSetRequest;
+import com.workout.request.*;
 import org.springframework.data.domain.Page;
 
 import java.util.List;
@@ -19,7 +16,8 @@ public interface WorkoutService {
     WorkoutSet addSetToExercise(Long workoutExerciseId, User user, CreateSetRequest set) throws Exception;
     void deleteExercise(Long exerciseId, User user) throws WorkoutException;
     WorkoutLog startWorkout(Long workoutId, User user) throws WorkoutException;
-    WorkoutLog endWorkout(Long workoutId, User user) throws WorkoutException;
+    WorkoutLog completeWorkout(Long workoutId, User user) throws WorkoutException;
+    WorkoutLog cancelWorkout(Long workoutId, User user) throws WorkoutException;
     void deleteWorkout(Long workoutId, User user) throws WorkoutException;
     Workout updateWorkout(Long workoutId, CreateWorkoutRequest req, User user) throws WorkoutException;
     Workout findWorkoutById(User user, Long workoutId) throws WorkoutException;
@@ -37,5 +35,6 @@ public interface WorkoutService {
     WorkoutSet updateWorkoutSet(Long workoutSetId, User user, UpdateSetRequest req) throws Exception;
     List<WorkoutLog> getWorkoutLogsByUserId(User user);
     void deleteWorkoutLog(Long workoutLogId, User user) throws Exception;
-
+    SetLog completeSetLog(Long setLogId, User user, CompleteSetLogRequest req) throws Exception;
+    SetLog uncompleteSetLog(Long setLogId, User user) throws Exception;
 }

@@ -4,10 +4,7 @@ import com.workout.exception.UserException;
 import com.workout.exception.WorkoutException;
 import com.workout.model.userdetails.User;
 import com.workout.model.workouts.*;
-import com.workout.request.CreateExerciseRequest;
-import com.workout.request.CreateSetRequest;
-import com.workout.request.CreateWorkoutRequest;
-import com.workout.request.UpdateSetRequest;
+import com.workout.request.*;
 import com.workout.service.UserService;
 import com.workout.service.WorkoutService;
 import lombok.RequiredArgsConstructor;
@@ -92,11 +89,19 @@ public class WorkoutController {
         return ResponseEntity.ok(workoutLog);
     }
 
-    @PutMapping("/{workoutLogId}/end")
-    public ResponseEntity<WorkoutLog> endWorkout(@PathVariable Long workoutLogId,
+    @PutMapping("/{workoutLogId}/complete")
+    public ResponseEntity<WorkoutLog> completeWorkout(@PathVariable Long workoutLogId,
                                                  @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) throws Exception {
         User user = userService.findUserByJwtToken(jwt);
-        WorkoutLog workoutLog = workoutService.endWorkout(workoutLogId, user);
+        WorkoutLog workoutLog = workoutService.completeWorkout(workoutLogId, user);
+        return ResponseEntity.ok(workoutLog);
+    }
+
+    @PutMapping("/{workoutLogId}/cancel")
+    public ResponseEntity<WorkoutLog> cancelWorkout(@PathVariable Long workoutLogId,
+                                                      @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) throws Exception {
+        User user = userService.findUserByJwtToken(jwt);
+        WorkoutLog workoutLog = workoutService.cancelWorkout(workoutLogId, user);
         return ResponseEntity.ok(workoutLog);
     }
 
@@ -204,6 +209,23 @@ public class WorkoutController {
 
         User user = userService.findUserByJwtToken(jwt);
         return ResponseEntity.ok(user.getCurrentWorkout());
+    }
+
+    @PutMapping("/set-log/{setLogId}/complete")
+    public ResponseEntity<SetLog> completeSetLog(@PathVariable Long setLogId,
+                                                       @RequestBody CompleteSetLogRequest req,
+                                                       @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt)
+            throws Exception {
+        User user = userService.findUserByJwtToken(jwt);
+        return ResponseEntity.ok(workoutService.completeSetLog(setLogId, user, req));
+    }
+
+    @PutMapping("/set-log/{setLogId}/uncompleted")
+    public ResponseEntity<SetLog> uncompletedSetLog(@PathVariable Long setLogId,
+                                                 @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt)
+            throws Exception {
+        User user = userService.findUserByJwtToken(jwt);
+        return ResponseEntity.ok(workoutService.uncompleteSetLog(setLogId, user));
     }
 
 

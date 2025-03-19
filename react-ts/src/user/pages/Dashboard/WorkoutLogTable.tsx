@@ -4,19 +4,11 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { IconButton } from "@mui/material";
-import { Delete, KeyboardArrowDown } from "@mui/icons-material";
-import {
-  StyledTableCell,
-  StyledTableRow,
-} from "../../../component/TableComponent";
+import { StyledTableCell } from "../../../component/TableComponent";
 import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "../../../state/store";
-import {
-  deleteWorkoutLog,
-  fetchAllWorkoutLogsByUser,
-} from "../../../state/user/userWorkoutSlice";
-import { timeDuration, timeFormat } from "../Util/dateFormat";
+import { fetchAllWorkoutLogsByUser } from "../../../state/user/userWorkoutSlice";
+import WorkoutLogTableRow from "./WorkoutLogTableRow";
 
 export default function WorkoutLogTable() {
   const jwt = localStorage.getItem("jwt");
@@ -25,16 +17,8 @@ export default function WorkoutLogTable() {
 
   useEffect(() => {
     if (!jwt) return;
-
     dispatch(fetchAllWorkoutLogsByUser({ jwt }));
   }, []);
-
-  const handleDeleteWorkoutLog = (workoutLogId: number) => {
-    if (!jwt) return;
-    dispatch(deleteWorkoutLog({ jwt, workoutLogId }))
-      .unwrap()
-      .then(() => dispatch(fetchAllWorkoutLogsByUser({ jwt })));
-  };
 
   return (
     <TableContainer component={Paper}>
@@ -53,45 +37,11 @@ export default function WorkoutLogTable() {
         </TableHead>
         <TableBody>
           {userworkout.workoutLogs?.map((workoutLog, index) => (
-            <StyledTableRow key={workoutLog.id}>
-              <StyledTableCell component="th" scope="row">
-                {index + 1}
-              </StyledTableCell>
-              <StyledTableCell component="th" scope="row">
-                {timeFormat(workoutLog.timeStarted)}
-              </StyledTableCell>
-              <StyledTableCell component="th" scope="row">
-                {workoutLog.timeCompleted
-                  ? timeFormat(workoutLog.timeCompleted)
-                  : "N/A"}
-              </StyledTableCell>
-              <StyledTableCell component="th" scope="row">
-                {workoutLog.workoutStatus}
-              </StyledTableCell>
-              <StyledTableCell component="th" scope="row">
-                {workoutLog.timeCompleted
-                  ? timeDuration(
-                      workoutLog.timeStarted,
-                      workoutLog.timeCompleted
-                    )
-                  : "N/A"}
-              </StyledTableCell>
-
-              <StyledTableCell align="center">
-                <IconButton>
-                  <KeyboardArrowDown color="primary" />
-                </IconButton>
-              </StyledTableCell>
-
-              <StyledTableCell align="center">
-                <IconButton
-                  color="error"
-                  onClick={() => handleDeleteWorkoutLog(workoutLog.id)}
-                >
-                  <Delete />
-                </IconButton>
-              </StyledTableCell>
-            </StyledTableRow>
+            <WorkoutLogTableRow
+              workoutLog={workoutLog}
+              workoutLogNumber={index}
+              key={workoutLog.id}
+            />
           ))}
         </TableBody>
       </Table>
