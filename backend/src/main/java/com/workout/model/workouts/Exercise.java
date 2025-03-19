@@ -32,8 +32,10 @@ public class Exercise {
 
     private Set<String> images = new HashSet<>();
 
+    private Boolean notDeletable;
+
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = true)
     @JsonIgnore
     private User user;
 

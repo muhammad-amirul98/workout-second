@@ -109,9 +109,6 @@ export default function WorkoutSetTable({
 
   const handleSaveUpdatedSet = () => {
     if (!editingSet || !jwt) return;
-    console.log(editingSet.setNumber); //this line only displays previous value and not new value
-    console.log(editingSet.reps); //this line only displays previous value and not new value
-    console.log(editingSet.weight); //this line only displays previous value and not new value
     dispatch(
       updateWorkoutSet({
         jwt,
@@ -154,6 +151,7 @@ export default function WorkoutSetTable({
                       variant="outlined"
                       size="small"
                       value={editingSet.setNumber}
+                      type="number"
                       onChange={(e) =>
                         handleEditInputChange("setNumber", e.target.value)
                       }
@@ -164,6 +162,7 @@ export default function WorkoutSetTable({
                       variant="outlined"
                       size="small"
                       value={editingSet.reps}
+                      type="number"
                       onChange={(e) =>
                         handleEditInputChange("reps", e.target.value)
                       }
@@ -174,6 +173,7 @@ export default function WorkoutSetTable({
                       variant="outlined"
                       size="small"
                       value={editingSet.weight}
+                      type="number"
                       onChange={(e) =>
                         handleEditInputChange("weight", e.target.value)
                       }
@@ -231,6 +231,7 @@ export default function WorkoutSetTable({
                   variant="outlined"
                   size="small"
                   value={newSet.setNumber}
+                  type="number"
                   onChange={(e) =>
                     handleInputChange("setNumber", e.target.value)
                   }
@@ -241,6 +242,7 @@ export default function WorkoutSetTable({
                   variant="outlined"
                   size="small"
                   value={newSet.plannedReps}
+                  type="number"
                   onChange={(e) =>
                     handleInputChange("plannedReps", e.target.value)
                   }
@@ -251,6 +253,7 @@ export default function WorkoutSetTable({
                   variant="outlined"
                   size="small"
                   value={newSet.plannedWeight}
+                  type="number"
                   onChange={(e) =>
                     handleInputChange("plannedWeight", e.target.value)
                   }

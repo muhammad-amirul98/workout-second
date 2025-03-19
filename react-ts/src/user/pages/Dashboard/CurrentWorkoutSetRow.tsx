@@ -42,6 +42,7 @@ const CurrentWorkoutSetRow = ({
           variant="outlined"
           size="small"
           value={currentSet.reps}
+          type="number"
           onChange={(e) => handleInputChange("reps", Number(e.target.value))}
           disabled={completeSet}
         />
@@ -52,6 +53,7 @@ const CurrentWorkoutSetRow = ({
           variant="outlined"
           size="small"
           value={currentSet.weight}
+          type="number"
           onChange={(e) => handleInputChange("weight", Number(e.target.value))}
           disabled={completeSet}
         />

@@ -52,7 +52,7 @@ const Login = () => {
     setLoading(true); // Start loading
 
     try {
-      await dispatch(sendOtp({ email: formik.values.email })).unwrap();
+      await dispatch(sendOtp(formik.values.email)).unwrap();
       setOtpSent(true); // Set OTP as sent only if the function completes successfully
     } catch (error) {
       console.error("Failed to send OTP:", error);

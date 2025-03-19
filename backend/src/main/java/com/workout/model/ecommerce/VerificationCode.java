@@ -9,7 +9,6 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
 public class VerificationCode {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

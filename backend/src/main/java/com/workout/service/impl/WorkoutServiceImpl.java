@@ -88,6 +88,7 @@ public class WorkoutServiceImpl implements WorkoutService {
         exercise.setName(req.getName());
         exercise.setType(req.getType());
         exercise.setUser(user);
+        exercise.setNotDeletable(false);
         if (req.getImages() != null) {
             for (String image : req.getImages()) {
                 exercise.getImages().add(image);

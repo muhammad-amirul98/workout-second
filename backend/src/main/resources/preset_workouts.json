@@ -1,0 +1,114 @@
+[
+  {
+    "name": "5x5 Strongman",
+    "type": "Strength Training",
+    "exercises": [
+      {
+        "name": "Squat",
+        "sets": [
+          { "reps": 0, "weight": 0 },
+          { "reps": 0, "weight": 0 },
+          { "reps": 0, "weight": 0 },
+          { "reps": 0, "weight": 0 },
+          { "reps": 0, "weight": 0 }
+        ]
+      },
+      {
+        "name": "Deadlift",
+        "sets": [
+          { "reps": 0, "weight": 0 },
+          { "reps": 0, "weight": 0 },
+          { "reps": 0, "weight": 0 },
+          { "reps": 0, "weight": 0 },
+          { "reps": 0, "weight": 0 }
+        ]
+      },
+      {
+        "name": "Bench Press",
+        "sets": [
+          { "reps": 0, "weight": 0 },
+          { "reps": 0, "weight": 0 },
+          { "reps": 0, "weight": 0 },
+          { "reps": 0, "weight": 0 },
+          { "reps": 0, "weight": 0 }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Full Body Circuit",
+    "type": "Full Body",
+    "exercises": [
+      {
+        "name": "Push-ups",
+        "sets": [
+          { "reps": 0, "weight": 0 },
+          { "reps": 0, "weight": 0 },
+          { "reps": 0, "weight": 0 }
+        ]
+      },
+      {
+        "name": "Squats",
+        "sets": [
+          { "reps": 0, "weight": 0 },
+          { "reps": 0, "weight": 0 },
+          { "reps": 0, "weight": 0 }
+        ]
+      },
+      {
+        "name": "Burpees",
+        "sets": [
+          { "reps": 0, "weight": 0 },
+          { "reps": 0, "weight": 0 },
+          { "reps": 0, "weight": 0 }
+        ]
+      },
+      {
+        "name": "Jumping Jacks",
+        "sets": [
+          { "reps": 0, "weight": 0 },
+          { "reps": 0, "weight": 0 },
+          { "reps": 0, "weight": 0 }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "HIIT",
+    "type": "Cardio",
+    "exercises": [
+      {
+        "name": "High Knees",
+        "sets": [
+          { "reps": 0, "weight": 0 },
+          { "reps": 0, "weight": 0 },
+          { "reps": 0, "weight": 0 }
+        ]
+      },
+      {
+        "name": "Mountain Climbers",
+        "sets": [
+          { "reps": 0, "weight": 0 },
+          { "reps": 0, "weight": 0 },
+          { "reps": 0, "weight": 0 }
+        ]
+      },
+      {
+        "name": "Jump Squats",
+        "sets": [
+          { "reps": 0, "weight": 0 },
+          { "reps": 0, "weight": 0 },
+          { "reps": 0, "weight": 0 }
+        ]
+      },
+      {
+        "name": "Push-ups",
+        "sets": [
+          { "reps": 0, "weight": 0 },
+          { "reps": 0, "weight": 0 },
+          { "reps": 0, "weight": 0 }
+        ]
+      }
+    ]
+  }
+]

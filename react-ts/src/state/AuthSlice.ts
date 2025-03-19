@@ -5,9 +5,11 @@ import { User } from "../types/UserTypes";
 
 export const sendOtp = createAsyncThunk(
   "/auth/sendOtp",
-  async ({ email }: { email: string }, { rejectWithValue }) => {
+  async (email: string, { rejectWithValue }) => {
     try {
-      const response = await api.post("/auth/otp", { email });
+      const response = await api.post("/auth/otp", email, {
+        headers: { "Content-Type": "text/plain" }, // Specify raw text
+      });
 
       return response.data;
     } catch (error: unknown) {

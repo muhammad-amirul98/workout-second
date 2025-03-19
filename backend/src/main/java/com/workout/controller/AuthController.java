@@ -52,11 +52,10 @@ public class AuthController {
     }
 
     @PostMapping("/otp")
-    public ResponseEntity<ApiResponse> sendOTPHandler(@RequestBody VerificationCode verificationCode) throws Exception {
-        authService.sendOTP(verificationCode.getEmail());
+    public ResponseEntity<ApiResponse> sendOTPHandler(@RequestBody String email) throws Exception {
+        authService.sendOTP(email);
         ApiResponse res = new ApiResponse();
         res.setMessage("OTP sent successfully");
-
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(res);
     }
 
