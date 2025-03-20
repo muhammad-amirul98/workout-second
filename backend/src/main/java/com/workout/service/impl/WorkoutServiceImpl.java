@@ -1,5 +1,7 @@
 package com.workout.service.impl;
 
+import com.workout.dto.WorkoutCountDTO;
+import com.workout.dto.WorkoutVolumeDTO;
 import com.workout.enums.WorkoutStatus;
 import com.workout.exception.WorkoutException;
 import com.workout.model.userdetails.User;
@@ -380,6 +382,31 @@ public class WorkoutServiceImpl implements WorkoutService {
         setLog.setComplete(false);
         return setLogRepository.save(setLog);
     }
+
+    @Override
+    public List<WorkoutVolumeDTO> getWorkoutVolume(User user) {
+        return workoutLogRepository.findByUser(user)
+                .stream()
+                .map(log -> new WorkoutVolumeDTO(log.getTimeStarted().toLocalDate(), log.getTotalWeightLiftedInWorkout()))
+                .toList();
+    }
+
+    @Override
+    public List<WorkoutCountDTO> getWorkoutCountCompletedOverTime(User user) {
+        List<WorkoutLog> workoutLogs = workoutLogRepository.findByUser(user);
+
+        return workoutLogs.stream()
+                .filter(log -> log.getWorkoutStatus().equals(WorkoutStatus.COMPLETED))
+                .collect(Collectors.groupingBy(log -> {
+                    return log.getTimeStarted().getYear() + "-" + log.getTimeStarted().getMonthValue();
+                }))
+                .entrySet()
+                .stream()
+                .map(entry -> new WorkoutCountDTO(entry.getKey(), entry.getValue().size()))
+                .toList();
+    }
+
+
 
 }
 

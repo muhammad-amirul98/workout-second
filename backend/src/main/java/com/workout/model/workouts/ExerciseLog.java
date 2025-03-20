@@ -40,8 +40,14 @@ public class ExerciseLog {
 
     public double getTotalWeightLiftedInExercise() {
         return setLogs.stream()
-                .mapToDouble(com.workout.model.workouts.SetLog::getTotalWeightLiftedInSet)
+                .mapToDouble(SetLog::getTotalWeightLiftedInSet)
                 .sum();
     }
 
+    public double getMaxWeightPerformed() {
+        return setLogs.stream()
+                .mapToDouble(SetLog::getWeight) // Assuming SetLog has a getWeight() method
+                .max()
+                .orElse(0.0); // Default to 0 if no sets exist
+    }
 }

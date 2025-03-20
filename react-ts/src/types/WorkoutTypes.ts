@@ -104,3 +104,13 @@ export interface CompleteSetLogRequest {
   weight: number | null;
   reps: number | null;
 }
+
+export interface WorkoutVolume {
+  date: string;
+  totalWeightLiftedInWorkout: number;
+}
+
+export interface WorkoutCount {
+  period: string;
+  count: number;
+}

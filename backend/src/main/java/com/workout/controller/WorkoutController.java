@@ -1,5 +1,7 @@
 package com.workout.controller;
 
+import com.workout.dto.WorkoutCountDTO;
+import com.workout.dto.WorkoutVolumeDTO;
 import com.workout.exception.UserException;
 import com.workout.exception.WorkoutException;
 import com.workout.model.userdetails.User;
@@ -228,10 +230,17 @@ public class WorkoutController {
         return ResponseEntity.ok(workoutService.uncompleteSetLog(setLogId, user));
     }
 
+    @GetMapping("/workout-volume")
+    public ResponseEntity<List<WorkoutVolumeDTO>> getWorkoutVolume(@RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) throws UserException {
+        User user = userService.findUserByJwtToken(jwt);
+        return ResponseEntity.ok(workoutService.getWorkoutVolume(user));
+    }
 
+    @GetMapping("/workout-count")
+    public ResponseEntity<List<WorkoutCountDTO>> getWorkoutCount(@RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) throws UserException {
+        User user = userService.findUserByJwtToken(jwt);
+        return ResponseEntity.ok(workoutService.getWorkoutCountCompletedOverTime(user));
 
-
-
-
+    }
 
 }

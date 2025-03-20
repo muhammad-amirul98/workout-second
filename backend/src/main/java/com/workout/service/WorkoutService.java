@@ -1,5 +1,7 @@
 package com.workout.service;
 
+import com.workout.dto.WorkoutCountDTO;
+import com.workout.dto.WorkoutVolumeDTO;
 import com.workout.exception.WorkoutException;
 import com.workout.model.userdetails.User;
 import com.workout.model.workouts.*;
@@ -37,4 +39,10 @@ public interface WorkoutService {
     void deleteWorkoutLog(Long workoutLogId, User user) throws Exception;
     SetLog completeSetLog(Long setLogId, User user, CompleteSetLogRequest req) throws Exception;
     SetLog uncompleteSetLog(Long setLogId, User user) throws Exception;
+    List<WorkoutVolumeDTO> getWorkoutVolume(User user);
+    List<WorkoutCountDTO> getWorkoutCountCompletedOverTime(User user);
+
+
+
+
 }

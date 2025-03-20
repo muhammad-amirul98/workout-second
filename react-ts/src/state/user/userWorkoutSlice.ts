@@ -10,9 +10,11 @@ import {
   UpdateWorkoutRequest,
   UpdateWorkoutSetRequest,
   Workout,
+  WorkoutCount,
   WorkoutExercise,
   WorkoutLog,
   WorkoutSet,
+  WorkoutVolume,
 } from "../../types/WorkoutTypes";
 import { api } from "../../config/api";
 
@@ -663,6 +665,48 @@ export const uncompleteSetLog = createAsyncThunk<
   }
 );
 
+export const fetchWorkoutVolume = createAsyncThunk<
+  WorkoutVolume[],
+  string,
+  { rejectValue: string }
+>("/userworkout/fetchWorkoutVolume", async (jwt, { rejectWithValue }) => {
+  try {
+    const response = await api.get(`workout/workout-volume`, {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+    console.log("User fetchWorkoutVolume: ", response.data);
+    return response.data;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return rejectWithValue(error.message || "Failed to fetchWorkoutVolume");
+    }
+    return rejectWithValue("An unknown error occurred");
+  }
+});
+
+export const fetchWorkoutCount = createAsyncThunk<
+  WorkoutCount[],
+  string,
+  { rejectValue: string }
+>("/userworkout/fetchWorkoutCount", async (jwt, { rejectWithValue }) => {
+  try {
+    const response = await api.get(`workout/workout-count`, {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+    console.log("User fetchWorkoutCount: ", response.data);
+    return response.data;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return rejectWithValue(error.message || "Failed to fetchWorkoutCount");
+    }
+    return rejectWithValue("An unknown error occurred");
+  }
+});
+
 interface UserWorkoutState {
   workout: Workout | null;
   workouts: Workout[] | null;
@@ -673,6 +717,8 @@ interface UserWorkoutState {
   exercise: Exercise | null;
   workoutSet: WorkoutSet | null;
   currentWorkout: WorkoutLog | null;
+  data: WorkoutVolume[] | null;
+  workoutCountData: WorkoutCount[] | null;
   setLog: SetLog | null;
   loading: boolean;
   error: unknown;
@@ -688,6 +734,8 @@ const initialState: UserWorkoutState = {
   exercise: null,
   exercises: [],
   currentWorkout: null,
+  workoutCountData: null,
+  data: null,
   setLog: null,
   loading: false,
   error: null,
@@ -1047,6 +1095,36 @@ const userWorkoutSlice = createSlice({
         state.setLog = action.payload;
       })
       .addCase(uncompleteSetLog.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    //fetchWorkoutVolume
+    builder
+      .addCase(fetchWorkoutVolume.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchWorkoutVolume.fulfilled, (state, action) => {
+        state.loading = false;
+        state.data = action.payload;
+      })
+      .addCase(fetchWorkoutVolume.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    //fetchWorkoutCount
+    builder
+      .addCase(fetchWorkoutCount.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchWorkoutCount.fulfilled, (state, action) => {
+        state.loading = false;
+        state.workoutCountData = action.payload;
+      })
+      .addCase(fetchWorkoutCount.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

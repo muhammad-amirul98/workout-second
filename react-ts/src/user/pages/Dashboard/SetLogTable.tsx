@@ -9,7 +9,6 @@ import {
 } from "@mui/material";
 import { StyledTableCell } from "../../../component/TableComponent";
 import { ExerciseLog } from "../../../types/WorkoutTypes";
-import React from "react";
 import { hourFormat } from "../Util/dateFormat";
 
 export default function SetLogTable({

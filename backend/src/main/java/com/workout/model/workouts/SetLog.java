@@ -36,7 +36,10 @@ public class SetLog {
     private LocalDateTime timeCompleted;
 
     public double getTotalWeightLiftedInSet() {
-        return reps * weight;
+        if (isComplete) {
+            return reps * weight;
+        }
+        return 0;
     }
 
 

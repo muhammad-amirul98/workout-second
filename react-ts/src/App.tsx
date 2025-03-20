@@ -59,7 +59,7 @@ function App() {
               role === "ROLE_ADMIN" ? (
                 <AdminDashboard />
               ) : role === "ROLE_USER" ? (
-                <Workout />
+                <Dashboard />
               ) : (
                 <Auth />
               )
