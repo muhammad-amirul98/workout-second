@@ -211,13 +211,11 @@ export const updateExercise = createAsyncThunk<
           },
         }
       );
-      console.log("User Create Exercise: ", response.data);
+      console.log("User updateExercise: ", response.data);
       return response.data;
     } catch (error: unknown) {
       if (error instanceof Error) {
-        return rejectWithValue(
-          error.message || "Failed to fetch user order history"
-        );
+        return rejectWithValue(error.message || "Failed to updateExercise");
       }
       return rejectWithValue("An unknown error occurred");
     }
@@ -232,7 +230,7 @@ export const deleteExercise = createAsyncThunk<
   "/userworkout/deleteExercise",
   async ({ jwt, exerciseId }, { rejectWithValue }) => {
     try {
-      const response = await api.delete(`/exercise/${exerciseId}`, {
+      const response = await api.delete(`/workout/exercise/${exerciseId}`, {
         headers: {
           Authorization: `Bearer ${jwt}`,
         },

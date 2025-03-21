@@ -32,12 +32,7 @@ public class Exercise {
 
     private Set<String> images = new HashSet<>();
 
-    private Boolean notDeletable;
-
-    @ManyToOne
-    @JoinColumn(name = "user_id", nullable = true)
-    @JsonIgnore
-    private User user;
+    private Long userId = null;
 
     @OneToMany(mappedBy = "exercise", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore

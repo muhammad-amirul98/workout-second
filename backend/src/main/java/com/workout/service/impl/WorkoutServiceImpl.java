@@ -89,15 +89,13 @@ public class WorkoutServiceImpl implements WorkoutService {
         Exercise exercise = new Exercise();
         exercise.setName(req.getName());
         exercise.setType(req.getType());
-        exercise.setUser(user);
-        exercise.setNotDeletable(false);
+        exercise.setUserId(user.getId());
         if (req.getImages() != null) {
             for (String image : req.getImages()) {
                 exercise.getImages().add(image);
             }
         }
         exercise.setDescription(req.getDescription());
-        user.getExercises().add(exercise);
         return exerciseRepository.save(exercise);
     }
 
@@ -107,10 +105,24 @@ public class WorkoutServiceImpl implements WorkoutService {
     public void deleteExercise(Long exerciseId, User user) throws WorkoutException {
         Exercise exercise = exerciseRepository.findById(exerciseId)
                 .orElseThrow(() -> new WorkoutException("Exercise not found with ID: " + exerciseId));
-        if (exercise.getUser() != user) {
+        if (!Objects.equals(exercise.getUserId(), user.getId())) {
             throw new WorkoutException("No authorization to delete this exercise");
         }
         exerciseRepository.delete(exercise);
+    }
+
+    @Override
+    public Exercise updateExercise(Long exerciseId, UpdateExerciseRequest req, User user) throws WorkoutException {
+        Exercise exercise = exerciseRepository.findById(exerciseId)
+                .orElseThrow(() -> new WorkoutException("Exercise not found with ID: " + exerciseId));
+        if (!Objects.equals(exercise.getUserId(), user.getId())) {
+            throw new WorkoutException("No authorization to update this exercise");
+        }
+
+        exercise.setName(req.getName());
+        exercise.setType(req.getType());
+        exercise.setDescription(req.getDescription());
+        return exerciseRepository.save(exercise);
     }
 
     @Override

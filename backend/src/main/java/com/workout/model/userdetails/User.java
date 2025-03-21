@@ -62,9 +62,7 @@ public class User {
     @JsonIgnore
     private Set<Workout> workouts = new HashSet<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @JsonIgnore
-    private Set<Exercise> exercises = new HashSet<>();
+
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "user_progress_id", unique = true)

@@ -6,15 +6,28 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 
 import { useAppDispatch, useAppSelector } from "../../../state/store";
-import { fetchAllExercises } from "../../../state/user/userWorkoutSlice";
+import {
+  deleteExercise,
+  fetchAllExercises,
+  updateExercise,
+} from "../../../state/user/userWorkoutSlice";
 import {
   StyledTableCell,
   StyledTableRow,
 } from "../../../component/TableComponent";
 import { Delete, Edit } from "@mui/icons-material";
 import { useEffect, useState } from "react";
-import { IconButton } from "@mui/material";
+import {
+  Box,
+  Button,
+  IconButton,
+  Modal,
+  TextField,
+  Typography,
+} from "@mui/material";
 import DoneIcon from "@mui/icons-material/Done";
+import { style } from "../../../styles/styles";
+import { Exercise } from "../../../types/WorkoutTypes";
 
 interface ExerciseTableProps {
   visibleColumns?: number[]; // Array of column indices (0, 1, 2, ...)
@@ -27,12 +40,16 @@ export default function ExerciseTable({
 }: ExerciseTableProps) {
   const dispatch = useAppDispatch();
   const userworkout = useAppSelector((store) => store.userworkout);
+  const auth = useAppSelector((store) => store.auth);
+  const jwt = localStorage.getItem("jwt");
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     dispatch(fetchAllExercises());
   }, [dispatch]);
 
   const [selected, setSelected] = useState<number[]>([]);
+  const [editExercise, setEditExercise] = useState<Exercise | null>(null);
 
   const handleSelectedExercise = (exerciseId: number) => {
     const newSelected = selected.includes(exerciseId)
@@ -40,6 +57,49 @@ export default function ExerciseTable({
       : [...selected, exerciseId];
     setSelected(newSelected);
     onSelectExercises?.(newSelected);
+  };
+
+  const handleDeleteExercise = (exerciseId: number) => {
+    if (!jwt) return;
+    dispatch(deleteExercise({ jwt, exerciseId }))
+      .unwrap()
+      .then(() => dispatch(fetchAllExercises()));
+  };
+
+  const handleOpen = (exercise: Exercise) => {
+    setEditExercise(exercise);
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setEditExercise(null);
+    setOpen(false);
+  };
+
+  const handleInputChange = (
+    field: "name" | "type" | "description",
+    value: string
+  ) => {
+    if (!editExercise) return;
+    setEditExercise({ ...editExercise, [field]: value });
+  };
+
+  const handleSaveEditedExercise = (exerciseId: number) => {
+    if (!jwt || !editExercise) return;
+    dispatch(
+      updateExercise({
+        jwt,
+        exerciseData: {
+          name: editExercise.name,
+          type: editExercise.type,
+          description: editExercise.description,
+        },
+        exerciseId,
+      })
+    )
+      .unwrap()
+      .then(() => dispatch(fetchAllExercises()));
+    handleClose();
   };
 
   return (
@@ -106,20 +166,90 @@ export default function ExerciseTable({
                     </div>
                   </StyledTableCell>
                 )}
-                {visibleColumns.includes(4) && (
-                  <StyledTableCell align="center">
-                    <IconButton color="primary">
+                <StyledTableCell align="center">
+                  {visibleColumns.includes(4) &&
+                  exercise.userId === auth.user?.id ? (
+                    <IconButton
+                      color="primary"
+                      onClick={() => handleOpen(exercise)}
+                    >
                       <Edit />
                     </IconButton>
-                  </StyledTableCell>
-                )}
-                {visibleColumns.includes(5) && (
-                  <StyledTableCell align="center">
-                    <IconButton color="error">
+                  ) : null}
+                  <Modal
+                    open={open}
+                    onClose={handleClose}
+                    aria-labelledby="modal-modal-title"
+                    aria-describedby="modal-modal-description"
+                  >
+                    <Box sx={style}>
+                      <Typography id="modal-modal-title">
+                        Edit Exercise
+                      </Typography>
+                      <TextField
+                        label="Exercise Name"
+                        variant="outlined"
+                        size="small"
+                        fullWidth
+                        value={editExercise?.name}
+                        onChange={(e) =>
+                          handleInputChange("name", e.target.value)
+                        }
+                        margin="normal"
+                      />
+                      <TextField
+                        label="Exercise Type"
+                        variant="outlined"
+                        size="small"
+                        fullWidth
+                        value={editExercise?.type}
+                        onChange={(e) =>
+                          handleInputChange("type", e.target.value)
+                        }
+                        margin="normal"
+                      />
+                      <TextField
+                        label="Exercise Description"
+                        variant="outlined"
+                        size="small"
+                        fullWidth
+                        multiline
+                        value={editExercise?.description}
+                        onChange={(e) =>
+                          handleInputChange("description", e.target.value)
+                        }
+                        margin="normal"
+                      />
+                      <div className="flex mt-2 gap-5">
+                        <Button
+                          color="primary"
+                          variant="contained"
+                          onClick={() => handleSaveEditedExercise(exercise.id)}
+                        >
+                          Save
+                        </Button>
+                        <Button
+                          onClick={handleClose}
+                          color="primary"
+                          variant="outlined"
+                        >
+                          Close
+                        </Button>
+                      </div>
+                    </Box>
+                  </Modal>
+                </StyledTableCell>
+                <StyledTableCell align="center">
+                  {visibleColumns.includes(5) &&
+                  exercise.userId === auth.user?.id ? (
+                    <IconButton
+                      color="error"
+                      onClick={() => handleDeleteExercise(exercise.id)}
+                    >
                       <Delete />
                     </IconButton>
-                  </StyledTableCell>
-                )}
+                  ) : null}
+                </StyledTableCell>
                 {visibleColumns.includes(6) && (
                   <StyledTableCell align="center">
                     <IconButton

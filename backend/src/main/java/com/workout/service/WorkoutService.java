@@ -18,6 +18,7 @@ public interface WorkoutService {
     Exercise createExercise(CreateExerciseRequest req, User user);
     WorkoutSet addSetToExercise(Long workoutExerciseId, User user, CreateSetRequest set) throws Exception;
     void deleteExercise(Long exerciseId, User user) throws WorkoutException;
+    Exercise updateExercise(Long exerciseId, UpdateExerciseRequest req, User user) throws WorkoutException;
     WorkoutLog startWorkout(Long workoutId, User user) throws WorkoutException;
     WorkoutLog completeWorkout(Long workoutId, User user) throws WorkoutException;
     WorkoutLog cancelWorkout(Long workoutId, User user) throws WorkoutException;

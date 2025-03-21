@@ -126,6 +126,14 @@ public class WorkoutController {
         return ResponseEntity.noContent().build();
     }
 
+    @PutMapping("/exercise/{exerciseId}")
+    public ResponseEntity<Exercise> updateExercise(@PathVariable Long exerciseId,
+                                               @RequestBody UpdateExerciseRequest req,
+                                               @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) throws Exception {
+        User user = userService.findUserByJwtToken(jwt);
+        return ResponseEntity.ok(workoutService.updateExercise(exerciseId, req, user));
+    }
+
     @GetMapping("/search")
     public ResponseEntity<List<Workout>> searchWorkouts(@RequestParam String query) {
         List<Workout> workouts = workoutService.searchWorkouts(query);

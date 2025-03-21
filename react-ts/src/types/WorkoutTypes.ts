@@ -25,6 +25,7 @@ export interface Exercise {
   name: string;
   type: string;
   description: string;
+  userId: number;
   images?: string[];
   workouts?: Workout[];
   sets?: WorkoutSet[];

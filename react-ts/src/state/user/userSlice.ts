@@ -147,6 +147,7 @@ const userSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+
       //  fetchUserAddresses
       .addCase(fetchUserAddresses.pending, (state) => {
         state.loading = true;

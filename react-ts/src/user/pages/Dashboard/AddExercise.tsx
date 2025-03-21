@@ -7,7 +7,7 @@ import { uploadToCloudinary } from "../Util/uploadToCloudinary";
 import { useAppDispatch } from "../../../state/store";
 import {
   addExercise,
-  fetchAllWorkoutsByUser,
+  fetchAllExercises,
 } from "../../../state/user/userWorkoutSlice";
 import * as Yup from "yup";
 
@@ -32,7 +32,7 @@ const AddExercise = ({ onClose }: { onClose: () => void }) => {
       if (jwt) {
         dispatch(addExercise({ jwt, exerciseData: values }))
           .unwrap()
-          .then(() => dispatch(fetchAllWorkoutsByUser(jwt)));
+          .then(() => dispatch(fetchAllExercises()));
         onClose();
       }
     },
