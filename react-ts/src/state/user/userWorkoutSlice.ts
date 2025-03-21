@@ -5,6 +5,7 @@ import {
   CreateSetRequest,
   CreateWorkoutRequest,
   Exercise,
+  MaxWeight,
   SetLog,
   UpdateExerciseRequest,
   UpdateWorkoutRequest,
@@ -707,6 +708,29 @@ export const fetchWorkoutCount = createAsyncThunk<
   }
 });
 
+export const fetchWorkoutMaxWeights = createAsyncThunk<
+  MaxWeight[],
+  string,
+  { rejectValue: string }
+>("/userworkout/fetchWorkoutMaxWeights", async (jwt, { rejectWithValue }) => {
+  try {
+    const response = await api.get(`workout/workout-max-weight`, {
+      headers: {
+        Authorization: `Bearer ${jwt}`,
+      },
+    });
+    console.log("User fetchWorkoutMaxWeights: ", response.data);
+    return response.data;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return rejectWithValue(
+        error.message || "Failed to fetchWorkoutMaxWeights"
+      );
+    }
+    return rejectWithValue("An unknown error occurred");
+  }
+});
+
 interface UserWorkoutState {
   workout: Workout | null;
   workouts: Workout[] | null;
@@ -719,6 +743,7 @@ interface UserWorkoutState {
   currentWorkout: WorkoutLog | null;
   data: WorkoutVolume[] | null;
   workoutCountData: WorkoutCount[] | null;
+  workoutMaxWeights: MaxWeight[] | null;
   setLog: SetLog | null;
   loading: boolean;
   error: unknown;
@@ -735,6 +760,7 @@ const initialState: UserWorkoutState = {
   exercises: [],
   currentWorkout: null,
   workoutCountData: null,
+  workoutMaxWeights: null,
   data: null,
   setLog: null,
   loading: false,
@@ -1125,6 +1151,22 @@ const userWorkoutSlice = createSlice({
         state.workoutCountData = action.payload;
       })
       .addCase(fetchWorkoutCount.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    //fetchWorkoutMaxWeights
+
+    builder
+      .addCase(fetchWorkoutMaxWeights.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchWorkoutMaxWeights.fulfilled, (state, action) => {
+        state.loading = false;
+        state.workoutMaxWeights = action.payload;
+      })
+      .addCase(fetchWorkoutMaxWeights.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

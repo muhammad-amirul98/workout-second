@@ -46,8 +46,15 @@ public class ExerciseLog {
 
     public double getMaxWeightPerformed() {
         return setLogs.stream()
-                .mapToDouble(SetLog::getWeight) // Assuming SetLog has a getWeight() method
+                .mapToDouble(SetLog::getWeight)
                 .max()
                 .orElse(0.0); // Default to 0 if no sets exist
+    }
+
+    public Optional<SetLog> getMaxWeightSet() {
+        return setLogs.stream()
+                .max(Comparator.comparingDouble(SetLog::getWeight)
+                        .thenComparingInt(SetLog::getReps));
+
     }
 }

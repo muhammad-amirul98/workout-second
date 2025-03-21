@@ -1,5 +1,6 @@
 package com.workout.controller;
 
+import com.workout.dto.MaxWeightDTO;
 import com.workout.dto.WorkoutCountDTO;
 import com.workout.dto.WorkoutVolumeDTO;
 import com.workout.exception.UserException;
@@ -240,7 +241,14 @@ public class WorkoutController {
     public ResponseEntity<List<WorkoutCountDTO>> getWorkoutCount(@RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) throws UserException {
         User user = userService.findUserByJwtToken(jwt);
         return ResponseEntity.ok(workoutService.getWorkoutCountCompletedOverTime(user));
-
     }
+
+    @GetMapping("/workout-max-weight")
+    public ResponseEntity<List<MaxWeightDTO>> getMaxWeightSet(@RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) throws UserException {
+        User user = userService.findUserByJwtToken(jwt);
+        return ResponseEntity.ok(workoutService.getMaxWeightLogs(user));
+    }
+
+
 
 }

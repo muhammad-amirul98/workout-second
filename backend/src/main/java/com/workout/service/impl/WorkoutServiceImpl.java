@@ -1,5 +1,6 @@
 package com.workout.service.impl;
 
+import com.workout.dto.MaxWeightDTO;
 import com.workout.dto.WorkoutCountDTO;
 import com.workout.dto.WorkoutVolumeDTO;
 import com.workout.enums.WorkoutStatus;
@@ -393,9 +394,7 @@ public class WorkoutServiceImpl implements WorkoutService {
 
     @Override
     public List<WorkoutCountDTO> getWorkoutCountCompletedOverTime(User user) {
-        List<WorkoutLog> workoutLogs = workoutLogRepository.findByUser(user);
-
-        return workoutLogs.stream()
+        return workoutLogRepository.findByUser(user).stream()
                 .filter(log -> log.getWorkoutStatus().equals(WorkoutStatus.COMPLETED))
                 .collect(Collectors.groupingBy(log -> {
                     return log.getTimeStarted().getYear() + "-" + log.getTimeStarted().getMonthValue();
@@ -406,6 +405,21 @@ public class WorkoutServiceImpl implements WorkoutService {
                 .toList();
     }
 
+    @Override
+    public List<MaxWeightDTO> getMaxWeightLogs(User user) {
+        return workoutLogRepository.findByUser(user).stream()
+                .flatMap(workoutLog -> workoutLog.getExerciseLogs().stream()
+                        .map(exerciseLog -> exerciseLog.getMaxWeightSet()
+                                .map(set -> new MaxWeightDTO(
+                                        workoutLog.getTimeStarted().toLocalDate().toString(),
+                                        exerciseLog.getExercise().getName(),
+                                        set.getWeight(),
+                                        set.getReps()
+                                )))
+                        .flatMap(Optional::stream) // Flatten Optional<MaxWeightDTO> to Stream<MaxWeightDTO>
+                )
+                .toList();
+    }
 
 
 }

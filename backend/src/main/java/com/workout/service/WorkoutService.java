@@ -1,5 +1,6 @@
 package com.workout.service;
 
+import com.workout.dto.MaxWeightDTO;
 import com.workout.dto.WorkoutCountDTO;
 import com.workout.dto.WorkoutVolumeDTO;
 import com.workout.exception.WorkoutException;
@@ -41,6 +42,7 @@ public interface WorkoutService {
     SetLog uncompleteSetLog(Long setLogId, User user) throws Exception;
     List<WorkoutVolumeDTO> getWorkoutVolume(User user);
     List<WorkoutCountDTO> getWorkoutCountCompletedOverTime(User user);
+    List<MaxWeightDTO> getMaxWeightLogs(User user);
 
 
 

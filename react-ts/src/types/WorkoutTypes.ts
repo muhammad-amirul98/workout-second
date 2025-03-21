@@ -114,3 +114,10 @@ export interface WorkoutCount {
   period: string;
   count: number;
 }
+
+export interface MaxWeight {
+  date: string;
+  exercise: string;
+  weight: number;
+  reps: number;
+}

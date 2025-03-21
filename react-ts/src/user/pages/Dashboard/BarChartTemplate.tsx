@@ -1,18 +1,19 @@
 import {
-  LineChart,
-  Line,
   XAxis,
   YAxis,
   Tooltip,
   ResponsiveContainer,
   CartesianGrid,
+  TooltipProps,
+  BarChart,
+  Bar,
 } from "recharts";
 import { Tooltip as MuiTooltip, IconButton } from "@mui/material";
 import { CSVLink } from "react-csv";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import ImageIcon from "@mui/icons-material/Image";
 import html2canvas from "html2canvas";
-import { useRef } from "react";
+import { ReactNode, useRef } from "react";
 import { WorkoutCount, WorkoutVolume } from "../../../types/WorkoutTypes";
 
 interface ChartTemplateProps {
@@ -22,15 +23,17 @@ interface ChartTemplateProps {
   downloadFileName: string;
   xAxisKey: string;
   chartType: "workoutVolume" | "workoutCount"; // Adjust according to chart type
+  customToolTip?: (props: TooltipProps<number, string>) => ReactNode;
 }
 
-const ChartTemplate = ({
+const BarChartTemplate = ({
   data,
   chartTitle,
   dataKey,
   downloadFileName,
   xAxisKey,
   chartType,
+  customToolTip,
 }: ChartTemplateProps) => {
   const chartRef = useRef<HTMLDivElement | null>(null);
 
@@ -74,26 +77,21 @@ const ChartTemplate = ({
         </div>
       </div>
 
-      <div className="w-full" ref={chartRef}>
+      <div className="w-full p-5" ref={chartRef}>
         <ResponsiveContainer width="100%" height={300}>
-          <LineChart data={data}>
+          <BarChart data={data}>
             {chartType === "workoutCount" && (
               <CartesianGrid strokeDasharray="3 3" />
             )}
             <XAxis dataKey={xAxisKey} />
             <YAxis />
-            <Tooltip />
-            <Line
-              type="monotone"
-              dataKey={dataKey}
-              stroke="#8884d8"
-              strokeWidth={2}
-            />
-          </LineChart>
+            <Tooltip content={customToolTip} />
+            <Bar dataKey={dataKey} fill="#8884d8" />
+          </BarChart>
         </ResponsiveContainer>
       </div>
     </div>
   );
 };
 
-export default ChartTemplate;
+export default BarChartTemplate;

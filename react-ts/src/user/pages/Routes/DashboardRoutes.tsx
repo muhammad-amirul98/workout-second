@@ -5,7 +5,7 @@ import Product from "../Product/Product";
 import Orders from "../Account/Orders";
 import Exercise from "../Dashboard/Exercise";
 import CurrentWorkout from "../Dashboard/CurrentWorkout";
-import WorkoutDashboard from "../Dashboard/WorkoutDashboard";
+import WorkoutCharts from "../Dashboard/WorkoutCharts";
 
 const DashboardRoutes = () => {
   return (
@@ -14,7 +14,7 @@ const DashboardRoutes = () => {
         <Route path="/workouts" element={<Workout />} />
         <Route path="/current-workout" element={<CurrentWorkout />} />
         <Route path="/workout-logs" element={<WorkoutLog />} />
-        <Route path="/progress" element={<WorkoutDashboard />} />
+        <Route path="/progress" element={<WorkoutCharts />} />
         <Route path="/shop" element={<Product />} />
         <Route path="/orders" element={<Orders />} />
         <Route path="/exercise" element={<Exercise />} />
