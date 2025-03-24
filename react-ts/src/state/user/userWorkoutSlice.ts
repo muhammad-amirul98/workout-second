@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
+  BodyMeasurements,
   CompleteSetLogRequest,
   CreateExerciseRequest,
   CreateSetRequest,
@@ -7,6 +8,7 @@ import {
   Exercise,
   MaxWeight,
   SetLog,
+  UpdateBodyMeasurementsRequest,
   UpdateExerciseRequest,
   UpdateWorkoutRequest,
   UpdateWorkoutSetRequest,
@@ -729,6 +731,56 @@ export const fetchWorkoutMaxWeights = createAsyncThunk<
   }
 });
 
+export const addHeightAndWeight = createAsyncThunk<
+  BodyMeasurements,
+  { jwt: string; req: UpdateBodyMeasurementsRequest },
+  { rejectValue: string }
+>(
+  "/userworkout/addHeightAndWeight",
+  async ({ jwt, req }, { rejectWithValue }) => {
+    try {
+      const response = await api.post(`/workout/bm`, req, {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+      console.log("User addHeightAndWeight: ", response.data);
+      return response.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message || "Failed to addHeightAndWeight");
+      }
+      return rejectWithValue("An unknown error occurred");
+    }
+  }
+);
+
+export const fetchUserBodyMeasurements = createAsyncThunk<
+  BodyMeasurements[],
+  string,
+  { rejectValue: string }
+>(
+  "/userworkout/fetchUserBodyMeasurements",
+  async (jwt, { rejectWithValue }) => {
+    try {
+      const response = await api.get(`/workout/bm`, {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+      console.log("User fetchUserBodyMeasurements: ", response.data);
+      return response.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return rejectWithValue(
+          error.message || "Failed to fetchUserBodyMeasurements"
+        );
+      }
+      return rejectWithValue("An unknown error occurred");
+    }
+  }
+);
+
 interface UserWorkoutState {
   workout: Workout | null;
   workouts: Workout[] | null;
@@ -742,6 +794,8 @@ interface UserWorkoutState {
   data: WorkoutVolume[] | null;
   workoutCountData: WorkoutCount[] | null;
   workoutMaxWeights: MaxWeight[] | null;
+  bodyMeasurement: BodyMeasurements | null;
+  bodyMeasurements: BodyMeasurements[] | null;
   setLog: SetLog | null;
   loading: boolean;
   error: unknown;
@@ -759,6 +813,8 @@ const initialState: UserWorkoutState = {
   currentWorkout: null,
   workoutCountData: null,
   workoutMaxWeights: null,
+  bodyMeasurement: null,
+  bodyMeasurements: [],
   data: null,
   setLog: null,
   loading: false,
@@ -1165,6 +1221,36 @@ const userWorkoutSlice = createSlice({
         state.workoutMaxWeights = action.payload;
       })
       .addCase(fetchWorkoutMaxWeights.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    //addHeightAndWeight
+    builder
+      .addCase(addHeightAndWeight.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addHeightAndWeight.fulfilled, (state, action) => {
+        state.loading = false;
+        state.bodyMeasurement = action.payload;
+      })
+      .addCase(addHeightAndWeight.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    //fetchUserBodyMeasurements
+    builder
+      .addCase(fetchUserBodyMeasurements.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(fetchUserBodyMeasurements.fulfilled, (state, action) => {
+        state.loading = false;
+        state.bodyMeasurements = action.payload;
+      })
+      .addCase(fetchUserBodyMeasurements.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

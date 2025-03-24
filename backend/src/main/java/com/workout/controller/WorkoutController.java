@@ -5,6 +5,7 @@ import com.workout.dto.WorkoutCountDTO;
 import com.workout.dto.WorkoutVolumeDTO;
 import com.workout.exception.UserException;
 import com.workout.exception.WorkoutException;
+import com.workout.model.userdetails.BodyMeasurement;
 import com.workout.model.userdetails.User;
 import com.workout.model.workouts.*;
 import com.workout.request.*;
@@ -125,6 +126,7 @@ public class WorkoutController {
         workoutService.deleteExercise(exerciseId, user);
         return ResponseEntity.noContent().build();
     }
+
 
     @PutMapping("/exercise/{exerciseId}")
     public ResponseEntity<Exercise> updateExercise(@PathVariable Long exerciseId,
@@ -257,6 +259,20 @@ public class WorkoutController {
         return ResponseEntity.ok(workoutService.getMaxWeightLogs(user));
     }
 
+    @PostMapping("/bm")
+    public ResponseEntity<BodyMeasurement> updateBodyMeasurements(
+            @RequestBody UpdateBodyMeasurementsRequest req,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) throws UserException {
+        User user = userService.findUserByJwtToken(jwt);
+        return ResponseEntity.ok(workoutService.addHeightAndWeight(user, req));
+    }
+
+    @GetMapping("/bm")
+    public ResponseEntity<List<BodyMeasurement>> getUserBodyMeasurements(
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) throws UserException {
+        User user = userService.findUserByJwtToken(jwt);
+        return ResponseEntity.ok(workoutService.getUserBodyMeasurements(user));
+    }
 
 
 }

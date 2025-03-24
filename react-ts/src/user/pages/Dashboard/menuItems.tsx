@@ -32,8 +32,8 @@ export const menu = [
     activeIcon: <ClipboardList className="text-white" />,
   },
   {
-    name: "1RMs",
-    path: "/dashboard/1rms",
+    name: "Body Measurements",
+    path: "/dashboard/bm",
     icon: <BarChart className="text-teal-600" />,
     activeIcon: <BarChart className="text-white" />,
   },

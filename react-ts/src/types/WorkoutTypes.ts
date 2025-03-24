@@ -122,3 +122,16 @@ export interface MaxWeight {
   weight: number;
   reps: number;
 }
+
+export interface UpdateBodyMeasurementsRequest {
+  height: number;
+  weight: number;
+}
+
+export interface BodyMeasurements {
+  height: number;
+  weight: number;
+  bmi: number;
+  dateRecorded: string;
+  bmiStatus: string;
+}

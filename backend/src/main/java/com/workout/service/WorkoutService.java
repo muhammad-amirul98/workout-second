@@ -4,6 +4,7 @@ import com.workout.dto.MaxWeightDTO;
 import com.workout.dto.WorkoutCountDTO;
 import com.workout.dto.WorkoutVolumeDTO;
 import com.workout.exception.WorkoutException;
+import com.workout.model.userdetails.BodyMeasurement;
 import com.workout.model.userdetails.User;
 import com.workout.model.workouts.*;
 import com.workout.request.*;
@@ -44,7 +45,8 @@ public interface WorkoutService {
     List<WorkoutVolumeDTO> getWorkoutVolume(User user);
     List<WorkoutCountDTO> getWorkoutCountCompletedOverTime(User user);
     List<MaxWeightDTO> getMaxWeightLogs(User user);
-
+    BodyMeasurement addHeightAndWeight(User user, UpdateBodyMeasurementsRequest req);
+    List<BodyMeasurement> getUserBodyMeasurements(User user);
 
 
 

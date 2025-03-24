@@ -22,8 +22,8 @@ export default function SetLogTable({
         <TableHead>
           <TableRow>
             <StyledTableCell>Set Number</StyledTableCell>
-            <StyledTableCell>Planned Reps</StyledTableCell>
-            <StyledTableCell>Planned Weight (kg)</StyledTableCell>
+            <StyledTableCell>Reps</StyledTableCell>
+            <StyledTableCell>Weight (kg)</StyledTableCell>
             <StyledTableCell colSpan={2}>
               <div className="font-light">Time Completed</div>
             </StyledTableCell>

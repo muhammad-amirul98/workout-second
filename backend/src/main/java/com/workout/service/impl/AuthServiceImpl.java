@@ -9,6 +9,7 @@ import com.workout.model.ecommerce.Cart;
 import com.workout.model.ecommerce.VerificationCode;
 import com.workout.model.ecommerce.WishList;
 import com.workout.model.userdetails.User;
+import com.workout.model.userdetails.UserProgress;
 import com.workout.model.workouts.WorkoutWatchList;
 import com.workout.repository.*;
 import com.workout.request.SignInRequest;

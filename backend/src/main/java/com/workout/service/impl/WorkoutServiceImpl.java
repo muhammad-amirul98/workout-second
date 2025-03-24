@@ -5,7 +5,9 @@ import com.workout.dto.WorkoutCountDTO;
 import com.workout.dto.WorkoutVolumeDTO;
 import com.workout.enums.WorkoutStatus;
 import com.workout.exception.WorkoutException;
+import com.workout.model.userdetails.BodyMeasurement;
 import com.workout.model.userdetails.User;
+import com.workout.model.userdetails.UserProgress;
 import com.workout.model.workouts.*;
 import com.workout.repository.*;
 import com.workout.request.*;
@@ -32,6 +34,8 @@ public class WorkoutServiceImpl implements WorkoutService {
     private final UserRepository userRepository;
     private final WorkoutExerciseRepository workoutExerciseRepository;
     private final WorkoutSetRepository workoutSetRepository;
+    private final BodyMeasurementRepository bodyMeasurementRepository;
+    private final UserProgressRepository userProgressRepository;
 
 
     @Override
@@ -433,7 +437,28 @@ public class WorkoutServiceImpl implements WorkoutService {
                 .toList();
     }
 
+    @Override
+    public BodyMeasurement addHeightAndWeight(User user, UpdateBodyMeasurementsRequest req) {
+        UserProgress userProgress = user.getUserProgress();
+        if (userProgress == null) {
+            userProgress = new UserProgress();
+            userProgress.setUser(user); // Ensure bidirectional relationship
+            user.setUserProgress(userProgress);
+            userProgress = userProgressRepository.save(userProgress);
+        }
+        BodyMeasurement bodyMeasurement = new BodyMeasurement();
+        bodyMeasurement.setHeight(req.getHeight());
+        bodyMeasurement.setWeight(req.getWeight());
+        bodyMeasurement.setUserProgress(userProgress);
+        bodyMeasurement.updateBodyMeasurement(req.getWeight(),req.getHeight());
+        user.getUserProgress().getBodyMeasurements().add(bodyMeasurement);
+        return bodyMeasurementRepository.save(bodyMeasurement);
+    }
 
+    @Override
+    public List<BodyMeasurement> getUserBodyMeasurements(User user) {
+        return user.getUserProgress().getBodyMeasurements();
+    }
 }
 
 

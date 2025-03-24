@@ -7,6 +7,7 @@ import {
   TooltipProps,
   BarChart,
   Bar,
+  Brush,
 } from "recharts";
 import { Tooltip as MuiTooltip, IconButton } from "@mui/material";
 import { CSVLink } from "react-csv";
@@ -87,6 +88,7 @@ const BarChartTemplate = ({
             <YAxis />
             <Tooltip content={customToolTip} />
             <Bar dataKey={dataKey} fill="#8884d8" />
+            <Brush dataKey="date" height={30} stroke="#8884d8" />
           </BarChart>
         </ResponsiveContainer>
       </div>

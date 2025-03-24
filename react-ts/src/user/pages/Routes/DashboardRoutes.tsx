@@ -6,6 +6,7 @@ import Orders from "../Account/Orders";
 import Exercise from "../Dashboard/Exercise";
 import CurrentWorkout from "../Dashboard/CurrentWorkout";
 import WorkoutCharts from "../Dashboard/WorkoutCharts";
+import BodyMeasurements from "../Dashboard/BodyMeasurements";
 
 const DashboardRoutes = () => {
   return (
@@ -18,6 +19,7 @@ const DashboardRoutes = () => {
         <Route path="/shop" element={<Product />} />
         <Route path="/orders" element={<Orders />} />
         <Route path="/exercise" element={<Exercise />} />
+        <Route path="/bm" element={<BodyMeasurements />} />
       </Routes>
     </div>
   );

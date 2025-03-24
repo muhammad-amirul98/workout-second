@@ -1,5 +1,6 @@
 package com.workout.model.userdetails;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.workout.enums.BMIStatus;
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,7 +12,6 @@ import java.time.LocalDateTime;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@EqualsAndHashCode
 public class BodyMeasurement {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -28,6 +28,7 @@ public class BodyMeasurement {
 
     @ManyToOne
     @JoinColumn(name = "user_progress_id", nullable = false)
+    @JsonBackReference
     private UserProgress userProgress;
 
     // Method to update weight, height, BMI, and BMI status
