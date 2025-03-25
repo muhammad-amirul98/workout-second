@@ -42,7 +42,8 @@ public class BodyMeasurement {
 
     // BMI Calculation: weight (kg) / (height (m) * height (m))
     private double calculateBMI(double weight, double height) {
-        return (height > 0) ? weight / (height * height) : 0;
+        double heightInMetres = height/100;
+        return (height > 0) ? weight / (heightInMetres * heightInMetres) : 0;
     }
 
     // Determine BMI status based on BMI value

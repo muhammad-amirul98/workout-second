@@ -128,7 +128,8 @@ export interface UpdateBodyMeasurementsRequest {
   weight: number;
 }
 
-export interface BodyMeasurements {
+export interface BodyMeasurement {
+  id: number;
   height: number;
   weight: number;
   bmi: number;

@@ -1,5 +1,5 @@
 import {
-  Box,
+  // Box,
   Divider,
   FormControl,
   IconButton,
@@ -75,11 +75,11 @@ const Product = () => {
                   <FilterAlt />
                 </IconButton>
               )}
-              {!isLarge && (
+              {/* {!isLarge && (
                 <Box>
                   <FilterSection />
                 </Box>
-              )}
+              )} */}
             </div>
 
             {/* SORT BAR  */}
@@ -100,7 +100,10 @@ const Product = () => {
           <Divider />
 
           {/* PRODUCTS  */}
-          <section className="product_section mt-5 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-y-5 px-5 justify-center">
+          <section
+            className="product_section mt-5 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3
+           gap-y-5 px-5 justify-center"
+          >
             {userproduct.products.map((item, index) => {
               return <ProductCard key={index} item={item} />;
             })}

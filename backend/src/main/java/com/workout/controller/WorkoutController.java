@@ -260,7 +260,7 @@ public class WorkoutController {
     }
 
     @PostMapping("/bm")
-    public ResponseEntity<BodyMeasurement> updateBodyMeasurements(
+    public ResponseEntity<BodyMeasurement> addBodyMeasurements(
             @RequestBody UpdateBodyMeasurementsRequest req,
             @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) throws UserException {
         User user = userService.findUserByJwtToken(jwt);
@@ -274,5 +274,21 @@ public class WorkoutController {
         return ResponseEntity.ok(workoutService.getUserBodyMeasurements(user));
     }
 
+    @PutMapping("/bm/{bodyMeasurementId}")
+    public ResponseEntity<BodyMeasurement> updateBodyMeasurements(
+            @PathVariable Long bodyMeasurementId,
+            @RequestBody UpdateBodyMeasurementsRequest req,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) throws Exception {
+        User user = userService.findUserByJwtToken(jwt);
+        return ResponseEntity.ok(workoutService.updateHeightAndWeight(user, req, bodyMeasurementId));
+    }
 
+    @DeleteMapping("/bm/{bodyMeasurementId}")
+    public ResponseEntity<Void> deleteBodyMeasurements(
+            @PathVariable Long bodyMeasurementId,
+            @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) throws Exception {
+        User user = userService.findUserByJwtToken(jwt);
+        workoutService.deleteBodyMeasurements(user, bodyMeasurementId);
+        return ResponseEntity.noContent().build();
+    }
 }

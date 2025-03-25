@@ -1,6 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
-  BodyMeasurements,
+  BodyMeasurement,
   CompleteSetLogRequest,
   CreateExerciseRequest,
   CreateSetRequest,
@@ -732,7 +732,7 @@ export const fetchWorkoutMaxWeights = createAsyncThunk<
 });
 
 export const addHeightAndWeight = createAsyncThunk<
-  BodyMeasurements,
+  BodyMeasurement,
   { jwt: string; req: UpdateBodyMeasurementsRequest },
   { rejectValue: string }
 >(
@@ -756,7 +756,7 @@ export const addHeightAndWeight = createAsyncThunk<
 );
 
 export const fetchUserBodyMeasurements = createAsyncThunk<
-  BodyMeasurements[],
+  BodyMeasurement[],
   string,
   { rejectValue: string }
 >(
@@ -781,6 +781,58 @@ export const fetchUserBodyMeasurements = createAsyncThunk<
   }
 );
 
+export const updateBodyMeasurement = createAsyncThunk<
+  BodyMeasurement,
+  { jwt: string; req: UpdateBodyMeasurementsRequest; id: number },
+  { rejectValue: string }
+>(
+  "/userworkout/updateBodyMeasurement",
+  async ({ jwt, req, id }, { rejectWithValue }) => {
+    try {
+      const response = await api.put(`/workout/bm/${id}`, req, {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+      console.log("User updateBodyMeasurement: ", response.data);
+      return response.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return rejectWithValue(
+          error.message || "Failed to updateBodyMeasurement"
+        );
+      }
+      return rejectWithValue("An unknown error occurred");
+    }
+  }
+);
+
+export const deleteBodyMeasurement = createAsyncThunk<
+  void,
+  { jwt: string; id: number },
+  { rejectValue: string }
+>(
+  "/userworkout/deleteBodyMeasurement",
+  async ({ jwt, id }, { rejectWithValue }) => {
+    try {
+      const response = await api.delete(`/workout/bm/${id}`, {
+        headers: {
+          Authorization: `Bearer ${jwt}`,
+        },
+      });
+      console.log(`User deleteBodyMeasurement with ID: ${id}`);
+      return response.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return rejectWithValue(
+          error.message || "Failed to deleteBodyMeasurement"
+        );
+      }
+      return rejectWithValue("An unknown error occurred");
+    }
+  }
+);
+
 interface UserWorkoutState {
   workout: Workout | null;
   workouts: Workout[] | null;
@@ -794,8 +846,8 @@ interface UserWorkoutState {
   data: WorkoutVolume[] | null;
   workoutCountData: WorkoutCount[] | null;
   workoutMaxWeights: MaxWeight[] | null;
-  bodyMeasurement: BodyMeasurements | null;
-  bodyMeasurements: BodyMeasurements[] | null;
+  bodyMeasurement: BodyMeasurement | null;
+  bodyMeasurements: BodyMeasurement[] | null;
   setLog: SetLog | null;
   loading: boolean;
   error: unknown;
@@ -1251,6 +1303,35 @@ const userWorkoutSlice = createSlice({
         state.bodyMeasurements = action.payload;
       })
       .addCase(fetchUserBodyMeasurements.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    //updateBodyMeasurement
+    builder
+      .addCase(updateBodyMeasurement.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(updateBodyMeasurement.fulfilled, (state, action) => {
+        state.loading = false;
+        state.bodyMeasurement = action.payload;
+      })
+      .addCase(updateBodyMeasurement.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    //deleteBodyMeasurement
+    builder
+      .addCase(deleteBodyMeasurement.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(deleteBodyMeasurement.fulfilled, (state) => {
+        state.loading = false;
+      })
+      .addCase(deleteBodyMeasurement.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });

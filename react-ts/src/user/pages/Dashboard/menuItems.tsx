@@ -5,7 +5,6 @@ import {
   ClipboardList,
   BarChart,
   LineChart,
-  MessageSquare,
   ShoppingCart,
   Package,
   Brain,
@@ -48,12 +47,6 @@ export const menu = [
     path: "/dashboard/exercise",
     icon: <DirectionsRunIcon className="text-teal-600" />,
     activeIcon: <DirectionsRunIcon className="text-white" />,
-  },
-  {
-    name: "Community",
-    path: "/dashboard/community",
-    icon: <MessageSquare className="text-teal-600" />,
-    activeIcon: <MessageSquare className="text-white" />,
   },
   {
     name: "Shop",

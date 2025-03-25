@@ -61,7 +61,7 @@ const BodyMeasurementChart = () => {
               >
                 {entry.dataKey === "weight" && `🏋️‍♂️ Weight: ${weight} KG`}
                 {entry.dataKey === "height" && `📏 Height: ${height} CM`}
-                {entry.dataKey === "bmi" && `📊 BMI: ${bmi}`}
+                {entry.dataKey === "bmi" && `📊 BMI: ${bmi.toFixed(2)}`}
               </p>
             </div>
           ))}
@@ -162,3 +162,58 @@ const BodyMeasurementChart = () => {
 };
 
 export default BodyMeasurementChart;
+
+// //FAKE DATA
+// const generateFakeBodyMeasurements = () => {
+//   const fakeData = [];
+//   const startDate = new Date();
+//   startDate.setFullYear(startDate.getFullYear() - 1); // Start from 1 year ago
+
+//   const initialWeight = 70; // Start weight (KG)
+//   const finalWeight = 80; // Target weight after a year (KG)
+//   const height = 175; // Constant height (CM)
+//   const heightInMeters = height / 100;
+
+//   const totalEntries = 50; // Approximate number of logs in a year
+//   const dailyWeightIncrease = (finalWeight - initialWeight) / totalEntries; // Base weight gain per log
+
+//   let currentWeight = initialWeight;
+//   const currentDate = new Date(startDate);
+
+//   for (let i = 0; i < totalEntries; i++) {
+//     // Add a small random variation to simulate real-life fluctuations
+//     const randomFluctuation = (Math.random() - 0.5) * 0.8; // Range: [-0.4, 0.4] kg
+//     currentWeight += dailyWeightIncrease + randomFluctuation;
+
+//     const bmi = currentWeight / (heightInMeters * heightInMeters);
+
+//     fakeData.push({
+//       dateRecorded: currentDate.toISOString(), // Original ISO format
+//       formattedDate: currentDate.toLocaleDateString("en-GB", {
+//         day: "2-digit",
+//         month: "long",
+//         year: "numeric",
+//       }), // Human-readable format
+//       weight: parseFloat(currentWeight.toFixed(2)), // Keep two decimal places
+//       height,
+//       bmi: parseFloat(bmi.toFixed(2)),
+//     });
+
+//     // Jump a random number of days (between 2 and 7) for next log
+//     currentDate.setDate(
+//       currentDate.getDate() + Math.floor(Math.random() * 6) + 2
+//     );
+//   }
+
+//   return fakeData;
+// };
+
+// // Usage
+// const fakeBodyMeasurements = generateFakeBodyMeasurements();
+// console.log(fakeBodyMeasurements);
+// const formattedData1 = fakeBodyMeasurements.map((measurement) => ({
+//   date: measurement.formattedDate, // Use formatted date for X-axis
+//   weight: measurement.weight,
+//   height: measurement.height,
+//   bmi: measurement.bmi,
+// }));

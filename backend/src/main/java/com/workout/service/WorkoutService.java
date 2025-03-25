@@ -47,6 +47,9 @@ public interface WorkoutService {
     List<MaxWeightDTO> getMaxWeightLogs(User user);
     BodyMeasurement addHeightAndWeight(User user, UpdateBodyMeasurementsRequest req);
     List<BodyMeasurement> getUserBodyMeasurements(User user);
+    BodyMeasurement updateHeightAndWeight(User user, UpdateBodyMeasurementsRequest req, Long bodyMeasurementId) throws Exception;
+    void deleteBodyMeasurements(User user, Long bodyMeasurementId) throws Exception;
+
 
 
 

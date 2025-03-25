@@ -18,6 +18,7 @@ public class WorkoutApplication {
 		System.setProperty("DB_USERNAME", dotenv.get("DB_USERNAME"));
 		System.setProperty("DB_PASSWORD", dotenv.get("DB_PASSWORD"));
 		System.setProperty("EMAIL_PASSWORD", dotenv.get("EMAIL_PASSWORD"));
+		System.setProperty("OPEN_API_SECRET_KEY", dotenv.get("OPEN_API_SECRET_KEY"));
 
 		SpringApplication.run(WorkoutApplication.class, args);
 	}

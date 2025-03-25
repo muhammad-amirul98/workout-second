@@ -459,6 +459,31 @@ public class WorkoutServiceImpl implements WorkoutService {
     public List<BodyMeasurement> getUserBodyMeasurements(User user) {
         return user.getUserProgress().getBodyMeasurements();
     }
+
+    @Override
+    public BodyMeasurement updateHeightAndWeight(User user, UpdateBodyMeasurementsRequest req, Long bodyMeasurementId) throws Exception {
+        BodyMeasurement bodyMeasurement = bodyMeasurementRepository.findById(bodyMeasurementId).
+                orElseThrow(() -> new Exception("Body Measurement not found with id: " + bodyMeasurementId));
+        if (!user.getUserProgress().getBodyMeasurements().contains(bodyMeasurement)) {
+            throw new Exception("Unauthorized to update this body measurement");
+        }
+
+        bodyMeasurement.setHeight(req.getHeight());
+        bodyMeasurement.setWeight(req.getWeight());
+        return bodyMeasurementRepository.save(bodyMeasurement);
+    }
+
+    @Override
+    public void deleteBodyMeasurements(User user, Long bodyMeasurementId) throws Exception {
+        BodyMeasurement bodyMeasurement = bodyMeasurementRepository.findById(bodyMeasurementId).
+                orElseThrow(() -> new Exception("Body Measurement not found with id: " + bodyMeasurementId));
+        if (!user.getUserProgress().getBodyMeasurements().contains(bodyMeasurement)) {
+            throw new Exception("Unauthorized to delete this body measurement");
+        }
+        user.getUserProgress().getBodyMeasurements().remove(bodyMeasurement);
+
+        bodyMeasurementRepository.delete(bodyMeasurement);
+    }
 }
 
 
