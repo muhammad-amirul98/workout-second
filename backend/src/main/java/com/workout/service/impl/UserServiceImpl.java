@@ -8,6 +8,7 @@ import com.workout.model.workouts.Workout;
 import com.workout.repository.AddressRepository;
 import com.workout.repository.UserRepository;
 import com.workout.service.UserService;
+import dev.langchain4j.agent.tool.Tool;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -45,6 +46,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Tool
     public User getUserById(Long id) throws UserException {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserException("User not found with ID: " + id));

@@ -51,10 +51,11 @@ public class ExerciseLog {
                 .orElse(0.0); // Default to 0 if no sets exist
     }
 
-    public Optional<SetLog> getMaxWeightSet() {
+    public SetLog getMaxWeightSet() throws Exception {
         return setLogs.stream()
                 .max(Comparator.comparingDouble(SetLog::getWeight)
-                        .thenComparingInt(SetLog::getReps));
+                        .thenComparingInt(SetLog::getReps))
+                .orElseThrow(() -> new Exception("Set Log Not found"));
 
     }
 }

@@ -6,6 +6,7 @@ import com.workout.dto.WorkoutVolumeDTO;
 import com.workout.exception.WorkoutException;
 import com.workout.model.userdetails.BodyMeasurement;
 import com.workout.model.userdetails.User;
+import com.workout.model.userdetails.UserProgress;
 import com.workout.model.workouts.*;
 import com.workout.request.*;
 import org.springframework.data.domain.Page;
@@ -47,6 +48,7 @@ public interface WorkoutService {
     List<MaxWeightDTO> getMaxWeightLogs(User user);
     BodyMeasurement addHeightAndWeight(User user, UpdateBodyMeasurementsRequest req);
     List<BodyMeasurement> getUserBodyMeasurements(User user);
+    UserProgress getUserProgress(User user);
     BodyMeasurement updateHeightAndWeight(User user, UpdateBodyMeasurementsRequest req, Long bodyMeasurementId) throws Exception;
     void deleteBodyMeasurements(User user, Long bodyMeasurementId) throws Exception;
 

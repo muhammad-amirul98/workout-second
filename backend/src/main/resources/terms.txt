@@ -1,0 +1,42 @@
+Terms of Service for Workout App
+
+1. Acceptance of Terms
+
+By downloading, installing, or using Workout App ("the App"), you ("the User") agree to comply with and be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, please do not use the App.
+
+2. Description of Service
+
+Workout App provides users with workout plans, fitness tracking, and related content ("the Services"). The Services are intended for personal, non-commercial use only.
+
+3. User Responsibilities
+
+Health Disclaimer: Before starting any fitness program, consult with a healthcare professional to ensure that the workouts are suitable for you. The App is not a substitute for professional medical advice.
+Account Security: You are responsible for maintaining the confidentiality of your account information and for all activities that occur under your account.
+Prohibited Conduct: You agree not to misuse the App, including but not limited to:
+- Engaging in unauthorized use or copying of content
+- Attempting to gain unauthorized access to the App's systems
+- Transmitting malicious software
+
+4. Subscription and Payment
+
+Certain features of the App may require a subscription. By subscribing, you agree to pay the applicable fees and abide by any additional terms presented during the subscription process.
+
+5. Termination
+
+We reserve the right to suspend or terminate your access to the App at our sole discretion, without notice, for conduct that we believe violates these Terms or is harmful to other users of the App, us, or third parties, or for any other reason.
+
+6. Limitation of Liability
+
+To the fullest extent permitted by law, Workout App shall not be liable for any indirect, incidental, special, consequential, or punitive damages, or any loss of profits or revenues.
+
+7. Changes to Terms
+
+We reserve the right to modify these Terms at any time. Your continued use of the App after any such changes constitutes your acceptance of the new Terms.
+
+8. Governing Law
+
+These Terms are governed by the laws of [Your Jurisdiction], without regard to its conflict of law principles.
+
+9. Contact Information
+
+For any questions about these Terms, please contact us at [Your Contact Information].

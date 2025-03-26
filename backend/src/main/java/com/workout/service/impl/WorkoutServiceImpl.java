@@ -12,6 +12,7 @@ import com.workout.model.workouts.*;
 import com.workout.repository.*;
 import com.workout.request.*;
 import com.workout.service.WorkoutService;
+import dev.langchain4j.agent.tool.Tool;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.jdbc.Work;
 import org.springframework.data.domain.Page;
@@ -425,17 +426,24 @@ public class WorkoutServiceImpl implements WorkoutService {
     public List<MaxWeightDTO> getMaxWeightLogs(User user) {
         return workoutLogRepository.findByUser(user).stream()
                 .flatMap(workoutLog -> workoutLog.getExerciseLogs().stream()
-                        .map(exerciseLog -> exerciseLog.getMaxWeightSet()
-                                .map(set -> new MaxWeightDTO(
+                        .map(exerciseLog -> {
+                            try {
+                                SetLog maxWeightSet = exerciseLog.getMaxWeightSet();
+                                return new MaxWeightDTO(
                                         workoutLog.getTimeStarted().toLocalDate().toString(),
                                         exerciseLog.getExercise().getName(),
-                                        set.getWeight(),
-                                        set.getReps()
-                                )))
-                        .flatMap(Optional::stream) // Flatten Optional<MaxWeightDTO> to Stream<MaxWeightDTO>
-                )
-                .toList();
+                                        maxWeightSet.getWeight(),
+                                        maxWeightSet.getReps()
+                                );
+                            } catch (Exception e) {
+                                // Handle the exception, e.g., log it and return null or a default MaxWeightDTO
+                                return null; // or return a default MaxWeightDTO
+                            }
+                        }))
+                .filter(Objects::nonNull) // Remove any null results due to exceptions
+                .collect(Collectors.toList());
     }
+
 
     @Override
     public BodyMeasurement addHeightAndWeight(User user, UpdateBodyMeasurementsRequest req) {
@@ -456,8 +464,15 @@ public class WorkoutServiceImpl implements WorkoutService {
     }
 
     @Override
+    @Tool
     public List<BodyMeasurement> getUserBodyMeasurements(User user) {
         return user.getUserProgress().getBodyMeasurements();
+    }
+
+    @Override
+    @Tool
+    public UserProgress getUserProgress(User user) {
+        return user.getUserProgress();
     }
 
     @Override
