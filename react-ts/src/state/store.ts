@@ -12,6 +12,7 @@ import adminOrderSlice from "./admin/adminOrderSlice";
 import transactionSlice from "./admin/transactionSlice";
 import adminUserSlice from "./admin/adminUserSlice";
 import userWorkoutSlice from "./user/userWorkoutSlice";
+import aiSlice from "./user/aiSlice";
 
 const rootReducer = combineReducers({
   user: userSlice,
@@ -25,6 +26,7 @@ const rootReducer = combineReducers({
   transactions: transactionSlice,
   adminuser: adminUserSlice,
   userworkout: userWorkoutSlice,
+  ai: aiSlice,
 });
 
 export const store = configureStore({

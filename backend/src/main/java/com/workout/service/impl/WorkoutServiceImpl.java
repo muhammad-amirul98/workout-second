@@ -14,12 +14,10 @@ import com.workout.request.*;
 import com.workout.service.WorkoutService;
 import dev.langchain4j.agent.tool.Tool;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.jdbc.Work;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.Array;
 import java.time.LocalDateTime;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -499,6 +497,66 @@ public class WorkoutServiceImpl implements WorkoutService {
 
         bodyMeasurementRepository.delete(bodyMeasurement);
     }
+
+    @Override
+    @Transactional
+    public WorkoutLog addExerciseToCurrentWorkout(Long exerciseId, User user, Long workoutLogId) throws Exception {
+        Exercise exercise = exerciseRepository.findById(exerciseId)
+                .orElseThrow(() -> new Exception("Exercise Not Found"));
+
+        WorkoutLog workoutLog = workoutLogRepository.findById(workoutLogId)
+                .orElseThrow(() -> new Exception("Workout Log Not Found"));
+
+        if (!workoutLog.getUser().equals(user)) {
+            throw new Exception("You are not authorized to modify this workout");
+        }
+
+        boolean exists = workoutExerciseRepository.existsByWorkoutAndExercise(workoutLog.getWorkout(), exercise);
+
+        if (exists) {
+            throw new Exception("Exercise already exists in workout");
+        }
+
+        //create exercise log for this exercise to be added to the workout log
+        ExerciseLog exerciseLog = new ExerciseLog();
+        exerciseLog.setExercise(exercise);
+        exerciseLog.setWorkoutLog(workoutLog);
+
+        //create first set log just to ensure that setlogs are not empty
+        SetLog setLog = new SetLog();
+        setLog.setExerciseLog(exerciseLog);
+        exerciseLog.getSetLogs().add(setLog);
+        
+        workoutLog.getExerciseLogs().add(exerciseLog);
+
+        return workoutLogRepository.save(workoutLog);
+    }
+
+//    @Override
+//    public WorkoutExercise addExerciseToWorkout(Long exerciseId, User user, Long workoutId) throws Exception {
+//
+//        Exercise exercise = exerciseRepository.findById(exerciseId)
+//                .orElseThrow(() -> new Exception("Exercise Not Found"));
+//
+//        Workout workout = workoutRepository.findById(workoutId).
+//                orElseThrow(() -> new Exception("Workout Not Found"));
+//
+//        if (!workout.getUser().equals(user)) {
+//            throw new Exception("You are not authorized to modify this workout");
+//        }
+//
+//        boolean exists = workoutExerciseRepository.existsByWorkoutAndExercise(workout, exercise);
+//
+//        if (exists) {
+//            throw new Exception("Exercise already exists in workout");
+//        }
+//
+//        WorkoutExercise workoutExercise = new WorkoutExercise();
+//        workoutExercise.setExercise(exercise);
+//        workoutExercise.setWorkout(workout);
+//
+//        return workoutExerciseRepository.save(workoutExercise);
+//    }
 }
 
 

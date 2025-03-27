@@ -291,4 +291,14 @@ public class WorkoutController {
         workoutService.deleteBodyMeasurements(user, bodyMeasurementId);
         return ResponseEntity.noContent().build();
     }
+
+    @PostMapping("/current-workout/{workoutLogId}/{exerciseId}/exercise")
+    public ResponseEntity<WorkoutLog> addExerciseToCurrentWorkout(@PathVariable Long exerciseId,
+                                                                @PathVariable Long workoutLogId,
+                                                                @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) throws Exception {
+        User user = userService.findUserByJwtToken(jwt);
+        WorkoutLog workoutLog = workoutService.addExerciseToCurrentWorkout(exerciseId, user, workoutLogId);
+
+        return ResponseEntity.ok(workoutLog);
+    }
 }

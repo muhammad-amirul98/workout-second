@@ -20,9 +20,9 @@ public class SetLog {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
-    private int reps;
+    private int reps = 0;
 
-    private double weight;
+    private double weight = 0;
 
     private boolean isComplete = false;
 

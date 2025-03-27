@@ -33,6 +33,8 @@ export default function WorkoutTableRow({ workout }: { workout: Workout }) {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [editWorkout, setEditWorkout] = useState<Workout | null>(null);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [currentWorkoutSnackbarOpen, setCurrentWorkoutSnackbarOpen] =
+    useState(false);
 
   useEffect(() => {
     if (!jwt) return;
@@ -87,13 +89,21 @@ export default function WorkoutTableRow({ workout }: { workout: Workout }) {
       setSnackbarOpen(true);
       return;
     }
-    dispatch(startWorkout({ jwt, workoutId: workout.id }))
-      .unwrap()
-      .then(() => navigate("/dashboard/current-workout"));
+    setCurrentWorkoutSnackbarOpen(true);
+    // delay here
+    setTimeout(() => {
+      dispatch(startWorkout({ jwt, workoutId: workout.id }))
+        .unwrap()
+        .then(() => navigate("/dashboard/current-workout"));
+    }, 1000);
   };
 
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
+  };
+
+  const handleCloseWorkoutSnackbar = () => {
+    setCurrentWorkoutSnackbarOpen(false);
   };
 
   return (
@@ -154,6 +164,12 @@ export default function WorkoutTableRow({ workout }: { workout: Workout }) {
             <IconButton color="success" onClick={handleStartWorkout}>
               <PlayCircleOutline />
             </IconButton>
+            <Snackbar
+              open={currentWorkoutSnackbarOpen}
+              autoHideDuration={2000}
+              onClose={handleCloseWorkoutSnackbar}
+              message="Redirecting to current workout page..."
+            ></Snackbar>
           </StyledTableCell>
 
           <StyledTableCell align="center">

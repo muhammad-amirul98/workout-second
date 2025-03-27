@@ -166,90 +166,94 @@ export default function ExerciseTable({
                     </div>
                   </StyledTableCell>
                 )}
-                <StyledTableCell align="center">
-                  {visibleColumns.includes(4) &&
-                  exercise.userId === auth.user?.id ? (
-                    <IconButton
-                      color="primary"
-                      onClick={() => handleOpen(exercise)}
+                {visibleColumns.includes(4) && (
+                  <StyledTableCell align="center">
+                    {exercise.userId === auth.user?.id ? (
+                      <IconButton
+                        color="primary"
+                        onClick={() => handleOpen(exercise)}
+                      >
+                        <Edit />
+                      </IconButton>
+                    ) : null}
+                    <Modal
+                      open={open}
+                      onClose={handleClose}
+                      aria-labelledby="modal-modal-title"
+                      aria-describedby="modal-modal-description"
                     >
-                      <Edit />
-                    </IconButton>
-                  ) : null}
-                  <Modal
-                    open={open}
-                    onClose={handleClose}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                  >
-                    <Box sx={style}>
-                      <Typography id="modal-modal-title">
-                        Edit Exercise
-                      </Typography>
-                      <TextField
-                        label="Exercise Name"
-                        variant="outlined"
-                        size="small"
-                        fullWidth
-                        value={editExercise?.name}
-                        onChange={(e) =>
-                          handleInputChange("name", e.target.value)
-                        }
-                        margin="normal"
-                      />
-                      <TextField
-                        label="Exercise Type"
-                        variant="outlined"
-                        size="small"
-                        fullWidth
-                        value={editExercise?.type}
-                        onChange={(e) =>
-                          handleInputChange("type", e.target.value)
-                        }
-                        margin="normal"
-                      />
-                      <TextField
-                        label="Exercise Description"
-                        variant="outlined"
-                        size="small"
-                        fullWidth
-                        multiline
-                        value={editExercise?.description}
-                        onChange={(e) =>
-                          handleInputChange("description", e.target.value)
-                        }
-                        margin="normal"
-                      />
-                      <div className="flex mt-2 gap-5">
-                        <Button
-                          color="primary"
-                          variant="contained"
-                          onClick={() => handleSaveEditedExercise(exercise.id)}
-                        >
-                          Save
-                        </Button>
-                        <Button
-                          onClick={handleClose}
-                          color="primary"
+                      <Box sx={style}>
+                        <Typography id="modal-modal-title">
+                          Edit Exercise
+                        </Typography>
+                        <TextField
+                          label="Exercise Name"
                           variant="outlined"
-                        >
-                          Close
-                        </Button>
-                      </div>
-                    </Box>
-                  </Modal>
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  {visibleColumns.includes(5) &&
-                  exercise.userId === auth.user?.id ? (
-                    <IconButton
-                      color="error"
-                      onClick={() => handleDeleteExercise(exercise.id)}
-                    >
-                      <Delete />
-                    </IconButton>
-                  ) : null}
-                </StyledTableCell>
+                          size="small"
+                          fullWidth
+                          value={editExercise?.name}
+                          onChange={(e) =>
+                            handleInputChange("name", e.target.value)
+                          }
+                          margin="normal"
+                        />
+                        <TextField
+                          label="Exercise Type"
+                          variant="outlined"
+                          size="small"
+                          fullWidth
+                          value={editExercise?.type}
+                          onChange={(e) =>
+                            handleInputChange("type", e.target.value)
+                          }
+                          margin="normal"
+                        />
+                        <TextField
+                          label="Exercise Description"
+                          variant="outlined"
+                          size="small"
+                          fullWidth
+                          multiline
+                          value={editExercise?.description}
+                          onChange={(e) =>
+                            handleInputChange("description", e.target.value)
+                          }
+                          margin="normal"
+                        />
+                        <div className="flex mt-2 gap-5">
+                          <Button
+                            color="primary"
+                            variant="contained"
+                            onClick={() =>
+                              handleSaveEditedExercise(exercise.id)
+                            }
+                          >
+                            Save
+                          </Button>
+                          <Button
+                            onClick={handleClose}
+                            color="primary"
+                            variant="outlined"
+                          >
+                            Close
+                          </Button>
+                        </div>
+                      </Box>
+                    </Modal>
+                  </StyledTableCell>
+                )}
+                {visibleColumns.includes(5) && (
+                  <StyledTableCell align="center">
+                    {exercise.userId === auth.user?.id ? (
+                      <IconButton
+                        color="error"
+                        onClick={() => handleDeleteExercise(exercise.id)}
+                      >
+                        <Delete />
+                      </IconButton>
+                    ) : null}
+                  </StyledTableCell>
+                )}
                 {visibleColumns.includes(6) && (
                   <StyledTableCell align="center">
                     <IconButton

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.workout.enums.UserRole;
+import com.workout.model.Message;
 import com.workout.model.ecommerce.Cart;
 import com.workout.model.ecommerce.Order;
 import com.workout.model.ecommerce.WishList;

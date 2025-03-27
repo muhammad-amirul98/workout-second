@@ -85,7 +85,9 @@ export default function WorkoutExerciseTable({
         aria-describedby="modal-modal-description"
       >
         <Box sx={style}>
-          <Typography id="modal-modal-title">Add Exercises</Typography>
+          <Typography id="modal-modal-title" className="items=center">
+            Add Exercises
+          </Typography>
           <AddExerciseToWorkout
             onClose={() => setOpen(false)}
             workoutId={workout.id}

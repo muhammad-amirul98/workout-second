@@ -53,6 +53,5 @@ public interface WorkoutService {
     void deleteBodyMeasurements(User user, Long bodyMeasurementId) throws Exception;
 
 
-
-
+    WorkoutLog addExerciseToCurrentWorkout(Long exerciseId, User user, Long workoutLogId) throws Exception;
 }

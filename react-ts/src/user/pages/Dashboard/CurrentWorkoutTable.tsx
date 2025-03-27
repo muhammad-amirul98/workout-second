@@ -1,11 +1,14 @@
 import {
+  Box,
   Button,
+  Modal,
   Paper,
   Table,
   TableBody,
   TableContainer,
   TableHead,
   TableRow,
+  Typography,
 } from "@mui/material";
 import { WorkoutLog } from "../../../types/WorkoutTypes";
 import {
@@ -17,6 +20,8 @@ import { timeDuration, timeFormat } from "../Util/dateFormat";
 import { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../state/store";
 import { completeWorkout } from "../../../state/user/userWorkoutSlice";
+import { style } from "../../../styles/styles";
+import AddExerciseToCurrentWorkout from "./AddExerciseToCurrentWorkout";
 
 const CurrentWorkoutTable = ({
   currentWorkout,
@@ -27,6 +32,7 @@ const CurrentWorkoutTable = ({
   const dispatch = useAppDispatch();
   const jwt = localStorage.getItem("jwt");
   const userworkout = useAppSelector((store) => store.userworkout);
+  const [open, setOpen] = useState(false);
   useEffect(() => {
     const interval = setInterval(() => {
       setTimer(
@@ -75,6 +81,34 @@ const CurrentWorkoutTable = ({
               exercise={exerciseLog}
             />
           ))}
+          <StyledTableRow>
+            <StyledTableCell colSpan={5}>
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                onClick={() => setOpen(true)}
+              >
+                Add Exercise
+              </Button>
+              <Modal
+                open={open}
+                onClose={() => setOpen(false)}
+                aria-labelledby="modal-modal-title"
+                aria-describedby="modal-modal-description"
+              >
+                <Box sx={style}>
+                  <Typography id="modal-modal-title" className="items-center">
+                    Add Exercise
+                  </Typography>
+                  <AddExerciseToCurrentWorkout
+                    onClose={() => setOpen(false)}
+                    workoutLogId={currentWorkout.id}
+                  />
+                </Box>
+              </Modal>
+            </StyledTableCell>
+          </StyledTableRow>
         </TableBody>
       </Table>
     </TableContainer>

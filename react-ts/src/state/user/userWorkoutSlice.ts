@@ -833,6 +833,36 @@ export const deleteBodyMeasurement = createAsyncThunk<
   }
 );
 
+export const addExerciseToCurrentWorkout = createAsyncThunk<
+  WorkoutLog,
+  { jwt: string; workoutLogId: number; exerciseId: number },
+  { rejectValue: string }
+>(
+  "/userworkout/addExerciseToCurrentWorkout",
+  async ({ jwt, workoutLogId, exerciseId }, { rejectWithValue }) => {
+    try {
+      const response = await api.post(
+        `/workout/current-workout/${workoutLogId}/${exerciseId}/exercise`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      );
+      console.log("User addExerciseToCurrentWorkout: ", response.data);
+      return response.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return rejectWithValue(
+          error.message || "Failed to addExerciseToCurrentWorkout"
+        );
+      }
+      return rejectWithValue("An unknown error occurred");
+    }
+  }
+);
+
 interface UserWorkoutState {
   workout: Workout | null;
   workouts: Workout[] | null;
@@ -1332,6 +1362,21 @@ const userWorkoutSlice = createSlice({
         state.loading = false;
       })
       .addCase(deleteBodyMeasurement.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    //addExerciseToCurrentWorkout
+    builder
+      .addCase(addExerciseToCurrentWorkout.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addExerciseToCurrentWorkout.fulfilled, (state, action) => {
+        state.loading = false;
+        state.currentWorkout = action.payload;
+      })
+      .addCase(addExerciseToCurrentWorkout.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
