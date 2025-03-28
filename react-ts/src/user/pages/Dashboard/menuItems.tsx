@@ -8,7 +8,6 @@ import {
   ShoppingCart,
   Package,
   Brain,
-  Settings,
 } from "lucide-react";
 
 export const menu = [
@@ -65,11 +64,5 @@ export const menu = [
     path: "/dashboard/ai-chatbot",
     icon: <Brain className="text-teal-600" />,
     activeIcon: <Brain className="text-white" />,
-  },
-  {
-    name: "Settings",
-    path: "/dashboard/settings",
-    icon: <Settings className="text-teal-600" />,
-    activeIcon: <Settings className="text-white" />,
   },
 ];

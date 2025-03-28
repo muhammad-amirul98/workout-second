@@ -59,7 +59,7 @@ function App() {
               role === "ROLE_ADMIN" ? (
                 <AdminDashboard />
               ) : role === "ROLE_USER" ? (
-                <Dashboard />
+                <Navigate to="dashboard/current-workout" />
               ) : (
                 <Auth />
               )
@@ -88,11 +88,11 @@ function App() {
             />
             <Route path="/account/*" element={<Account />} />
             <Route path="/dashboard/*" element={<Dashboard />} />
-            <Route path="/admin/*" element={<AdminDashboard />} />
-            {/* <Route path="/auth" element={<Auth />} /> */}
             <Route path="/workout" element={<Workout />} />
-
             <Route path="/wishlist" element={<WishList />} />
+            {role === "ROLE_ADMIN" && (
+              <Route path="/admin/*" element={<AdminDashboard />} />
+            )}
           </Route>
 
           {/* Catch-All Redirect */}

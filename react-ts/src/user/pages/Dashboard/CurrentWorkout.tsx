@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, Snackbar } from "@mui/material";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../../state/store";
@@ -14,6 +14,7 @@ const CurrentWorkout = () => {
   const dispatch = useAppDispatch();
   const userworkout = useAppSelector((store) => store.userworkout);
   const jwt = localStorage.getItem("jwt");
+  const [open, setOpen] = useState(false);
 
   useEffect(() => {
     if (!jwt) return;
@@ -32,9 +33,13 @@ const CurrentWorkout = () => {
 
   const handleCancelWorkout = () => {
     if (!jwt || !userworkout.currentWorkout) return;
-    dispatch(
-      cancelWorkout({ jwt, workoutLogId: userworkout.currentWorkout.id })
-    );
+    setOpen(true);
+    setTimeout(() => {
+      if (!jwt || !userworkout.currentWorkout) return;
+      dispatch(
+        cancelWorkout({ jwt, workoutLogId: userworkout.currentWorkout.id })
+      );
+    }, 2000);
   };
 
   return (
@@ -68,6 +73,12 @@ const CurrentWorkout = () => {
             >
               Cancel Workout
             </Button>
+            <Snackbar
+              open={open}
+              autoHideDuration={2000}
+              onClose={() => setOpen(false)}
+              message="❌ Workout cancelled. Don't worry, you’ll crush it next time! 💪"
+            ></Snackbar>
           </div>
         </div>
       ) : (

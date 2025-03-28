@@ -23,6 +23,7 @@ import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.EmbeddingStoreIngestor;
 import dev.langchain4j.store.embedding.inmemory.InMemoryEmbeddingStore;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -35,28 +36,12 @@ public class AIConfig {
     private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
     private final AddressRepository addressRepository;
-    private final WorkoutRepository workoutRepository;
-    private final ExerciseRepository exerciseRepository;
-    private final WorkoutLogRepository workoutLogRepository;
-    private final SetLogRepository setLogRepository;
-    private final WorkoutExerciseRepository workoutExerciseRepository;
-    private final WorkoutSetRepository workoutSetRepository;
-    private final BodyMeasurementRepository bodyMeasurementRepository;
-    private final UserProgressRepository userProgressRepository;
 
     @Bean
     public Assistant assistant() {
         return AiServices.builder(Assistant.class)
                 .tools(new UserServiceImpl(userRepository, jwtProvider, addressRepository)
-//                        , new WorkoutServiceImpl(workoutRepository,
-//                                exerciseRepository,
-//                                workoutLogRepository,
-//                                setLogRepository,
-//                                userRepository,
-//                                workoutExerciseRepository,
-//                                workoutSetRepository,
-//                                bodyMeasurementRepository,
-//                                userProgressRepository)
+
                 )
                 .chatLanguageModel(chatLanguageModel())
                 .chatMemoryProvider(memoryId -> MessageWindowChatMemory.withMaxMessages(10))

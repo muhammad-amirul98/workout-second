@@ -2,13 +2,14 @@ import { IconButton, TableRow, TextField } from "@mui/material";
 import { StyledTableCell } from "../../../component/TableComponent";
 import { SetLog } from "../../../types/WorkoutTypes";
 import CheckIcon from "@mui/icons-material/Check";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppDispatch } from "../../../state/store";
 import {
   completeSetLog,
   fetchCurrentWorkout,
   uncompleteSetLog,
 } from "../../../state/user/userWorkoutSlice";
+import { hourFormat } from "../Util/dateFormat";
 
 const CurrentWorkoutSetRow = ({
   setLog,
@@ -20,12 +21,22 @@ const CurrentWorkoutSetRow = ({
   const dispatch = useAppDispatch();
   const jwt = localStorage.getItem("jwt");
 
+  useEffect(() => {
+    setCurrentSet({
+      reps: setLog?.reps ?? null,
+      weight: setLog?.weight ?? null,
+      timeCompleted: setLog.timeCompleted ?? null,
+    });
+  }, [setLog]);
+
   const [currentSet, setCurrentSet] = useState<{
     reps: number | null;
     weight: number | null;
+    timeCompleted: string | null;
   }>({
     reps: setLog?.reps ?? null,
     weight: setLog?.weight ?? null,
+    timeCompleted: setLog.timeCompleted ?? null,
   });
 
   const handleInputChange = (field: "reps" | "weight", value: number) => {
@@ -75,7 +86,9 @@ const CurrentWorkoutSetRow = ({
           disabled={setLog.complete}
         />
       </StyledTableCell>
-      <StyledTableCell></StyledTableCell>
+      <StyledTableCell>
+        {currentSet.timeCompleted ? hourFormat(currentSet.timeCompleted) : ""}
+      </StyledTableCell>
       <StyledTableCell>
         <IconButton onClick={handleCompleteSet}>
           {setLog.complete ? (

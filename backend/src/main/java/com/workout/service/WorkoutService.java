@@ -54,4 +54,6 @@ public interface WorkoutService {
 
 
     WorkoutLog addExerciseToCurrentWorkout(Long exerciseId, User user, Long workoutLogId) throws Exception;
+
+    ExerciseLog addSetToExerciseInCurrentWorkout(Long exerciseLogId, User user) throws Exception;
 }

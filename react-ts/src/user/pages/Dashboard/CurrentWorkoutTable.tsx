@@ -3,6 +3,7 @@ import {
   Button,
   Modal,
   Paper,
+  Snackbar,
   Table,
   TableBody,
   TableContainer,
@@ -33,6 +34,7 @@ const CurrentWorkoutTable = ({
   const jwt = localStorage.getItem("jwt");
   const userworkout = useAppSelector((store) => store.userworkout);
   const [open, setOpen] = useState(false);
+  const [openComplete, setOpenComplete] = useState(false);
   useEffect(() => {
     const interval = setInterval(() => {
       setTimer(
@@ -45,7 +47,13 @@ const CurrentWorkoutTable = ({
 
   const handleCompleteWorkout = () => {
     if (!jwt) return;
-    dispatch(completeWorkout({ jwt, workoutLogId: currentWorkout.id }));
+    setOpenComplete(true);
+    setTimeout(() => {
+      if (!userworkout.currentWorkout) return;
+      dispatch(
+        completeWorkout({ jwt, workoutLogId: userworkout.currentWorkout.id })
+      );
+    }, 2000);
   };
 
   return (
@@ -73,6 +81,12 @@ const CurrentWorkoutTable = ({
               >
                 Complete Workout
               </Button>
+              <Snackbar
+                open={openComplete}
+                autoHideDuration={2000}
+                onClose={() => setOpenComplete(false)}
+                message="🎉 Workout successfully completed! Congratulations! 🎉"
+              ></Snackbar>
             </StyledTableCell>
           </StyledTableRow>
           {currentWorkout.exerciseLogs.map((exerciseLog) => (

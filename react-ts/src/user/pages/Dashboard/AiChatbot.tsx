@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useAppDispatch, useAppSelector } from "../../../state/store";
 import { getUserMessages, sendMessage } from "../../../state/user/aiSlice";
 import {
@@ -17,6 +17,15 @@ const AiChatbot = () => {
   const handleInputChange = (value: string) => {
     setUserMessage(value);
   };
+
+  const messagesEndRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    // Scroll to the bottom whenever messages change
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [ai.messages]);
 
   //
   useEffect(() => {
@@ -63,6 +72,7 @@ const AiChatbot = () => {
             >
               {message.message}
             </span>
+            <div ref={messagesEndRef} />
           </div>
         ))}
       </div>

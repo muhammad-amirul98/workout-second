@@ -4,6 +4,7 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import Grid from "@mui/material/Grid2";
 
 import { useAppDispatch, useAppSelector } from "../../../state/store";
 import {
@@ -15,12 +16,13 @@ import {
   StyledTableCell,
   StyledTableRow,
 } from "../../../component/TableComponent";
-import { Delete, Edit } from "@mui/icons-material";
+import { Delete, Edit, Search } from "@mui/icons-material";
 import { useEffect, useState } from "react";
 import {
   Box,
   Button,
   IconButton,
+  InputAdornment,
   Modal,
   TextField,
   Typography,
@@ -50,6 +52,7 @@ export default function ExerciseTable({
 
   const [selected, setSelected] = useState<number[]>([]);
   const [editExercise, setEditExercise] = useState<Exercise | null>(null);
+  const [search, setSearch] = useState("");
 
   const handleSelectedExercise = (exerciseId: number) => {
     const newSelected = selected.includes(exerciseId)
@@ -102,8 +105,38 @@ export default function ExerciseTable({
     handleClose();
   };
 
+  const handleSearchBarInputChange = (value: string) => {
+    setSearch(value);
+  };
+
+  const filteredExercises = userworkout.exercises
+    ?.filter(
+      (exercise) =>
+        exercise.name.toLowerCase().includes(search.toLowerCase()) ||
+        exercise.type.toLowerCase().includes(search.toLowerCase()) ||
+        exercise.description.toLowerCase().includes(search.toLowerCase())
+    )
+    .sort((a, b) => a.name.localeCompare(b.name));
+
   return (
     <>
+      <div className="bg-white shadow">
+        <TextField
+          variant="outlined"
+          fullWidth
+          label="Search"
+          onChange={(e) => handleSearchBarInputChange(e.target.value)}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton>
+                  <Search />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+        ></TextField>
+      </div>
       <TableContainer component={Paper}>
         <Table aria-label="customized table">
           <TableHead>
@@ -132,146 +165,154 @@ export default function ExerciseTable({
             </TableRow>
           </TableHead>
           <TableBody>
-            {userworkout.exercises?.map((exercise) => (
-              <StyledTableRow key={exercise.id}>
-                {visibleColumns.includes(0) && (
-                  <StyledTableCell
-                    component="th"
-                    scope="row"
-                    className="max-w-10"
-                  >
-                    {exercise.name}
-                  </StyledTableCell>
-                )}
-                {visibleColumns.includes(1) && (
-                  <StyledTableCell align="center" className="max-w-10">
-                    {exercise.type}
-                  </StyledTableCell>
-                )}
-                {visibleColumns.includes(2) && (
-                  <StyledTableCell align="center" className="max-w-20">
-                    {exercise.description}
-                  </StyledTableCell>
-                )}
-                {visibleColumns.includes(3) && (
-                  <StyledTableCell align="center">
-                    <div className="flex gap-1">
-                      {exercise.images?.map((image, index) => (
-                        <img
-                          src={image}
-                          className="w-20 rounded-md"
-                          key={index}
-                        />
-                      ))}
-                    </div>
-                  </StyledTableCell>
-                )}
-                {visibleColumns.includes(4) && (
-                  <StyledTableCell align="center">
-                    {exercise.userId === auth.user?.id ? (
-                      <IconButton
-                        color="primary"
-                        onClick={() => handleOpen(exercise)}
-                      >
-                        <Edit />
-                      </IconButton>
-                    ) : null}
-                    <Modal
-                      open={open}
-                      onClose={handleClose}
-                      aria-labelledby="modal-modal-title"
-                      aria-describedby="modal-modal-description"
+            {filteredExercises?.map((exercise) => (
+              <>
+                <StyledTableRow key={exercise.id}>
+                  {visibleColumns.includes(0) && (
+                    <StyledTableCell
+                      component="th"
+                      scope="row"
+                      className="max-w-10"
                     >
-                      <Box sx={style}>
-                        <Typography id="modal-modal-title">
-                          Edit Exercise
-                        </Typography>
-                        <TextField
-                          label="Exercise Name"
-                          variant="outlined"
-                          size="small"
-                          fullWidth
-                          value={editExercise?.name}
-                          onChange={(e) =>
-                            handleInputChange("name", e.target.value)
-                          }
-                          margin="normal"
-                        />
-                        <TextField
-                          label="Exercise Type"
-                          variant="outlined"
-                          size="small"
-                          fullWidth
-                          value={editExercise?.type}
-                          onChange={(e) =>
-                            handleInputChange("type", e.target.value)
-                          }
-                          margin="normal"
-                        />
-                        <TextField
-                          label="Exercise Description"
-                          variant="outlined"
-                          size="small"
-                          fullWidth
-                          multiline
-                          value={editExercise?.description}
-                          onChange={(e) =>
-                            handleInputChange("description", e.target.value)
-                          }
-                          margin="normal"
-                        />
-                        <div className="flex mt-2 gap-5">
-                          <Button
-                            color="primary"
-                            variant="contained"
-                            onClick={() =>
-                              handleSaveEditedExercise(exercise.id)
-                            }
-                          >
-                            Save
-                          </Button>
-                          <Button
-                            onClick={handleClose}
-                            color="primary"
-                            variant="outlined"
-                          >
-                            Close
-                          </Button>
-                        </div>
-                      </Box>
-                    </Modal>
-                  </StyledTableCell>
-                )}
-                {visibleColumns.includes(5) && (
-                  <StyledTableCell align="center">
-                    {exercise.userId === auth.user?.id ? (
-                      <IconButton
-                        color="error"
-                        onClick={() => handleDeleteExercise(exercise.id)}
-                      >
-                        <Delete />
-                      </IconButton>
-                    ) : null}
-                  </StyledTableCell>
-                )}
-                {visibleColumns.includes(6) && (
-                  <StyledTableCell align="center">
-                    <IconButton
-                      onClick={() => handleSelectedExercise(exercise.id)}
-                    >
-                      {selected.includes(exercise.id) ? (
-                        <DoneIcon color="primary" />
+                      {exercise.name}
+                    </StyledTableCell>
+                  )}
+                  {visibleColumns.includes(1) && (
+                    <StyledTableCell align="center" className="max-w-10">
+                      {exercise.type}
+                    </StyledTableCell>
+                  )}
+                  {visibleColumns.includes(2) && (
+                    <StyledTableCell align="center" className="max-w-20">
+                      {exercise.description}
+                    </StyledTableCell>
+                  )}
+                  {visibleColumns.includes(3) && (
+                    <StyledTableCell align="center">
+                      <div className="flex gap-1">
+                        {exercise.images?.map((image, index) => (
+                          <img
+                            src={image}
+                            className="w-20 rounded-md"
+                            key={index}
+                          />
+                        ))}
+                      </div>
+                    </StyledTableCell>
+                  )}
+                  {visibleColumns.includes(4) && (
+                    <StyledTableCell align="center">
+                      {exercise.userId === auth.user?.id ? (
+                        <IconButton
+                          color="primary"
+                          onClick={() => handleOpen(exercise)}
+                        >
+                          <Edit />
+                        </IconButton>
                       ) : (
-                        <DoneIcon color="error" />
+                        <IconButton disabled>
+                          <Edit />
+                        </IconButton>
                       )}
-                    </IconButton>
-                  </StyledTableCell>
-                )}
-              </StyledTableRow>
+                    </StyledTableCell>
+                  )}
+                  {visibleColumns.includes(5) && (
+                    <StyledTableCell align="center">
+                      {exercise.userId === auth.user?.id ? (
+                        <IconButton
+                          color="error"
+                          onClick={() => handleDeleteExercise(exercise.id)}
+                        >
+                          <Delete />
+                        </IconButton>
+                      ) : (
+                        <IconButton color="error" disabled>
+                          <Delete />
+                        </IconButton>
+                      )}
+                    </StyledTableCell>
+                  )}
+                  {visibleColumns.includes(6) && (
+                    <StyledTableCell align="center">
+                      <IconButton
+                        onClick={() => handleSelectedExercise(exercise.id)}
+                      >
+                        {selected.includes(exercise.id) ? (
+                          <DoneIcon color="primary" />
+                        ) : (
+                          <DoneIcon color="error" />
+                        )}
+                      </IconButton>
+                    </StyledTableCell>
+                  )}
+                </StyledTableRow>
+              </>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+      <Modal
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <Typography id="modal-modal-title" className="items-center pb-3">
+            Edit Exercise
+          </Typography>
+          <div className="space-y-3">
+            <Grid>
+              <TextField
+                label="Exercise Name"
+                variant="outlined"
+                fullWidth
+                value={editExercise?.name}
+                onChange={(e) => handleInputChange("name", e.target.value)}
+                margin="normal"
+              />
+            </Grid>
+            <Grid>
+              <TextField
+                label="Exercise Type"
+                variant="outlined"
+                fullWidth
+                value={editExercise?.type}
+                onChange={(e) => handleInputChange("type", e.target.value)}
+                margin="normal"
+              />
+            </Grid>
+            <Grid>
+              <TextField
+                label="Exercise Description"
+                variant="outlined"
+                fullWidth
+                multiline
+                value={editExercise?.description}
+                onChange={(e) =>
+                  handleInputChange("description", e.target.value)
+                }
+                margin="normal"
+              />
+            </Grid>
+          </div>
+
+          <div className="flex mt-2 gap-5">
+            <Button
+              color="primary"
+              variant="contained"
+              onClick={() =>
+                editExercise && handleSaveEditedExercise(editExercise.id)
+              }
+            >
+              Save
+            </Button>
+            <Button onClick={handleClose} color="primary" variant="outlined">
+              Close
+            </Button>
+          </div>
+        </Box>
+      </Modal>
     </>
   );
 }

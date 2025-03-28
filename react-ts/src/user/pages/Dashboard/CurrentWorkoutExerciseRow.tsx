@@ -5,6 +5,7 @@ import {
 } from "../../../component/TableComponent";
 import CurrentWorkoutSetRow from "./CurrentWorkoutSetRow";
 import {
+  Button,
   Paper,
   Table,
   TableBody,
@@ -12,6 +13,11 @@ import {
   TableHead,
   TableRow,
 } from "@mui/material";
+import { useAppDispatch } from "../../../state/store";
+import {
+  addSetToCurrentWorkout,
+  fetchCurrentWorkout,
+} from "../../../state/user/userWorkoutSlice";
 
 const CurrentWorkoutExerciseRow = ({ exercise }: { exercise: ExerciseLog }) => {
   // const [setsData, setSetsData] = useState(
@@ -22,6 +28,14 @@ const CurrentWorkoutExerciseRow = ({ exercise }: { exercise: ExerciseLog }) => {
   //     completeSet: false,
   //   }))
   // );
+  const dispatch = useAppDispatch();
+  const jwt = localStorage.getItem("jwt");
+  const handleAddSet = () => {
+    if (!jwt) return;
+    dispatch(addSetToCurrentWorkout({ jwt, exerciseLogId: exercise.id }))
+      .unwrap()
+      .then(() => dispatch(fetchCurrentWorkout(jwt)));
+  };
 
   return (
     <>
@@ -51,6 +65,13 @@ const CurrentWorkoutExerciseRow = ({ exercise }: { exercise: ExerciseLog }) => {
                     setNumber={index + 1}
                   />
                 ))}
+                <StyledTableRow>
+                  <StyledTableCell colSpan={7}>
+                    <Button fullWidth variant="outlined" onClick={handleAddSet}>
+                      Add Set
+                    </Button>
+                  </StyledTableCell>
+                </StyledTableRow>
               </TableBody>
             </Table>
           </TableContainer>

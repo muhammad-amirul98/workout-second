@@ -301,4 +301,13 @@ public class WorkoutController {
 
         return ResponseEntity.ok(workoutLog);
     }
+
+    @PostMapping("/current-workout/{exerciseLogId}/set")
+    public ResponseEntity<ExerciseLog> addSetToExerciseInCurrentWorkout(@PathVariable Long exerciseLogId,
+                                                                  @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) throws Exception {
+        User user = userService.findUserByJwtToken(jwt);
+        ExerciseLog exerciseLog = workoutService.addSetToExerciseInCurrentWorkout(exerciseLogId, user);
+
+        return ResponseEntity.ok(exerciseLog);
+    }
 }

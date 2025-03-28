@@ -1,62 +1,176 @@
 [
   {
-    "name": "Bicep Curl",
-    "type": "Biceps",
-    "description": "A classic arm exercise targeting the biceps using dumbbells or barbells.",
-    "notDeletable": true
-  },
-  {
-    "name": "Tricep Dips",
-    "type": "Triceps",
-    "description": "A bodyweight exercise that strengthens the triceps using parallel bars or a bench.",
-    "notDeletable": true
-  },
-  {
-    "name": "Bench Press",
+    "name": "Barbell Bench Press",
     "type": "Chest",
-    "description": "A compound exercise for developing upper body strength using a barbell or dumbbells.",
+    "description": "A compound exercise that primarily targets the chest, shoulders, and triceps by pressing a barbell from a lying position.",
+    "notDeletable": true
+  },
+  {
+    "name": "Incline Barbell Bench Press",
+    "type": "Chest",
+    "description": "A bench press variation performed on an incline to emphasize the upper chest and shoulders.",
+    "notDeletable": true
+  },
+  {
+    "name": "Dumbbell Bench Press",
+    "type": "Chest",
+    "description": "A chest exercise using dumbbells for increased range of motion and muscular engagement.",
+    "notDeletable": true
+  },
+  {
+    "name": "Pull-Ups",
+    "type": "Back",
+    "description": "A bodyweight exercise that strengthens the back and biceps by pulling the body up to a bar.",
+    "notDeletable": true
+  },
+  {
+    "name": "Lat Pulldown",
+    "type": "Back",
+    "description": "A machine-based exercise that mimics the pull-up, focusing on developing the lats and upper back.",
+    "notDeletable": true
+  },
+  {
+    "name": "Barbell Row",
+    "type": "Back",
+    "description": "A barbell exercise that strengthens the mid-back, lats, and rear delts.",
+    "notDeletable": true
+  },
+  {
+    "name": "Deadlift",
+    "type": "Full Body",
+    "description": "A powerful compound movement that targets the back, legs, and core while improving overall strength.",
+    "notDeletable": true
+  },
+  {
+    "name": "Overhead Barbell Press",
+    "type": "Shoulders",
+    "description": "A pressing movement that builds shoulder strength and stability while engaging the triceps.",
+    "notDeletable": true
+  },
+  {
+    "name": "Dumbbell Shoulder Press",
+    "type": "Shoulders",
+    "description": "A variation of the overhead press using dumbbells for improved range of motion and control.",
+    "notDeletable": true
+  },
+  {
+    "name": "Lateral Raises",
+    "type": "Shoulders",
+    "description": "An isolation exercise that strengthens the lateral deltoids for broader shoulders.",
+    "notDeletable": true
+  },
+  {
+    "name": "Barbell Bicep Curl",
+    "type": "Biceps",
+    "description": "A mass-building bicep exercise using a barbell for heavier resistance.",
+    "notDeletable": true
+  },
+  {
+    "name": "Hammer Curl",
+    "type": "Biceps",
+    "description": "A variation of the bicep curl that also targets the forearms and brachialis.",
+    "notDeletable": true
+  },
+  {
+    "name": "Triceps Pushdown",
+    "type": "Triceps",
+    "description": "A cable machine exercise that isolates and strengthens the triceps.",
+    "notDeletable": true
+  },
+  {
+    "name": "Skull Crushers",
+    "type": "Triceps",
+    "description": "A triceps extension movement that helps build size and strength.",
     "notDeletable": true
   },
   {
     "name": "Squat",
     "type": "Legs",
-    "description": "A fundamental lower-body exercise that strengthens the quadriceps, hamstrings, and glutes.",
+    "description": "A fundamental compound movement that targets the quads, hamstrings, and glutes.",
     "notDeletable": true
   },
   {
-    "name": "Deadlift",
-    "type": "Back",
-    "description": "A full-body compound movement that targets the back, glutes, and hamstrings using a barbell.",
-    "notDeletable": true
-  },
-  {
-    "name": "Pull-Up",
-    "type": "Back",
-    "description": "A bodyweight exercise that builds upper-body strength by engaging the lats, biceps, and shoulders.",
-    "notDeletable": true
-  },
-  {
-    "name": "Overhead Press",
-    "type": "Shoulders",
-    "description": "A strength exercise that targets the shoulders, triceps, and upper chest by pressing weight overhead.",
-    "notDeletable": true
-  },
-  {
-    "name": "Lateral Raise",
-    "type": "Shoulders",
-    "description": "An isolation exercise for building shoulder width by raising dumbbells to the side.",
+    "name": "Leg Press",
+    "type": "Legs",
+    "description": "A machine-based leg exercise that isolates the quads, hamstrings, and glutes.",
     "notDeletable": true
   },
   {
     "name": "Lunges",
     "type": "Legs",
-    "description": "A unilateral leg exercise that enhances strength and balance by working the quads, hamstrings, and glutes.",
+    "description": "A unilateral leg exercise that strengthens the quads, hamstrings, and glutes.",
     "notDeletable": true
   },
   {
-    "name": "Crunches",
+    "name": "Leg Curl",
+    "type": "Legs",
+    "description": "A hamstring-focused machine exercise that strengthens the posterior chain.",
+    "notDeletable": true
+  },
+  {
+    "name": "Leg Extension",
+    "type": "Legs",
+    "description": "An isolation exercise that strengthens the quadriceps by extending the knee.",
+    "notDeletable": true
+  },
+  {
+    "name": "Calf Raise",
+    "type": "Calves",
+    "description": "An exercise that strengthens the calves by raising the heels off the ground.",
+    "notDeletable": true
+  },
+  {
+    "name": "Plank",
+    "type": "Core",
+    "description": "An isometric exercise that strengthens the core, shoulders, and stabilizer muscles.",
+    "notDeletable": true
+  },
+  {
+    "name": "Hanging Leg Raises",
     "type": "Abs",
-    "description": "A core-strengthening exercise that targets the abdominal muscles to improve stability and definition.",
+    "description": "A core exercise performed while hanging from a bar, engaging the lower abdominals.",
+    "notDeletable": true
+  },
+  {
+    "name": "Russian Twists",
+    "type": "Abs",
+    "description": "A rotational core exercise that targets the obliques.",
+    "notDeletable": true
+  },
+  {
+    "name": "Battle Ropes",
+    "type": "Cardio",
+    "description": "A conditioning exercise that builds upper body endurance by moving heavy ropes in various patterns.",
+    "notDeletable": true
+  },
+  {
+    "name": "Kettlebell Swing",
+    "type": "Full Body",
+    "description": "A dynamic movement that builds explosive power in the hips and posterior chain.",
+    "notDeletable": true
+  },
+  {
+    "name": "Tire Flips",
+    "type": "Full Body",
+    "description": "A strongman-style movement that develops power by flipping a heavy tire.",
+    "notDeletable": true
+  },
+  {
+    "name": "Pallof Press",
+    "type": "Core",
+    "description": "An anti-rotation exercise that enhances core strength and stability.",
+    "notDeletable": true
+  },
+  {
+    "name": "Dumbbell Snatch",
+    "type": "Full Body",
+    "description": "A power movement that involves explosively lifting a dumbbell from the ground to overhead.",
+    "notDeletable": true
+  },
+  {
+    "name": "Farmers Carry",
+    "type": "Grip Strength",
+    "description": "A loaded carry exercise that improves grip, core stability, and endurance.",
     "notDeletable": true
   }
 ]

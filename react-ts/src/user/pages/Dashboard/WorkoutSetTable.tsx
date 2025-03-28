@@ -142,12 +142,12 @@ export default function WorkoutSetTable({
           </TableRow>
         </TableHead>
         <TableBody>
-          {workoutExercise?.workoutSets.map((workoutSet) => (
+          {workoutExercise?.workoutSets.map((workoutSet, index) => (
             <React.Fragment key={workoutSet.id}>
               {editingSet && editingSet.id === workoutSet.id ? (
                 <TableRow key={workoutSet.id}>
                   <TableCell>
-                    <TextField
+                    {/* <TextField
                       variant="outlined"
                       size="small"
                       value={editingSet.setNumber}
@@ -155,7 +155,8 @@ export default function WorkoutSetTable({
                       onChange={(e) =>
                         handleEditInputChange("setNumber", e.target.value)
                       }
-                    />
+                    /> */}
+                    {index + 1}
                   </TableCell>
                   <TableCell>
                     <TextField
@@ -200,7 +201,7 @@ export default function WorkoutSetTable({
                 </TableRow>
               ) : (
                 <TableRow key={workoutSet.id}>
-                  <TableCell align="left">{workoutSet.setNumber}</TableCell>
+                  <TableCell align="left">{index + 1}</TableCell>
                   <TableCell align="left">{workoutSet.reps}</TableCell>
                   <TableCell align="left">{workoutSet.weight}</TableCell>
                   <TableCell align="left" colSpan={2}>
@@ -227,7 +228,7 @@ export default function WorkoutSetTable({
           {newSet && (
             <TableRow>
               <TableCell>
-                <TextField
+                {/* <TextField
                   variant="outlined"
                   size="small"
                   value={newSet.setNumber}
@@ -235,7 +236,7 @@ export default function WorkoutSetTable({
                   onChange={(e) =>
                     handleInputChange("setNumber", e.target.value)
                   }
-                />
+                /> */}
               </TableCell>
               <TableCell>
                 <TextField
@@ -262,11 +263,7 @@ export default function WorkoutSetTable({
               <TableCell colSpan={2}>
                 <IconButton
                   onClick={() => handleSaveSet(workoutExercise)}
-                  disabled={
-                    !newSet.plannedReps ||
-                    !newSet.setNumber ||
-                    !newSet.plannedWeight
-                  }
+                  disabled={!newSet.plannedReps || !newSet.plannedWeight}
                   color="primary"
                 >
                   <Save />

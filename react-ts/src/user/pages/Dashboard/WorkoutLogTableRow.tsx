@@ -55,7 +55,18 @@ export default function WorkoutLogTableRow({
             : "N/A"}
         </StyledTableCell>
         <StyledTableCell component="th" scope="row">
-          {workoutLog.workoutStatus}
+          <span
+            className={`font-semibold
+              ${
+                workoutLog.workoutStatus === "CANCELLED"
+                  ? "text-red-700"
+                  : workoutLog.workoutStatus === "IN_PROGRESS"
+                  ? "text-blue-400 "
+                  : "text-teal-700"
+              }`}
+          >
+            {workoutLog.workoutStatus}
+          </span>
         </StyledTableCell>
         <StyledTableCell component="th" scope="row">
           {workoutLog.timeCompleted

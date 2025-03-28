@@ -35,6 +35,7 @@ public class WorkoutServiceImpl implements WorkoutService {
     private final WorkoutSetRepository workoutSetRepository;
     private final BodyMeasurementRepository bodyMeasurementRepository;
     private final UserProgressRepository userProgressRepository;
+    private final ExerciseLogRepository exerciseLogRepository;
 
 
     @Override
@@ -395,6 +396,7 @@ public class WorkoutServiceImpl implements WorkoutService {
         if (setLog.getExerciseLog().getWorkoutLog().getWorkout().getUser() != user) {
             throw new Exception("Not authorized to update set");
         }
+        setLog.setTimeCompleted(null);
         setLog.setComplete(false);
         return setLogRepository.save(setLog);
     }
@@ -526,10 +528,25 @@ public class WorkoutServiceImpl implements WorkoutService {
         SetLog setLog = new SetLog();
         setLog.setExerciseLog(exerciseLog);
         exerciseLog.getSetLogs().add(setLog);
-        
+
         workoutLog.getExerciseLogs().add(exerciseLog);
 
         return workoutLogRepository.save(workoutLog);
+    }
+
+    @Override
+    public ExerciseLog addSetToExerciseInCurrentWorkout(Long exerciseLogId, User user) throws Exception {
+        SetLog setLog = new SetLog();
+        ExerciseLog exerciseLog = exerciseLogRepository.findById(exerciseLogId)
+                .orElseThrow(() -> new Exception("Exercise Log not found"));
+
+        if (!exerciseLog.getWorkoutLog().getUser().equals(user)) {
+            throw new Exception("You are not authorized to modify this workout");
+        }
+
+        setLog.setExerciseLog(exerciseLog);
+        exerciseLog.getSetLogs().add(setLog);
+        return exerciseLogRepository.save(exerciseLog);
     }
 
 //    @Override

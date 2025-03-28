@@ -67,7 +67,7 @@ export interface SetLog {
   weight?: number;
   exerciseLog?: ExerciseLog;
   timeStarted: string;
-  timeCompleted?: string;
+  timeCompleted: string;
   complete: boolean;
 }
 

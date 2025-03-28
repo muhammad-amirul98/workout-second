@@ -37,7 +37,8 @@ public class GenAIServiceImpl implements GenAiService {
         try {
             botMessage.setMessage(assistant.chat(userId, message, userId));
         } catch (Exception e){
-            botMessage.setMessage("I'm sorry, I couldn't process that request.");
+            System.out.println(e.getMessage());
+            botMessage.setMessage("I'm sorry, I couldn't process that request. Please try again.");
         }
         return messageRepository.save(botMessage);
     }

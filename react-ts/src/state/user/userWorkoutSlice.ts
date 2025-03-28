@@ -6,6 +6,7 @@ import {
   CreateSetRequest,
   CreateWorkoutRequest,
   Exercise,
+  ExerciseLog,
   MaxWeight,
   SetLog,
   UpdateBodyMeasurementsRequest,
@@ -863,6 +864,36 @@ export const addExerciseToCurrentWorkout = createAsyncThunk<
   }
 );
 
+export const addSetToCurrentWorkout = createAsyncThunk<
+  ExerciseLog,
+  { jwt: string; exerciseLogId: number },
+  { rejectValue: string }
+>(
+  "/userworkout/addSetToCurrentWorkout",
+  async ({ jwt, exerciseLogId }, { rejectWithValue }) => {
+    try {
+      const response = await api.post(
+        `/workout/current-workout/${exerciseLogId}/set`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        }
+      );
+      console.log("User addSetToCurrentWorkout: ", response.data);
+      return response.data;
+    } catch (error: unknown) {
+      if (error instanceof Error) {
+        return rejectWithValue(
+          error.message || "Failed to addSetToCurrentWorkout"
+        );
+      }
+      return rejectWithValue("An unknown error occurred");
+    }
+  }
+);
+
 interface UserWorkoutState {
   workout: Workout | null;
   workouts: Workout[] | null;
@@ -879,6 +910,7 @@ interface UserWorkoutState {
   bodyMeasurement: BodyMeasurement | null;
   bodyMeasurements: BodyMeasurement[] | null;
   setLog: SetLog | null;
+  exerciseLog: ExerciseLog | null;
   loading: boolean;
   error: unknown;
 }
@@ -899,6 +931,7 @@ const initialState: UserWorkoutState = {
   bodyMeasurements: [],
   data: null,
   setLog: null,
+  exerciseLog: null,
   loading: false,
   error: null,
 };
@@ -1377,6 +1410,21 @@ const userWorkoutSlice = createSlice({
         state.currentWorkout = action.payload;
       })
       .addCase(addExerciseToCurrentWorkout.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      });
+
+    //addSetToCurrentWorkout
+    builder
+      .addCase(addSetToCurrentWorkout.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
+      .addCase(addSetToCurrentWorkout.fulfilled, (state, action) => {
+        state.loading = false;
+        state.exerciseLog = action.payload;
+      })
+      .addCase(addSetToCurrentWorkout.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       });
