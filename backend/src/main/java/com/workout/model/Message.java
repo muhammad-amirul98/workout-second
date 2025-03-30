@@ -28,7 +28,7 @@ public class Message {
     @JsonIgnore
     private User user;
 
-    @Column(columnDefinition = "TEXT")
+    @Column(length = 5000)
     private String message;
 
     private MessageOwner messageOwner;

@@ -4,23 +4,33 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import io.github.cdimascio.dotenv.Dotenv;
 
+
 @SpringBootApplication
 public class WorkoutApplication {
 
 	public static void main(String[] args) {
 
-		Dotenv dotenv = Dotenv.load();
-		System.setProperty("STRIPE_SECRET_KEY", dotenv.get("STRIPE_SECRET_KEY"));
-		System.setProperty("RAZOR_SECRET_KEY", dotenv.get("RAZOR_SECRET_KEY"));
-		System.setProperty("RAZOR_API_KEY", dotenv.get("RAZOR_API_KEY"));
-		System.setProperty("APP_FRONTEND_SUCCESS_URL", dotenv.get("APP_FRONTEND_SUCCESS_URL"));
-		System.setProperty("APP_FRONTEND_CANCEL_URL", dotenv.get("APP_FRONTEND_CANCEL_URL"));
-		System.setProperty("DB_USERNAME", dotenv.get("DB_USERNAME"));
-		System.setProperty("DB_PASSWORD", dotenv.get("DB_PASSWORD"));
-		System.setProperty("EMAIL_PASSWORD", dotenv.get("EMAIL_PASSWORD"));
-		System.setProperty("OPEN_API_SECRET_KEY", dotenv.get("OPEN_API_SECRET_KEY"));
+		setPropertyFromEnv("STRIPE_SECRET_KEY");
+		setPropertyFromEnv("RAZOR_SECRET_KEY");
+		setPropertyFromEnv("RAZOR_API_KEY");
+		setPropertyFromEnv("APP_FRONTEND_SUCCESS_URL");
+		setPropertyFromEnv("APP_FRONTEND_CANCEL_URL");
+		setPropertyFromEnv("DB_USERNAME");
+		setPropertyFromEnv("DB_PASSWORD");
+		setPropertyFromEnv("EMAIL_PASSWORD");
+		setPropertyFromEnv("OPEN_API_SECRET_KEY");
+		setPropertyFromEnv("GEMINI_AI_KEY");
 
 		SpringApplication.run(WorkoutApplication.class, args);
+	}
+
+	private static void setPropertyFromEnv(String key) {
+		String value = System.getenv(key);
+		if (value != null) {
+			System.setProperty(key, value);
+		} else {
+			System.err.println("Warning: Environment variable " + key + " not set");
+		}
 	}
 
 }

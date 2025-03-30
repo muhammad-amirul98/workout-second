@@ -28,9 +28,6 @@ public class StripeWebhookController {
     private final CartService cartService;
 
     private static final String STRIPE_WEBHOOK_SECRET = "whsec_fb7d298ef81b6c0605868da8caa03769b8b6dcb8fafdf51dbfc8a124d1b07588";
-//    stripe listen --forward-to http://localhost:5454/stripe-webhook
-//stripe trigger checkout.session.completed
-
 
     @PostMapping
     public ResponseEntity<String> handleStripeWebhook(@RequestBody String payload,

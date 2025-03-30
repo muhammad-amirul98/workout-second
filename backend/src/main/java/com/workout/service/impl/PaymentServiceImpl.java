@@ -97,42 +97,6 @@ public class PaymentServiceImpl implements PaymentService {
     }
 
     @Override
-    public PaymentLink createRazorPayPaymentLink(Order order) throws RazorpayException {
-        Long amount = (long) (order.getTotalPrice() * 100);
-        try {
-            RazorpayClient razorpayClient = new RazorpayClient(razorApiKey, razorSecretKey);
-
-            JSONObject paymentLinkRequest = new JSONObject();
-            paymentLinkRequest.put("amount", amount);
-            paymentLinkRequest.put("currency", "SGD");
-
-            JSONObject customer = new JSONObject();
-            customer.put("name", order.getUser().getFullName());
-            customer.put("email", order.getUser().getEmail());
-            paymentLinkRequest.put("customer", customer);
-
-            JSONObject notify = new JSONObject();
-            notify.put("email", true);
-            paymentLinkRequest.put("notify", notify);
-
-            paymentLinkRequest.put("callback_url", successUrl + order.getId());
-            paymentLinkRequest.put("callback_method", "get");
-
-            PaymentLink paymentLink = razorpayClient.paymentLink.create(paymentLinkRequest);
-
-            String paymentLinkUrl = paymentLink.get("short_url");
-            String paymentLinkId = paymentLink.get("id");
-
-
-
-            return paymentLink;
-
-        } catch (Exception e) {
-            throw new RazorpayException(e.getMessage());
-        }
-    }
-
-    @Override
     public PaymentLinkResponse createStripePaymentLink(Order order) throws StripeException {
         Stripe.apiKey = stripeSecretKey;
         List<SessionCreateParams.LineItem> lineItems = new ArrayList<>();

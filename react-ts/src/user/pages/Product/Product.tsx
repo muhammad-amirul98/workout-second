@@ -11,10 +11,10 @@ import {
   useTheme,
 } from "@mui/material";
 import FilterSection from "./FilterSection";
-import ProductCard from "./ProductCard";
+// import ProductCard from "./ProductCard";
 import { FilterAlt } from "@mui/icons-material";
 import { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector } from "../../../state/store";
+import { useAppDispatch } from "../../../state/store";
 import { fetchAllProducts } from "../../../state/user/userProductSlice";
 import { useSearchParams } from "react-router-dom";
 
@@ -25,7 +25,7 @@ const Product = () => {
   const [page, setPage] = useState(1);
   const dispatch = useAppDispatch();
   const [searchParams] = useSearchParams();
-  const userproduct = useAppSelector((store) => store.userproduct);
+  // const userproduct = useAppSelector((store) => store.userproduct);
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleSort = (event: any) => {
@@ -104,9 +104,10 @@ const Product = () => {
             className="product_section mt-5 grid sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3
            gap-y-5 px-5 justify-center"
           >
-            {userproduct.products.map((item, index) => {
+            {/* {userproduct.products.map((item, index) => {
               return <ProductCard key={index} item={item} />;
-            })}
+            })} */}
+            <span className="font-bold">Currently working on this....</span>
           </section>
 
           {/* PAGINATION */}

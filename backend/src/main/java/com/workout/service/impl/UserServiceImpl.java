@@ -46,7 +46,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    @Tool
+    @Tool("Always run this function with the user Id you have to retrieve user details and answer based on them.")
     public User getUserById(Long id) throws UserException {
         return userRepository.findById(id)
                 .orElseThrow(() -> new UserException("User not found with ID: " + id));

@@ -127,7 +127,7 @@ public class ProductServiceImpl implements ProductService {
     public Page<Product> getAllProducts(String category, String brand,
                                         Integer minPrice, Integer maxPrice, String sort, Integer pageNumber,
                                         Integer pageSize) {
-        Specification<Product> specification = (root, _, criteriaBuilder) -> {
+        Specification<Product> specification = (root, query, criteriaBuilder) -> {
             List<Predicate> predicates = new ArrayList<>();
 
             List<String> brandList = brand != null ? Arrays.asList(brand.split(",")) : Collections.emptyList();
