@@ -24,6 +24,10 @@ public class AuthController {
 
     @PostMapping("/signup")
     public ResponseEntity<AuthResponse> signUpHandler(@RequestBody SignUpRequest signUpRequest) throws Exception {
+        System.out.println(signUpRequest.getEmail());
+        System.out.println(signUpRequest.getOtp());
+
+        System.out.println(signUpRequest.getFullName());
         String jwt = authService.signUp(signUpRequest);
         AuthResponse res = new AuthResponse();
         res.setJwt(jwt);

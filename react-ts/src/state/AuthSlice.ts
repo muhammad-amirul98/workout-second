@@ -69,11 +69,11 @@ export const logOut = createAsyncThunk(
 export const signUp = createAsyncThunk(
   "/auth/signUp",
   async (
-    { email, otp }: { email: string; otp: string },
+    { email, otp, fullName }: { email: string; otp: string; fullName: string },
     { rejectWithValue }
   ) => {
     try {
-      const response = await api.post("/auth/signup", { email, otp });
+      const response = await api.post("/auth/signup", { email, otp, fullName });
       const jwt = response.data.jwt;
       localStorage.setItem("jwt", jwt);
       window.location.reload();

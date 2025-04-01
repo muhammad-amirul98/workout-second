@@ -26,6 +26,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "`user`")
 public class User {
 
     @Id
@@ -66,7 +67,7 @@ public class User {
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "user_progress_id", unique = true)
     @JsonManagedReference
-    private UserProgress userProgress = new UserProgress();
+    private UserProgress userProgress;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     @JsonIgnore

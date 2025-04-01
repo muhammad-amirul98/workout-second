@@ -48,6 +48,12 @@
 		<scope>runtime</scope>
 	</dependency>
 
+	<dependency>
+		<groupId>org.postgresql</groupId>
+		<artifactId>postgresql</artifactId>
+		<scope>runtime</scope>
+	</dependency>
+
 	<!-- DevTools (for hot reload) -->
 	<dependency>
 		<groupId>org.springframework.boot</groupId>
@@ -166,6 +172,14 @@
 			<scope>test</scope> <!-- Ensures it's only included in tests -->
 		</dependency>
 
+		<!-- https://mvnrepository.com/artifact/org.mockito/mockito-core -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>5.16.1</version>
+			<scope>test</scope>
+		</dependency>
+
 	</dependencies>
 
 
@@ -193,6 +207,16 @@
 		<plugin>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-maven-plugin</artifactId>
+		</plugin>
+		<plugin>
+			<groupId>org.apache.maven.plugins</groupId>
+			<artifactId>maven-surefire-plugin</artifactId>
+			<configuration>
+				<argLine>
+					-javaagent:${settings.localRepository}/org/mockito/mockito-core/${mockito.version}/mockito-core-${mockito.version}.jar
+					-Xshare:off
+				</argLine>
+			</configuration>
 		</plugin>
 	</plugins>
 </build>

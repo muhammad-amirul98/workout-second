@@ -22,30 +22,30 @@ public class PaymentController {
     private final UserService userService;
     private final TransactionService transactionService;
 
-    @GetMapping("/{paymentId}")
-    public ResponseEntity<ApiResponse> paymentSuccessHandler(
-            @PathVariable String paymentId,
-            @RequestParam String paymentLinkId,
-            @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) throws Exception {
-
-        User user = userService.findUserByJwtToken(jwt);
-
-        PaymentLinkResponse paymentLinkResponse;
-
-        PaymentOrder paymentOrder = paymentService.getPaymentOrderByPaymentId(paymentLinkId);
-
-        boolean paymentSuccess = paymentService.ProceedPaymentOrder(
-                paymentOrder,
-                paymentId,
-                paymentLinkId);
-
-//        if (paymentSuccess) {
-//            transactionService.createTransaction(paymentOrder.getOrder());
-//        }
-
-        ApiResponse res = new ApiResponse();
-        res.setMessage("Successful Payment");
-
-        return new ResponseEntity<>(res, HttpStatus.CREATED);
-    }
+//    @GetMapping("/{paymentId}")
+//    public ResponseEntity<ApiResponse> paymentSuccessHandler(
+//            @PathVariable String paymentId,
+//            @RequestParam String paymentLinkId,
+//            @RequestHeader(HttpHeaders.AUTHORIZATION) String jwt) throws Exception {
+//
+//        User user = userService.findUserByJwtToken(jwt);
+//
+//        PaymentLinkResponse paymentLinkResponse;
+//
+//        PaymentOrder paymentOrder = paymentService.getPaymentOrderByPaymentId(paymentLinkId);
+//
+//        boolean paymentSuccess = paymentService.ProceedPaymentOrder(
+//                paymentOrder,
+//                paymentId,
+//                paymentLinkId);
+//
+////        if (paymentSuccess) {
+////            transactionService.createTransaction(paymentOrder.getOrder());
+////        }
+//
+//        ApiResponse res = new ApiResponse();
+//        res.setMessage("Successful Payment");
+//
+//        return new ResponseEntity<>(res, HttpStatus.CREATED);
+//    }
 }

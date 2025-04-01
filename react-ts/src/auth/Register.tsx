@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAppDispatch } from "../state/store";
 import { useNavigate } from "react-router-dom";
-import { sendOtp, signIn } from "../state/AuthSlice";
+import { sendOtp, signUp } from "../state/AuthSlice";
 import { Button, CircularProgress, TextField } from "@mui/material";
 import { useFormik } from "formik";
 
@@ -15,10 +15,10 @@ const Register = () => {
     initialValues: {
       email: "",
       otp: "",
-      fullname: "",
+      fullName: "",
     },
     validate: (values) => {
-      const errors: { email?: string; otp?: string; fullname?: string } = {};
+      const errors: { email?: string; otp?: string; fullName?: string } = {};
 
       if (!values.email) {
         errors.email = "Email is required";
@@ -34,14 +34,14 @@ const Register = () => {
         errors.otp = "OTP must be 6 digits";
       }
 
-      if (!values.fullname) {
-        errors.fullname = "Full name is required";
+      if (!values.fullName) {
+        errors.fullName = "Full name is required";
       }
 
       return errors;
     },
     onSubmit: (values) => {
-      dispatch(signIn(values));
+      dispatch(signUp(values));
       navigate("/account/profile");
       console.log("Form submitted:", values);
     },
@@ -100,15 +100,15 @@ const Register = () => {
               <TextField
                 className="mt-3"
                 fullWidth
-                name="fullname"
+                name="fullName"
                 label="Full Name"
-                value={formik.values.fullname}
+                value={formik.values.fullName}
                 onChange={formik.handleChange}
                 onBlur={formik.handleBlur}
                 error={
-                  formik.touched.fullname && Boolean(formik.errors.fullname)
+                  formik.touched.fullName && Boolean(formik.errors.fullName)
                 }
-                helperText={formik.touched.fullname && formik.errors.fullname}
+                helperText={formik.touched.fullName && formik.errors.fullName}
               />
             </div>
           )}

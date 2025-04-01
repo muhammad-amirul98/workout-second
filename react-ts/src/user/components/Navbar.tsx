@@ -50,7 +50,7 @@ const Navbar = () => {
               <SearchIcon />
             </IconButton>
             <Button
-              onClick={() => navigate("/account/orders")}
+              onClick={() => navigate("/account/profile")}
               className="flex items-center gap-x-2"
             >
               <Avatar src={auth.user?.profilePicture || DEFAULT_AVATAR} />

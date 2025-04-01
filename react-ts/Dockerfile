@@ -13,4 +13,3 @@ RUN npm install -g serve
 EXPOSE 5173  
 # Vite's default port
 CMD ["serve", "-s", "dist", "-l", "5173"]
-# CMD ["npm", "run", "dev"]

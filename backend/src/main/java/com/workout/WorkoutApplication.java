@@ -20,7 +20,9 @@ public class WorkoutApplication {
 		setPropertyFromEnv("EMAIL_PASSWORD");
 		setPropertyFromEnv("OPEN_API_SECRET_KEY");
 		setPropertyFromEnv("GEMINI_AI_KEY");
-
+		setPropertyFromEnv("ADMIN_PASSWORD");
+		setPropertyFromEnv("FRONTEND_URL");
+		setPropertyFromEnv("DB_DRIVER_NAME");
 		SpringApplication.run(WorkoutApplication.class, args);
 	}
 

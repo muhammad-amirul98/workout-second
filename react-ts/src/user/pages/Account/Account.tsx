@@ -1,6 +1,11 @@
 import { Divider } from "@mui/material";
-import { Route, Routes, useLocation, useNavigate } from "react-router-dom";
-import OrderDetails from "./OrderDetails";
+import {
+  Navigate,
+  Route,
+  Routes,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 import Profile from "./Profile";
 import Address from "./Address";
 
@@ -12,6 +17,7 @@ const menu = [
 const Account = () => {
   const navigate = useNavigate();
   const location = useLocation();
+
   return (
     <div className="px-5 lg:px-52 min-h-screen mt-10">
       <div className="">
@@ -39,9 +45,10 @@ const Account = () => {
         {/* RIGHT */}
         <div className="right lg:col-span-2 lg:pl-5 py-5">
           <Routes>
-            <Route path="/orders/:orderId" element={<OrderDetails />} />
+            {/* <Route path="/orders/:orderId" element={<OrderDetails />} /> */}
             <Route path="/profile" element={<Profile />} />
             <Route path="/addresses" element={<Address />} />
+            <Route path="*" element={<Navigate to="/account/profile" />} />
           </Routes>
         </div>
       </div>

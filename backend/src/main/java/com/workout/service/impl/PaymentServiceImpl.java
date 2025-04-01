@@ -35,11 +35,11 @@ public class PaymentServiceImpl implements PaymentService {
     private final PaymentOrderRepository paymentOrderRepository;
     private final OrderRepository orderRepository;
 
-    @Value("${RAZOR_API_KEY}")
-    private String razorApiKey;
+//    @Value("${RAZOR_API_KEY}")
+//    private String razorApiKey;
 
-    @Value("${RAZOR_SECRET_KEY}")
-    private String razorSecretKey;
+//    @Value("${RAZOR_SECRET_KEY}")
+//    private String razorSecretKey;
 
     @Value("${STRIPE_SECRET_KEY}")
     private String stripeSecretKey;
@@ -75,26 +75,26 @@ public class PaymentServiceImpl implements PaymentService {
         return paymentOrderRepository.findByPaymentLinkId(paymentId);
     }
 
-    @Override
-    public Boolean ProceedPaymentOrder(PaymentOrder paymentOrder, String paymentId, String paymentLinkId)
-            throws RazorpayException {
-        if (paymentOrder.getStatus().equals(PaymentStatus.PENDING)) {
-            RazorpayClient razorpayClient = new RazorpayClient(razorApiKey, razorSecretKey);
-            Payment payment = razorpayClient.payments.fetch(paymentId);
-            String status = payment.get("status");
-            if (status.equals("captured")) {
-                paymentOrder.getOrder().setPaymentStatus(PaymentStatus.COMPLETED);
-                orderRepository.save(paymentOrder.getOrder());
-                paymentOrder.setStatus(PaymentStatus.COMPLETED);
-                paymentOrderRepository.save(paymentOrder);
-                return true;
-            }
-            paymentOrder.setStatus(PaymentStatus.FAILED);
-            paymentOrderRepository.save(paymentOrder);
-            return false;
-        }
-        return false;
-    }
+//    @Override
+//    public Boolean ProceedPaymentOrder(PaymentOrder paymentOrder, String paymentId, String paymentLinkId)
+//            throws RazorpayException {
+//        if (paymentOrder.getStatus().equals(PaymentStatus.PENDING)) {
+//            RazorpayClient razorpayClient = new RazorpayClient(razorApiKey, razorSecretKey);
+//            Payment payment = razorpayClient.payments.fetch(paymentId);
+//            String status = payment.get("status");
+//            if (status.equals("captured")) {
+//                paymentOrder.getOrder().setPaymentStatus(PaymentStatus.COMPLETED);
+//                orderRepository.save(paymentOrder.getOrder());
+//                paymentOrder.setStatus(PaymentStatus.COMPLETED);
+//                paymentOrderRepository.save(paymentOrder);
+//                return true;
+//            }
+//            paymentOrder.setStatus(PaymentStatus.FAILED);
+//            paymentOrderRepository.save(paymentOrder);
+//            return false;
+//        }
+//        return false;
+//    }
 
     @Override
     public PaymentLinkResponse createStripePaymentLink(Order order) throws StripeException {

@@ -47,6 +47,7 @@ public class AuthServiceImpl implements AuthService {
     private final VerificationCodeRepository verificationCodeRepository;
     private final EmailService emailService;
     private final CustomUserServiceImpl customUserService;
+    private final UserProgressRepository userProgressRepository;
 
     @Override
     public void sendOTP(String email) throws UserException, MessagingException {
@@ -123,11 +124,8 @@ public class AuthServiceImpl implements AuthService {
         User newUser = new User();
         newUser.setFullName(signUpRequest.getFullName());
         newUser.setEmail(signUpRequest.getEmail());
-        newUser.setMobile("90123121");
         newUser.setPassword(passwordEncoder.encode(signUpRequest.getOtp()));
-
         newUser = userRepository.save(newUser);
-
         initializeUserEntities(newUser);
 
         return newUser;
@@ -151,12 +149,9 @@ public class AuthServiceImpl implements AuthService {
         User newUser = new User();
         newUser.setFullName(signUpRequest.getFullName());
         newUser.setEmail(signUpRequest.getEmail());
-        newUser.setMobile("90123121");
         newUser.setPassword(passwordEncoder.encode(signUpRequest.getOtp()));
         newUser.setRole(UserRole.ROLE_ADMIN);
-
         newUser = userRepository.save(newUser);
-
 
         return newUser;
     }
@@ -164,6 +159,12 @@ public class AuthServiceImpl implements AuthService {
 
 
     private void initializeUserEntities(User user) {
+        if (user.getUserProgress() == null) {
+            UserProgress userProgress = new UserProgress();
+            userProgress.setUser(user);
+            userProgress = userProgressRepository.save(userProgress);
+            user.setUserProgress(userProgress);
+        }
         if (user.getCart() == null) {
             Cart cart = new Cart(user);
             cart = cartRepository.save(cart);

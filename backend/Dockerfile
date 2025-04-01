@@ -15,5 +15,5 @@ COPY --from=build /build/target/workout-*.jar app.jar
 
 EXPOSE 5454
 
-ENV DB_URL="jdbc:mysql://host.docker.internal:3306/workout"
+#ENV DB_URL="jdbc:mysql://host.docker.internal:3306/workout"
 ENTRYPOINT ["java", "-jar", "app.jar"]
