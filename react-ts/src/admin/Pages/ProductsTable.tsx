@@ -8,7 +8,7 @@ import { Delete, Edit } from "@mui/icons-material";
 import TableContainer from "@mui/material/TableContainer";
 import { useAppDispatch, useAppSelector } from "../../state/store";
 import { useEffect } from "react";
-import { deleteProduct, fetchProducts } from "../../state/admin/productSlice";
+import { deleteProduct, fetchProducts } from "../../state/admin/ProductSlice";
 import { Product } from "../../types/ProductTypes";
 import {
   StyledTableCell,

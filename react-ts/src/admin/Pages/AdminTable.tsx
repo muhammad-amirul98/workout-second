@@ -16,7 +16,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { accountStatuses } from "../data/accountStatuses";
+import { accountStatuses } from "../Data/accountStatuses";
 import { useAppDispatch, useAppSelector } from "../../state/store";
 import { fetchAllUsers } from "../../state/admin/adminUserSlice";
 

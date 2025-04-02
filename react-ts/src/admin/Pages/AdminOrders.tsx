@@ -18,7 +18,7 @@ import {
   TableRow,
 } from "@mui/material";
 import { useEffect, useState } from "react";
-import { orderStatuses } from "../data/orderStatuses";
+import { orderStatuses } from "../Data/orderStatuses";
 import { useAppDispatch, useAppSelector } from "../../state/store";
 import {
   fetchAllOrders,

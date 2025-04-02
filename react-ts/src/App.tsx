@@ -11,7 +11,7 @@ import Checkout from "./user/pages/Checkout/Checkout";
 import Account from "./user/pages/Account/Account";
 import { Navigate, Route, Routes } from "react-router-dom";
 import Dashboard from "./user/pages/Dashboard/Dashboard";
-import AdminDashboard from "./admin/pages/AdminDashboard";
+import AdminDashboard from "./admin/Pages/AdminDashboard";
 import { useEffect, useState } from "react";
 import Auth from "./auth/Auth";
 import { useAppDispatch, useAppSelector } from "./state/store";

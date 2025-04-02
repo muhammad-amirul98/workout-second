@@ -1,26 +1,25 @@
 import { useEffect, useState } from "react";
-import background from "../assets/background.jpeg";
-import img1 from "../assets/gym1.avif";
-import img2 from "../assets/gym2.avif";
-import img3 from "../assets/gym3.avif";
+import img1 from "../assets/IMAGE 2025-04-02 10:18:37.jpg";
+import img2 from "../assets/IMAGE 2025-04-02 10:19:10.jpg";
+import img3 from "../assets/IMAGE 2025-04-02 10:24:34.jpg";
 
 const FrontPageLeftCard = () => {
   const [currentImage, setCurrentImage] = useState(0);
-  const images = [background, img1, img2, img3];
+  const images = [img1, img2, img3];
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentImage((prevImage) => (prevImage + 1) % 4);
+      setCurrentImage((prevImage) => (prevImage + 1) % 3);
     }, 3000);
     return () => clearInterval(interval);
   }, []);
 
   return (
-    <div className="relative w-[450px] h-[85vh] overflow-hidden rounded-md shadow-lg">
+    <div className="relative w-[85vh] h-[85vh] overflow-hidden rounded-md shadow-lg">
       {images.map((image, index) => (
         <img
           key={index}
-          className={`absolute top-0 left-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
+          className={`absolute top-0 left-0 w-full h-full object-contain transition-opacity duration-1000 ease-in-out p-2 rounded-md ${
             index === currentImage ? "opacity-100" : "opacity-0"
           }`}
           src={image}

@@ -5,7 +5,7 @@ import Grid from "@mui/material/Grid2";
 import { AddPhotoAlternate } from "@mui/icons-material";
 import { Button, CircularProgress, IconButton, TextField } from "@mui/material";
 import { useAppDispatch } from "../../state/store";
-import { createProduct } from "../../state/admin/productSlice";
+import { createProduct } from "../../state/admin/ProductSlice";
 
 const AddProduct = ({ onClose }: { onClose: () => void }) => {
   const [uploadImage, setUploadImage] = useState(false);

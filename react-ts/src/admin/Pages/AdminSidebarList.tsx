@@ -1,4 +1,4 @@
-import { adminMenu } from "../data/adminMenu";
+import { adminMenu } from "../Data/adminMenu";
 import SideList from "../../component/SideList";
 
 const AdminSidebarList = ({ toggleList }: { toggleList: () => void }) => {

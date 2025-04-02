@@ -2,7 +2,7 @@ import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { thunk } from "redux-thunk";
 import { TypedUseSelectorHook, useDispatch, useSelector } from "react-redux";
 import userSlice from "./user/userSlice";
-import productSlice from "./admin/productSlice";
+import productSlice from "./admin/ProductSlice";
 import userProductSlice from "./user/userProductSlice";
 import authSlice from "./AuthSlice";
 import userCartSlice from "./user/userCartSlice";
