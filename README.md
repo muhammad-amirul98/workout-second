@@ -70,8 +70,13 @@ npm run dev
 - Mobile App
 
 📸 Screenshots
-![alt text](assets/telegram-cloud-photo-size-5-6271426261557560454-y.jpg)
-![alt text](assets/telegram-cloud-photo-size-5-6271426261557560455-y.jpg)
-![alt text](assets/telegram-cloud-photo-size-5-6271426261557560604-y.jpg)
-![alt text](assets/telegram-cloud-photo-size-5-6273641506904588967-y.jpg)
-![alt text](assets/telegram-cloud-photo-size-5-6280343081815492407-y.jpg)
+
+![Workout Volume Progress](assets/telegram-cloud-photo-size-5-6271426261557560454-y.jpg)
+
+![Workout Count](assets/telegram-cloud-photo-size-5-6271426261557560455-y.jpg)
+
+![Max Weight Progression](assets/telegram-cloud-photo-size-5-6271426261557560604-y.jpg)
+
+![Body Measurements](assets/telegram-cloud-photo-size-5-6273641506904588967-y.jpg)
+
+![AI Chatbot](assets/telegram-cloud-photo-size-5-6280343081815492407-y.jpg)
